@@ -1,0 +1,193 @@
+{
+  "schema": "eveglyph-ascs-source-inventory/1",
+  "source_root": "D:\\我的研究\\學術討論\\論文\\真終極\\真本體論12\\EveGlyph_Addressable_Symbolic_Computational_Space_Series",
+  "source_file_count": 20,
+  "source_total_bytes": 3685259,
+  "source_changed": false,
+  "canonical_release": {
+    "filename": "EveGlyph_ASCS_v1.0_Canonical_Handoff_Complete.zip",
+    "repository_path": "releases/EveGlyph_ASCS_v1.0_Canonical_Handoff_Complete.zip",
+    "bytes": 1982680,
+    "sha256": "d68cf0ad4fc50cb6b5abe92b489cf25ca30b51db583cda5997d29a07ad4ab7ac",
+    "extracted_file_count": 67,
+    "checksum_entry_count": 66
+  },
+  "architecture_archive_divergence": {
+    "canonical": {
+      "path": "canonical/v1.0/source_archives/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip",
+      "sha256": "19a510cebcbe1d1b0e7c3134d99c88eebf98dd20385863ba71850aaf09ca7778",
+      "role": "canonical-authority"
+    },
+    "historical": {
+      "path": "provenance/source-directory/archives/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip",
+      "sha256": "97c5e95d45ca615277e1719e24f318d8ea208e09ddb7c74c1388d76683739bca",
+      "role": "historical-provenance"
+    },
+    "content_difference": [
+      "SERIES_INDEX_v0.1.md",
+      "SHA256SUMS.txt"
+    ]
+  },
+  "files": [
+    {
+      "relative_path": "00_從線性文件到可定址符號計算空間_統合論文_v0.1.md",
+      "kind": "document",
+      "role": "loose-source-document",
+      "bytes": 39795,
+      "sha256": "a36985f3446cc6a56cbfdf0f8a4b874253f5fb181c2eb9530542f0591d495a77",
+      "provenance_path": "provenance/source-directory/documents/00_從線性文件到可定址符號計算空間_統合論文_v0.1.md"
+    },
+    {
+      "relative_path": "01_可定址符號物件模型_身份內容語義關係版本與相等性_v0.1.md",
+      "kind": "document",
+      "role": "loose-source-document",
+      "bytes": 43797,
+      "sha256": "b9ca1c774e41a433ed048a6b4f0e793be93d87754b970727292cc3cf319b7762",
+      "provenance_path": "provenance/source-directory/documents/01_可定址符號物件模型_身份內容語義關係版本與相等性_v0.1.md"
+    },
+    {
+      "relative_path": "02_空間語法與無限畫布計算_從幾何配置到可驗證執行結構_v0.1.md",
+      "kind": "document",
+      "role": "loose-source-document",
+      "bytes": 42400,
+      "sha256": "30c9b6d612c872e423f8c6212f288950b36d1c5e5cb222501cd2408fc20ad49c",
+      "provenance_path": "provenance/source-directory/documents/02_空間語法與無限畫布計算_從幾何配置到可驗證執行結構_v0.1.md"
+    },
+    {
+      "relative_path": "03_原生可計算數學_超越LaTeX字串的語義物件執行與投影模型_v0.1.md",
+      "kind": "document",
+      "role": "loose-source-document",
+      "bytes": 51899,
+      "sha256": "fa367f0f2b01bde173e99b59a956c7b287ae3d08dde2c88b35ea8ac94ecc22aa",
+      "provenance_path": "provenance/source-directory/documents/03_原生可計算數學_超越LaTeX字串的語義物件執行與投影模型_v0.1.md"
+    },
+    {
+      "relative_path": "04_生成式字形與符號編譯_從像素來源到可定址幾何拓撲部件語法與語義符號_v0.1.md",
+      "kind": "document",
+      "role": "loose-source-document",
+      "bytes": 44767,
+      "sha256": "c9e659ef9c03faea1c674c82eab78d262021734f06abfb644f0d3d6ad7facaab",
+      "provenance_path": "provenance/source-directory/documents/04_生成式字形與符號編譯_從像素來源到可定址幾何拓撲部件語法與語義符號_v0.1.md"
+    },
+    {
+      "relative_path": "05_多層定址的可計算文件_身份內容語義空間物理版本解析與跨工作區參照_v0.1.md",
+      "kind": "document",
+      "role": "loose-source-document",
+      "bytes": 46846,
+      "sha256": "9004e0ec02c1ab5377ad81b81ad425499b205e95f6edebf1f3ab59cff5fc1f2a",
+      "provenance_path": "provenance/source-directory/documents/05_多層定址的可計算文件_身份內容語義空間物理版本解析與跨工作區參照_v0.1.md"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v0.2_Contract_Hardening_Round_Complete.zip",
+      "kind": "archive",
+      "role": "contract-hardening",
+      "bytes": 10448,
+      "sha256": "cb5b0333f8cb54c83d2a4348f39774294a3b6399b9e6b85a55f5ef7a6aadd096",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v0.2_Contract_Hardening_Round_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v0.3_Persistent_Editing_Round_Complete.zip",
+      "kind": "archive",
+      "role": "history-merge",
+      "bytes": 36269,
+      "sha256": "8c3aa6f55ac35ee94b8e8e6846d8ece0543b52f6fe1fc8c90a2c4efb16acacfb",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v0.3_Persistent_Editing_Round_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v0.4_Spatial_Region_Round_Complete.zip",
+      "kind": "archive",
+      "role": "spatial-region",
+      "bytes": 37391,
+      "sha256": "29dd5cb0d17f75a2dbc727315a4f341551f8223ead6c5605edd4a36e685adce7",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v0.4_Spatial_Region_Round_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v0.5_Native_Math_Round_Complete.zip",
+      "kind": "archive",
+      "role": "native-math-candidate",
+      "bytes": 57214,
+      "sha256": "16f499d1721191ebf11c11baada3440332e5ddbcafa59cc26c7aecc7fe0edebe",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v0.5_Native_Math_Round_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v0.6_Glyph_Symbol_Round_Complete.zip",
+      "kind": "archive",
+      "role": "glyph-symbol-candidate",
+      "bytes": 79554,
+      "sha256": "08ab324e5edf777a958f42ef18c70e24ccb0d0b680586cd14bbbf70a6e269dba",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v0.6_Glyph_Symbol_Round_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v0.7_Agentic_Workspace_Round_Complete.zip",
+      "kind": "archive",
+      "role": "agentic-workspace",
+      "bytes": 77381,
+      "sha256": "ac8b37e81ad343153f920df18a8b1976a8e091cf5d22fb827feed63c62c9604c",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v0.7_Agentic_Workspace_Round_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v0.8_Interchange_Round_Complete.zip",
+      "kind": "archive",
+      "role": "interchange",
+      "bytes": 151636,
+      "sha256": "fb27a7c6d0c129d6486eca2d4483638f3dabc73f1b88e4980f104aa2ec802be2",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v0.8_Interchange_Round_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v0.9_Productization_Hardening_Round_Complete.zip",
+      "kind": "archive",
+      "role": "operational-hardening",
+      "bytes": 199642,
+      "sha256": "7d81834c52694934a5e05012533824980cd242a028d862e400d7e0fa158b7376",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v0.9_Productization_Hardening_Round_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_ASCS_v1.0_Canonical_Handoff_Complete.zip",
+      "kind": "archive",
+      "role": "canonical-release",
+      "bytes": 1982680,
+      "sha256": "d68cf0ad4fc50cb6b5abe92b489cf25ca30b51db583cda5997d29a07ad4ab7ac",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_ASCS_v1.0_Canonical_Handoff_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip",
+      "kind": "archive",
+      "role": "historical-provenance-divergent",
+      "bytes": 326285,
+      "sha256": "97c5e95d45ca615277e1719e24f318d8ea208e09ddb7c74c1388d76683739bca",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip"
+    },
+    {
+      "relative_path": "EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Through_TW01.zip",
+      "kind": "archive",
+      "role": "historical-precursor",
+      "bytes": 142510,
+      "sha256": "6113828d6cb96f1f52280deb08ccbbc44f7bb1a3f79755a6a58c9548acae8bcb",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Through_TW01.zip"
+    },
+    {
+      "relative_path": "EveGlyph_Computational_Canvas_MVP_v0.1.zip",
+      "kind": "archive",
+      "role": "executable-evidence",
+      "bytes": 220123,
+      "sha256": "f49a4f419f9b4539aac0721a1ad85f84151cec71bf3da68db22a197303b5cd3f",
+      "provenance_path": "provenance/source-directory/archives/EveGlyph_Computational_Canvas_MVP_v0.1.zip"
+    },
+    {
+      "relative_path": "TW-02_UTF-8_UTF-8X_Compatibility_and_Storage_Architecture_v0.1.md",
+      "kind": "document",
+      "role": "loose-source-document",
+      "bytes": 42318,
+      "sha256": "c85e866ef84b88edf23b3c64bf5b336da349fec56bd52d23dd3ce3090674d06a",
+      "provenance_path": "provenance/source-directory/documents/TW-02_UTF-8_UTF-8X_Compatibility_and_Storage_Architecture_v0.1.md"
+    },
+    {
+      "relative_path": "TW-03_EveGlyph_Computational_Canvas_Runtime_Architecture_v0.1.md",
+      "kind": "document",
+      "role": "loose-source-document",
+      "bytes": 52304,
+      "sha256": "8ee2339dfe477380760e57244036b55974a47ebc7524bdf89eac73154e5a5342",
+      "provenance_path": "provenance/source-directory/documents/TW-03_EveGlyph_Computational_Canvas_Runtime_Architecture_v0.1.md"
+    }
+  ]
+}
