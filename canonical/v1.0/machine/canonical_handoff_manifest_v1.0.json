@@ -1,0 +1,447 @@
+{
+  "handoff_version": "ascs-handoff/1.0",
+  "ascs_release": "ascs/1.0",
+  "date": "2026-08-25",
+  "status": "canonical-architecture-local-handoff-freeze",
+  "canonicalization": "egir-cj/0.1",
+  "mandatory_canonical_migration_from_ascs_0_9": false,
+  "release_principle": "No Silent Reinterpretation",
+  "source_archives": [
+    {
+      "archive_id": "architecture-v0.1",
+      "filename": "EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip",
+      "role": "core-theory-architecture",
+      "required": true,
+      "bytes": 326386,
+      "sha256": "19a510cebcbe1d1b0e7c3134d99c88eebf98dd20385863ba71850aaf09ca7778"
+    },
+    {
+      "archive_id": "mvp-01-v0.1",
+      "filename": "EveGlyph_Computational_Canvas_MVP_v0.1.zip",
+      "role": "executable-evidence",
+      "required": true,
+      "bytes": 220123,
+      "sha256": "f49a4f419f9b4539aac0721a1ad85f84151cec71bf3da68db22a197303b5cd3f"
+    },
+    {
+      "archive_id": "ascs-v0.2",
+      "filename": "EveGlyph_ASCS_v0.2_Contract_Hardening_Round_Complete.zip",
+      "role": "contract-hardening",
+      "required": true,
+      "bytes": 10448,
+      "sha256": "cb5b0333f8cb54c83d2a4348f39774294a3b6399b9e6b85a55f5ef7a6aadd096"
+    },
+    {
+      "archive_id": "ascs-v0.3",
+      "filename": "EveGlyph_ASCS_v0.3_Persistent_Editing_Round_Complete.zip",
+      "role": "history-merge",
+      "required": true,
+      "bytes": 36269,
+      "sha256": "8c3aa6f55ac35ee94b8e8e6846d8ece0543b52f6fe1fc8c90a2c4efb16acacfb"
+    },
+    {
+      "archive_id": "ascs-v0.4",
+      "filename": "EveGlyph_ASCS_v0.4_Spatial_Region_Round_Complete.zip",
+      "role": "spatial-region",
+      "required": true,
+      "bytes": 37391,
+      "sha256": "29dd5cb0d17f75a2dbc727315a4f341551f8223ead6c5605edd4a36e685adce7"
+    },
+    {
+      "archive_id": "ascs-v0.5",
+      "filename": "EveGlyph_ASCS_v0.5_Native_Math_Round_Complete.zip",
+      "role": "native-math-candidate",
+      "required": true,
+      "bytes": 57214,
+      "sha256": "16f499d1721191ebf11c11baada3440332e5ddbcafa59cc26c7aecc7fe0edebe"
+    },
+    {
+      "archive_id": "ascs-v0.6",
+      "filename": "EveGlyph_ASCS_v0.6_Glyph_Symbol_Round_Complete.zip",
+      "role": "glyph-symbol-candidate",
+      "required": true,
+      "bytes": 79554,
+      "sha256": "08ab324e5edf777a958f42ef18c70e24ccb0d0b680586cd14bbbf70a6e269dba"
+    },
+    {
+      "archive_id": "ascs-v0.7",
+      "filename": "EveGlyph_ASCS_v0.7_Agentic_Workspace_Round_Complete.zip",
+      "role": "agentic-workspace",
+      "required": true,
+      "bytes": 77381,
+      "sha256": "ac8b37e81ad343153f920df18a8b1976a8e091cf5d22fb827feed63c62c9604c"
+    },
+    {
+      "archive_id": "ascs-v0.8",
+      "filename": "EveGlyph_ASCS_v0.8_Interchange_Round_Complete.zip",
+      "role": "interchange",
+      "required": true,
+      "bytes": 151636,
+      "sha256": "fb27a7c6d0c129d6486eca2d4483638f3dabc73f1b88e4980f104aa2ec802be2"
+    },
+    {
+      "archive_id": "ascs-v0.9",
+      "filename": "EveGlyph_ASCS_v0.9_Productization_Hardening_Round_Complete.zip",
+      "role": "operational-hardening",
+      "required": true,
+      "bytes": 199642,
+      "sha256": "7d81834c52694934a5e05012533824980cd242a028d862e400d7e0fa158b7376"
+    }
+  ],
+  "profiles": [
+    {
+      "layer": "ASCS",
+      "profile_id": "ascs/1.0",
+      "status": "umbrella-stable-handoff",
+      "introduced": "v1.0"
+    },
+    {
+      "layer": "EGIR",
+      "profile_id": "egir/0.1",
+      "status": "stable-baseline",
+      "introduced": "TW-01"
+    },
+    {
+      "layer": "Canonicalization",
+      "profile_id": "egir-cj/0.1",
+      "status": "stable-baseline",
+      "introduced": "TW-01"
+    },
+    {
+      "layer": "EGStore",
+      "profile_id": "egstore/0.1",
+      "status": "stable-baseline",
+      "introduced": "TW-02"
+    },
+    {
+      "layer": "EGCR",
+      "profile_id": "egcr/0.1",
+      "status": "stable-baseline",
+      "introduced": "TW-03"
+    },
+    {
+      "layer": "NCM",
+      "profile_id": "ncm/0.1",
+      "status": "stable-baseline",
+      "introduced": "TW-01/MVP"
+    },
+    {
+      "layer": "NCM Candidate",
+      "profile_id": "ncm/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.5"
+    },
+    {
+      "layer": "Math Transform",
+      "profile_id": "org.evemisslab.math-transform/0.1",
+      "status": "candidate-support",
+      "introduced": "v0.5"
+    },
+    {
+      "layer": "Math Equality",
+      "profile_id": "org.evemisslab.math-equality/0.1",
+      "status": "candidate-support",
+      "introduced": "v0.5"
+    },
+    {
+      "layer": "Glyph",
+      "profile_id": "glyph/0.1",
+      "status": "stable-baseline",
+      "introduced": "TW-01/MVP"
+    },
+    {
+      "layer": "Glyph Candidate",
+      "profile_id": "glyph/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.6"
+    },
+    {
+      "layer": "Glyph Family",
+      "profile_id": "glyph-family/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.6"
+    },
+    {
+      "layer": "Glyph Binding",
+      "profile_id": "glyph-binding/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.6"
+    },
+    {
+      "layer": "GSC Bridge",
+      "profile_id": "gsc-assetsymbol-bridge/1.0-candidate.1",
+      "status": "candidate-bridge",
+      "introduced": "v0.6"
+    },
+    {
+      "layer": "History",
+      "profile_id": "org.evemisslab.history/0.1",
+      "status": "frozen-extension",
+      "introduced": "v0.3"
+    },
+    {
+      "layer": "History Conflict",
+      "profile_id": "org.evemisslab.history-conflict/0.1",
+      "status": "frozen-extension",
+      "introduced": "v0.3"
+    },
+    {
+      "layer": "Recovery",
+      "profile_id": "org.evemisslab.recovery/0.1",
+      "status": "frozen-extension",
+      "introduced": "v0.3"
+    },
+    {
+      "layer": "Spatial Region",
+      "profile_id": "org.evemisslab.spatial-region/0.1",
+      "status": "frozen-extension",
+      "introduced": "v0.4"
+    },
+    {
+      "layer": "Spatial Grammar",
+      "profile_id": "org.evemisslab.spatial-grammar/0.1",
+      "status": "frozen-extension",
+      "introduced": "v0.4"
+    },
+    {
+      "layer": "Spatial Policy",
+      "profile_id": "org.evemisslab.spatial-policy/0.1",
+      "status": "frozen-extension",
+      "introduced": "v0.4"
+    },
+    {
+      "layer": "Semantic Zoom",
+      "profile_id": "org.evemisslab.semantic-zoom/0.1",
+      "status": "frozen-extension",
+      "introduced": "v0.4"
+    },
+    {
+      "layer": "Agent Principal",
+      "profile_id": "agent-principal/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.7"
+    },
+    {
+      "layer": "Agent Context",
+      "profile_id": "agent-context-pack/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.7"
+    },
+    {
+      "layer": "Agent Run",
+      "profile_id": "agent-run/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.7"
+    },
+    {
+      "layer": "Agent Proposal",
+      "profile_id": "agent-proposal/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.7"
+    },
+    {
+      "layer": "Capability Grant",
+      "profile_id": "capability-grant/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.7"
+    },
+    {
+      "layer": "Agent Review",
+      "profile_id": "agent-review-policy/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.7"
+    },
+    {
+      "layer": "External Effect",
+      "profile_id": "external-effect/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.7"
+    },
+    {
+      "layer": "Agent Adapter",
+      "profile_id": "agent-adapter/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.7"
+    },
+    {
+      "layer": "Adapter Profile",
+      "profile_id": "adapter-profile/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.8"
+    },
+    {
+      "layer": "Adapter Result",
+      "profile_id": "adapter-result/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.8"
+    },
+    {
+      "layer": "Fidelity Report",
+      "profile_id": "fidelity-report/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.8"
+    },
+    {
+      "layer": "External Reference",
+      "profile_id": "external-reference/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.8"
+    },
+    {
+      "layer": "Roundtrip Report",
+      "profile_id": "roundtrip-report/1.0-candidate.1",
+      "status": "candidate-freeze",
+      "introduced": "v0.8"
+    },
+    {
+      "layer": "Operational Policy",
+      "profile_id": "v0.9 operational-policy schema",
+      "status": "pre-v1-operational-freeze",
+      "introduced": "v0.9"
+    },
+    {
+      "layer": "Resource Budget",
+      "profile_id": "v0.9 resource-budget schema",
+      "status": "pre-v1-operational-freeze",
+      "introduced": "v0.9"
+    },
+    {
+      "layer": "Recovery Profile",
+      "profile_id": "v0.9 recovery-profile schema",
+      "status": "pre-v1-operational-freeze",
+      "introduced": "v0.9"
+    },
+    {
+      "layer": "Explain Record",
+      "profile_id": "v0.9 explain-record schema",
+      "status": "pre-v1-operational-freeze",
+      "introduced": "v0.9"
+    },
+    {
+      "layer": "Benchmark Profile",
+      "profile_id": "v0.9 benchmark-profile schema",
+      "status": "pre-v1-operational-freeze",
+      "introduced": "v0.9"
+    },
+    {
+      "layer": "Release Manifest",
+      "profile_id": "v0.9 release-manifest schema",
+      "status": "pre-v1-operational-freeze",
+      "introduced": "v0.9"
+    },
+    {
+      "layer": "Migration Plan",
+      "profile_id": "v0.9 migration-plan schema",
+      "status": "pre-v1-operational-freeze",
+      "introduced": "v0.9"
+    },
+    {
+      "layer": "Compatibility Matrix",
+      "profile_id": "v0.9 compatibility-matrix schema",
+      "status": "pre-v1-operational-freeze",
+      "introduced": "v0.9"
+    }
+  ],
+  "required_handoff_documents": [
+    "README_FIRST.md",
+    "V1.0_CANONICAL_ARCHITECTURE_AND_HANDOFF_FREEZE.md",
+    "CANONICAL_AUTHORITY_MAP.md",
+    "VERSION_PROFILE_MATRIX.md",
+    "NO_SILENT_CHANGE_REGISTER.md",
+    "MVP_TO_PRODUCT_MIGRATION_MAP.md",
+    "LOCAL_IMPLEMENTATION_HANDOFF.md",
+    "PRIORITIZED_IMPLEMENTATION_BACKLOG.md",
+    "VALIDATION_BENCHMARK_RELEASE_GATES.md",
+    "COMPATIBILITY_TEST_MATRIX.md",
+    "V1.0_RELEASE_INDEX.md",
+    "VALIDATION.md",
+    "LOCAL_AI_START_PROMPT.md"
+  ],
+  "authority_order": [
+    "layer-specific normative freeze document in its pinned source archive",
+    "machine-readable schema/vector/reference validator from the same pinned source archive",
+    "v1.0 authority/version/no-silent-change maps for integration and handoff",
+    "product/runtime implementation code and adapters",
+    "chat discussion and informal summaries"
+  ],
+  "no_silent_change": [
+    "persistent identity semantics",
+    "content/revision/workspace hash preimages",
+    "egir-cj/0.1 behavior",
+    "candidate-versus-authoritative relation boundary",
+    "canonical-versus-session-versus-derived state boundary",
+    "resolve-versus-authorize boundary",
+    "computed-versus-verified-versus-proved evidence classes",
+    "legacy import cannot claim canonical authority",
+    "external reference cannot auto-bind local identity",
+    "external effect unknown outcome cannot be silently retried",
+    "profile identifier meaning"
+  ],
+  "allowed_to_change_with_explicit_version_or_adapter": [
+    "UI framework",
+    "renderer implementation",
+    "storage backend",
+    "compression codec",
+    "index implementation",
+    "CAS/proof backend",
+    "agent model/provider/CLI",
+    "MCP/HTTP/CLI transport",
+    "telemetry backend",
+    "packaging format",
+    "performance tuning",
+    "cache policy",
+    "semantic search implementation"
+  ],
+  "implementation_entrypoints": {
+    "first_read": "README_FIRST.md",
+    "architecture_map": "CANONICAL_AUTHORITY_MAP.md",
+    "implementation_handoff": "LOCAL_IMPLEMENTATION_HANDOFF.md",
+    "backlog": "PRIORITIZED_IMPLEMENTATION_BACKLOG.md",
+    "gates": "VALIDATION_BENCHMARK_RELEASE_GATES.md"
+  },
+  "evidence_summary": {
+    "mvp_unittest_count": 26,
+    "v03_vectors": 12,
+    "v04_vectors": 18,
+    "v05_vectors": 30,
+    "v06_vectors": 30,
+    "v07_vectors": 36,
+    "v08_vectors": 36,
+    "v09_vectors": 46,
+    "tw01_reference_validator": true,
+    "tw02_reference_validator": true,
+    "tw03_reference_validator": true
+  },
+  "implementation_inputs": [
+    {
+      "kind": "git-repository",
+      "name": "eveglyph-editor",
+      "repository": "kakon77777-commits/eveglyph-editor",
+      "ref": "main",
+      "commit": "55a2ad77f3131f717cf73992cc2550e4c3a864bb",
+      "authority": "implementation-input-only"
+    },
+    {
+      "kind": "git-repository",
+      "name": "utf-8x",
+      "repository": "kakon77777-commits/utf-8x",
+      "ref": "main",
+      "commit": "c4bfd2b48688c99053e062d149d41baf34d84930",
+      "authority": "optional-storage-input-only"
+    },
+    {
+      "kind": "archive",
+      "name": "GSC v1.13",
+      "filename": "generative-symbol-compiler-lab-v1.13.0-strict-symbolic-plus-design-addenda(1).zip",
+      "sha256": "69e2ac282c4d9079154c0199f2e10823e4a1da41a033da0531092bceca95938d",
+      "authority": "optional-glyph-compiler-input-only"
+    },
+    {
+      "kind": "archive",
+      "name": "PSSA-BSAR Milestone 4",
+      "filename": "PSSA_BSAR_v0.1_Milestone4_Source(1).zip",
+      "sha256": "0a3cb1b9e4d40adfe6786caa5c9fad1b00b09be4ed40a50769ce04928ba67eff",
+      "authority": "optional-semantic-address-research-input-only"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "profile": "ascs-v1.0-handoff-conformance/1.0",
+  "vectors": [
+    {
+      "id": "V10-001",
+      "claim": "ascs umbrella release is 1.0",
+      "expected": true
+    },
+    {
+      "id": "V10-002",
+      "claim": "egir canonicalization remains egir-cj/0.1",
+      "expected": true
+    },
+    {
+      "id": "V10-003",
+      "claim": "v0.9 to v1.0 requires no mandatory canonical migration",
+      "expected": true
+    },
+    {
+      "id": "V10-004",
+      "claim": "ncm/1.0-candidate.1 is not silently renamed ncm/1.0",
+      "expected": true
+    },
+    {
+      "id": "V10-005",
+      "claim": "glyph/1.0-candidate.1 is not silently renamed glyph/1.0",
+      "expected": true
+    },
+    {
+      "id": "V10-006",
+      "claim": "persistent identity is not content hash or physical locator",
+      "expected": true
+    },
+    {
+      "id": "V10-007",
+      "claim": "canonical state remains distinct from session overlay and derived cache",
+      "expected": true
+    },
+    {
+      "id": "V10-008",
+      "claim": "candidate relation cannot execute before promotion",
+      "expected": true
+    },
+    {
+      "id": "V10-009",
+      "claim": "resolve success does not grant authorization",
+      "expected": true
+    },
+    {
+      "id": "V10-010",
+      "claim": "computed evidence does not imply proved evidence",
+      "expected": true
+    },
+    {
+      "id": "V10-011",
+      "claim": "legacy import cannot claim canonical authority",
+      "expected": true
+    },
+    {
+      "id": "V10-012",
+      "claim": "external reference resolution cannot auto-bind local identity",
+      "expected": true
+    },
+    {
+      "id": "V10-013",
+      "claim": "direct agent mode cannot bypass validation capability or base revision",
+      "expected": true
+    },
+    {
+      "id": "V10-014",
+      "claim": "unknown external effect outcome cannot be silently auto-retried",
+      "expected": true
+    },
+    {
+      "id": "V10-015",
+      "claim": "operational default is deny unless capability/policy permits",
+      "expected": true
+    },
+    {
+      "id": "V10-016",
+      "claim": "release requires rollback target before product promotion",
+      "expected": true
+    },
+    {
+      "id": "V10-017",
+      "claim": "source archives are SHA-256 pinned",
+      "expected": true
+    },
+    {
+      "id": "V10-018",
+      "claim": "local implementation can begin from package without chat memory",
+      "expected": true
+    },
+    {
+      "id": "V10-019",
+      "claim": "UI renderer storage and agent transports are replaceable behind contracts",
+      "expected": true
+    },
+    {
+      "id": "V10-020",
+      "claim": "profile semantic change requires new identifier or explicit migration",
+      "expected": true
+    }
+  ]
+}

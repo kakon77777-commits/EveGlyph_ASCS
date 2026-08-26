@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.evemisslab.local/ascs/v1.0/canonical-handoff-manifest.schema.json",
+  "title": "EveGlyph ASCS v1.0 Canonical Handoff Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handoff_version",
+    "ascs_release",
+    "date",
+    "status",
+    "canonicalization",
+    "mandatory_canonical_migration_from_ascs_0_9",
+    "source_archives",
+    "profiles",
+    "required_handoff_documents",
+    "authority_order",
+    "no_silent_change",
+    "allowed_to_change_with_explicit_version_or_adapter",
+    "implementation_entrypoints",
+    "evidence_summary"
+  ],
+  "properties": {
+    "handoff_version": {
+      "const": "ascs-handoff/1.0"
+    },
+    "ascs_release": {
+      "const": "ascs/1.0"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "const": "canonical-architecture-local-handoff-freeze"
+    },
+    "canonicalization": {
+      "const": "egir-cj/0.1"
+    },
+    "mandatory_canonical_migration_from_ascs_0_9": {
+      "const": false
+    },
+    "release_principle": {
+      "type": "string"
+    },
+    "source_archives": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "archive_id",
+          "filename",
+          "role",
+          "required",
+          "bytes",
+          "sha256"
+        ],
+        "properties": {
+          "archive_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "filename": {
+            "type": "string",
+            "pattern": "\\.zip$"
+          },
+          "role": {
+            "type": "string"
+          },
+          "required": {
+            "const": true
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "layer",
+          "profile_id",
+          "status",
+          "introduced"
+        ],
+        "properties": {
+          "layer": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "introduced": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "required_handoff_documents": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "string"
+      }
+    },
+    "authority_order": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "string"
+      }
+    },
+    "no_silent_change": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowed_to_change_with_explicit_version_or_adapter": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "string"
+      }
+    },
+    "implementation_entrypoints": {
+      "type": "object"
+    },
+    "evidence_summary": {
+      "type": "object"
+    },
+    "implementation_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "name",
+          "authority"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "authority": {
+            "type": "string"
+          },
+          "repository": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "commit": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

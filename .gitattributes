@@ -1,0 +1,4 @@
+canonical/** -text whitespace=-trailing-space,-space-before-tab
+releases/** -text
+provenance/** -text whitespace=-trailing-space,-space-before-tab
+LICENSE -text
