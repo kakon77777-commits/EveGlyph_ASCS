@@ -26,8 +26,8 @@ EveGlyph Addressable Symbolic Computational Space (ASCS) v1.0 is a canonical arc
 
 ```powershell
 python tools/ascs_repo.py verify --repo . --json
-python canonical/v1.0/machine/tests/test_validate_v10.py
-python canonical/v1.0/machine/tools/validate_v10.py --json
+python -B canonical/v1.0/machine/tests/test_validate_v10.py
+python -B canonical/v1.0/machine/tools/validate_v10.py --json
 ```
 
 ## Version scope

@@ -417,8 +417,8 @@ EveGlyph Addressable Symbolic Computational Space (ASCS) v1.0 is a canonical arc
 
 ```powershell
 python tools/ascs_repo.py verify --repo . --json
-python canonical/v1.0/machine/tests/test_validate_v10.py
-python canonical/v1.0/machine/tools/validate_v10.py --json
+python -B canonical/v1.0/machine/tests/test_validate_v10.py
+python -B canonical/v1.0/machine/tools/validate_v10.py --json
 ```
 
 ## License
@@ -502,8 +502,8 @@ Expected: dependency installation succeeds without changing canonical or provena
 
 ```powershell
 & '.\.venv\Scripts\python.exe' tools/ascs_repo.py verify --repo . --json
-& '.\.venv\Scripts\python.exe' canonical/v1.0/machine/tests/test_validate_v10.py
-& '.\.venv\Scripts\python.exe' canonical/v1.0/machine/tools/validate_v10.py --json
+& '.\.venv\Scripts\python.exe' -B canonical/v1.0/machine/tests/test_validate_v10.py
+& '.\.venv\Scripts\python.exe' -B canonical/v1.0/machine/tools/validate_v10.py --json
 ```
 
 Expected: repository `ok: true`; v1.0 tests `Ran 6 tests` and `OK`; validator JSON reports success.
@@ -631,8 +631,8 @@ Expected staged path: exactly `VALIDATION_REPORT.md`.
 ```powershell
 & '.\.venv\Scripts\python.exe' -m unittest discover -s tests -p 'test_ascs_repo.py' -v
 & '.\.venv\Scripts\python.exe' tools/ascs_repo.py verify --repo . --source 'D:\我的研究\學術討論\論文\真終極\真本體論12\EveGlyph_Addressable_Symbolic_Computational_Space_Series' --json
-& '.\.venv\Scripts\python.exe' canonical/v1.0/machine/tests/test_validate_v10.py
-& '.\.venv\Scripts\python.exe' canonical/v1.0/machine/tools/validate_v10.py --json
+& '.\.venv\Scripts\python.exe' -B canonical/v1.0/machine/tests/test_validate_v10.py
+& '.\.venv\Scripts\python.exe' -B canonical/v1.0/machine/tools/validate_v10.py --json
 & '.\.venv\Scripts\python.exe' tools/ascs_repo.py secret-scan --repo . --json
 git diff --check
 git status --short --branch
