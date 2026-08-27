@@ -1,0 +1,64 @@
+name: Milestone A Import Baseline
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  import-current-eveglyph:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-a-product-baseline' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ASCS implementation branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout pinned EveGlyph product baseline
+        uses: actions/checkout@v4
+        with:
+          repository: kakon77777-commits/eveglyph-editor
+          ref: c3258a2f461d5af5a69c879891b485ccf0f02635
+          path: .upstream/eveglyph-editor
+          persist-credentials: false
+
+      - name: Vendor exact tracked product surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf apps/eveglyph-editor
+          mkdir -p apps/eveglyph-editor
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='node_modules/' \
+            --exclude='dist/' \
+            --exclude='tmp/' \
+            --exclude='.cache/' \
+            --exclude='coverage/' \
+            --exclude='.DS_Store' \
+            .upstream/eveglyph-editor/ apps/eveglyph-editor/
+
+      - name: Generate baseline inventory and parity reports
+        run: python -B tools/product_convergence.py generate --repo . --json
+
+      - name: Commit vendored baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'EveGlyph ASCS Milestone A Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add apps/eveglyph-editor \
+            docs/product-convergence/MILESTONE_A_BASELINE.md \
+            docs/product-convergence/MILESTONE_A_PARITY.json \
+            docs/product-convergence/MILESTONE_A_PARITY.md
+          if git diff --cached --quiet; then
+            echo 'Baseline already matches the pinned upstream commit.'
+            exit 0
+          fi
+          git commit -m 'data: vendor current EveGlyph product baseline'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}

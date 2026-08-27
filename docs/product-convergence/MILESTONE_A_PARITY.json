@@ -1,0 +1,162 @@
+{
+  "ascs_only_future_milestones": [
+    "canonical_persistent_identity",
+    "revision_graph",
+    "native_math",
+    "native_glyph",
+    "spatial_canonical_model",
+    "authority_transactions"
+  ],
+  "capabilities": {
+    "agent_ui": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "src/agent.js"
+        }
+      ],
+      "present": true,
+      "verification_command": null
+    },
+    "diff_review": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "src/diffview.js"
+        }
+      ],
+      "present": true,
+      "verification_command": null
+    },
+    "dynamic_logic": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "src/dynamiclogic"
+        }
+      ],
+      "present": true,
+      "verification_command": "npm run verify:dynamic-logic"
+    },
+    "dynamic_rendering": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "scripts/verify_dynamic_rendering.mjs"
+        }
+      ],
+      "present": true,
+      "verification_command": "npm run verify:dynamic-rendering"
+    },
+    "encoding_io": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "src/encodingmenu.js"
+        },
+        {
+          "exists": true,
+          "path": "src/files.js"
+        }
+      ],
+      "present": true,
+      "verification_command": null
+    },
+    "file_tree_tabs": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "src/files.js"
+        },
+        {
+          "exists": true,
+          "path": "src/tabs.js"
+        }
+      ],
+      "present": true,
+      "verification_command": null
+    },
+    "live_preview": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "src/preview.js"
+        }
+      ],
+      "present": true,
+      "verification_command": null
+    },
+    "markdown_editing": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "src/editor.js"
+        }
+      ],
+      "present": true,
+      "verification_command": null
+    },
+    "mcp_publication": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "mcp-publication.js"
+        }
+      ],
+      "present": true,
+      "verification_command": "npm run test:publication"
+    },
+    "real_corpus_publication_tests": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "test/publication-real-corpus-compat.test.mjs"
+        }
+      ],
+      "present": true,
+      "verification_command": "npm run test:publication"
+    },
+    "remote_mcp": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "mcp-server-remote.js"
+        }
+      ],
+      "present": true,
+      "verification_command": null
+    },
+    "typst_pdf_publication": {
+      "evidence": [
+        {
+          "exists": true,
+          "path": "src/publication/node-renderer.js"
+        },
+        {
+          "exists": true,
+          "path": "src/typstconvert.js"
+        }
+      ],
+      "present": true,
+      "verification_command": "npm run test:publication"
+    }
+  },
+  "ok": true,
+  "required_capabilities": [
+    "markdown_editing",
+    "live_preview",
+    "file_tree_tabs",
+    "encoding_io",
+    "diff_review",
+    "agent_ui",
+    "dynamic_logic",
+    "dynamic_rendering",
+    "typst_pdf_publication",
+    "mcp_publication",
+    "remote_mcp",
+    "real_corpus_publication_tests"
+  ],
+  "schema": "eveglyph-ascs-product-parity/1.0",
+  "upstream_commit": "c3258a2f461d5af5a69c879891b485ccf0f02635",
+  "upstream_repository": "kakon77777-commits/eveglyph-editor"
+}
