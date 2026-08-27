@@ -1,0 +1,172 @@
+name: Milestone B Merged Main Backup
+
+on:
+  push:
+    branches:
+      - ops/milestone-b-merged-main-backup
+
+permissions:
+  contents: read
+
+jobs:
+  merged-main-backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact merged main
+        uses: actions/checkout@v4
+        with:
+          ref: 17c57fff08d1c2278823f86b19312ecae9c377cc
+          fetch-depth: 0
+
+      - name: Use Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+
+      - name: Install validator dependencies
+        run: python -m pip install 'jsonschema>=4,<5' 'brotli>=1.1'
+
+      - name: Verify merged main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = '17c57fff08d1c2278823f86b19312ecae9c377cc'
+          python -B tools/ascs_repo.py verify --repo . --json
+          python -B canonical/v1.0/machine/tests/test_validate_v10.py
+          python -B canonical/v1.0/machine/tools/validate_v10.py --json
+          python -B -m unittest tests.test_product_convergence -v
+          python -B tools/product_convergence.py verify --repo . --json
+          python -B tools/product_convergence.py parity --repo . --json
+          python - <<'PY'
+          import hashlib, pathlib, zipfile
+          root = pathlib.Path('canonical/v1.0/source_archives')
+          items = [
+              ('EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip', '19a510cebcbe1d1b0e7c3134d99c88eebf98dd20385863ba71850aaf09ca7778', pathlib.Path('/tmp/ascs-architecture')),
+              ('EveGlyph_Computational_Canvas_MVP_v0.1.zip', 'f49a4f419f9b4539aac0721a1ad85f84151cec71bf3da68db22a197303b5cd3f', pathlib.Path('/tmp/ascs-mvp')),
+          ]
+          for name, expected, out in items:
+              archive = root / name
+              assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected
+              out.mkdir(parents=True, exist_ok=True)
+              with zipfile.ZipFile(archive) as zf:
+                  assert zf.testzip() is None
+                  zf.extractall(out)
+          PY
+          python -B /tmp/ascs-architecture/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1/TW-01_Support/tools/validate_tw01.py
+          python -B /tmp/ascs-architecture/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1/TW-03_Support/tools/validate_tw03.py
+          MVP=/tmp/ascs-mvp/EveGlyph_Computational_Canvas_MVP_v0.1
+          PYTHONPATH="$MVP/src" python -B -m unittest discover -s "$MVP/tests" -v
+          node --test packages/ascs-core/test/*.test.mjs packages/ascs-runtime/test/*.test.mjs
+          node packages/ascs-runtime/test/generate-schema-snapshots.mjs /tmp/ascs-js-runtime-snapshots
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+          schema = json.loads(Path('/tmp/ascs-architecture/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1/TW-01_Support/schemas/eveglyph-ir.schema.json').read_text(encoding='utf-8'))
+          validator = jsonschema.Draft202012Validator(schema)
+          for name in ('move.json', 'edit.json', 'clone.json'):
+              data = json.loads((Path('/tmp/ascs-js-runtime-snapshots') / name).read_text(encoding='utf-8'))
+              errors = list(validator.iter_errors(data))
+              if errors:
+                  raise SystemExit(f'{name}: {len(errors)} schema errors')
+          PY
+          cd apps/eveglyph-editor
+          npm ci
+          node --test test/ascs-runtime-bridge.test.mjs
+          npm run test:publication
+          npm run build
+          npm run verify:dynamic-logic
+          npm run verify:dynamic-rendering
+
+      - name: Build merged-main source backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          HEAD_SHA='17c57fff08d1c2278823f86b19312ecae9c377cc'
+          PREV_MAIN='5844692bf00b7650d67fa1fe744ca0f790f9e4b9'
+          PR_HEAD='09dfbd847407ef4b9a4c8a6e8cbdc0f75af68f5d'
+          SHA8="${HEAD_SHA:0:8}"
+          OUT="$RUNNER_TEMP/ascs-b-merged-output"
+          PKG="$RUNNER_TEMP/EveGlyph_ASCS_Milestone_B_${SHA8}_merged-main-backup"
+          ZIP="$OUT/EveGlyph_ASCS_Milestone_B_${SHA8}_merged-main-backup.zip"
+          rm -rf "$OUT" "$PKG"
+          mkdir -p "$OUT" "$PKG/repository"
+          rsync -a ./ "$PKG/repository/" \
+            --exclude='.git/' --exclude='node_modules/' --exclude='dist/' --exclude='tmp/' \
+            --exclude='.cache/' --exclude='coverage/' --exclude='.DS_Store'
+          git diff --binary "$PREV_MAIN...$HEAD_SHA" > "$PKG/MERGE.patch"
+          python - "$PKG" "$ZIP" "$HEAD_SHA" "$PREV_MAIN" "$PR_HEAD" <<'PY'
+          import hashlib, json, sys, zipfile
+          from datetime import datetime, timezone
+          from pathlib import Path
+          pkg, zip_path = Path(sys.argv[1]), Path(sys.argv[2])
+          head_sha, prev_main, pr_head = sys.argv[3:]
+          snapshot = pkg / 'repository'
+          rows=[]
+          for path in sorted(p for p in snapshot.rglob('*') if p.is_file()):
+              rel=path.relative_to(snapshot).as_posix(); data=path.read_bytes()
+              rows.append({'path':rel,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+          tree=hashlib.sha256()
+          for row in rows:
+              tree.update(f'{row["path"]}\0{row["sha256"]}\0{row["bytes"]}\0'.encode())
+          manifest={
+            'schema':'eveglyph-ascs-source-backup/1.0',
+            'repository':'kakon77777-commits/EveGlyph_ASCS',
+            'milestone':'B-canonical-spine-merged-main',
+            'branch':'main',
+            'head_sha':head_sha,
+            'parent_shas':[prev_main,pr_head],
+            'source_pr':2,
+            'source_pr_head':pr_head,
+            'created_at':datetime.now(timezone.utc).isoformat(),
+            'snapshot_root':'repository/',
+            'snapshot_file_count':len(rows),
+            'snapshot_total_bytes':sum(r['bytes'] for r in rows),
+            'payload_tree_sha256':tree.hexdigest(),
+            'verification':{
+              'merged_main_exact_head':'PASS','repository_preservation':'PASS','ascs_v1_regression':'PASS',
+              'ascs_v1_validator':'PASS','product_overlay_lineage':'PASS','tw01_reference':'PASS',
+              'tw03_reference':'PASS','mvp_26_tests':'PASS','javascript_core_runtime':'PASS',
+              'generated_tw01_schema':'PASS','editor_bridge':'PASS','publication_tests':'PASS',
+              'build':'PASS','dynamic_logic':'PASS','dynamic_rendering':'PASS'
+            }
+          }
+          (pkg/'BACKUP_MANIFEST.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          (pkg/'RESTORE.md').write_text(f'# EveGlyph ASCS Milestone B merged-main restore\n\nExact main commit: `{head_sha}`.\nSource PR #2 head: `{pr_head}`.\nUse `repository/` as the source snapshot and verify with `SHA256SUMS.txt`.\n',encoding='utf-8')
+          package=[]
+          for p in sorted(p for p in pkg.rglob('*') if p.is_file() and p.name!='SHA256SUMS.txt'):
+              package.append((hashlib.sha256(p.read_bytes()).hexdigest(),p.relative_to(pkg).as_posix()))
+          (pkg/'SHA256SUMS.txt').write_text(''.join(f'{d}  {r}\n' for d,r in package),encoding='utf-8')
+          zip_path.parent.mkdir(parents=True,exist_ok=True)
+          with zipfile.ZipFile(zip_path,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as zf:
+              for p in sorted(p for p in pkg.rglob('*') if p.is_file()):
+                  zf.write(p,f'{pkg.name}/{p.relative_to(pkg).as_posix()}')
+          digest=hashlib.sha256(zip_path.read_bytes()).hexdigest()
+          (zip_path.parent/'ARTIFACT_SHA256.txt').write_text(f'{digest}  {zip_path.name}\n',encoding='utf-8')
+          print(json.dumps({'archive':zip_path.name,'sha256':digest,'files':len(rows),'payload_tree_sha256':tree.hexdigest()},indent=2))
+          PY
+          python - "$ZIP" <<'PY'
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as zf:
+              bad=zf.testzip()
+              if bad: raise SystemExit(bad)
+          PY
+          (cd "$OUT" && sha256sum -c ARTIFACT_SHA256.txt)
+
+      - name: Upload merged-main backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: EveGlyph_ASCS_Milestone_B_17c57fff_merged-main
+          path: |
+            ${{ runner.temp }}/ascs-b-merged-output/EveGlyph_ASCS_Milestone_B_*_merged-main-backup.zip
+            ${{ runner.temp }}/ascs-b-merged-output/ARTIFACT_SHA256.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
