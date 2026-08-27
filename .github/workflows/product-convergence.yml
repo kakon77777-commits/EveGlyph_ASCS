@@ -1,0 +1,59 @@
+name: Product Convergence
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - workbench/milestone-a-product-baseline
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-preservation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Repository preservation
+        run: python -B tools/ascs_repo.py verify --repo . --json
+      - name: ASCS v1 regression
+        run: python -B canonical/v1.0/machine/tests/test_validate_v10.py
+      - name: ASCS v1 validator
+        run: python -B canonical/v1.0/machine/tools/validate_v10.py --json
+      - name: Product convergence contracts
+        run: python -B -m unittest tests.test_product_convergence -v
+      - name: Vendored baseline verification
+        run: python -B tools/product_convergence.py verify --repo . --json
+      - name: Product parity verification
+        run: python -B tools/product_convergence.py parity --repo . --json
+
+  current-eveglyph-product:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/eveglyph-editor
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Publication tests
+        run: npm run test:publication
+      - name: Build
+        run: npm run build
+      - name: Dynamic logic regression
+        run: npm run verify:dynamic-logic
+      - name: Dynamic rendering regression
+        run: npm run verify:dynamic-rendering
