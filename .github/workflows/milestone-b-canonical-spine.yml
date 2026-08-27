@@ -38,6 +38,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - name: Extract pinned Architecture and MVP references
         shell: bash
         run: |
@@ -71,6 +75,31 @@ jobs:
           set -euo pipefail
           MVP=/tmp/ascs-mvp/EveGlyph_Computational_Canvas_MVP_v0.1
           PYTHONPATH="$MVP/src" python -B -m unittest discover -s "$MVP/tests" -v
+      - name: Generate ASCS JS runtime snapshots
+        run: node packages/ascs-runtime/test/generate-schema-snapshots.mjs /tmp/ascs-js-runtime-snapshots
+      - name: Validate generated snapshots with frozen TW-01 schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+
+          schema_path = Path('/tmp/ascs-architecture/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1/TW-01_Support/schemas/eveglyph-ir.schema.json')
+          schema = json.loads(schema_path.read_text(encoding='utf-8'))
+          validator = jsonschema.Draft202012Validator(schema)
+          root = Path('/tmp/ascs-js-runtime-snapshots')
+          names = ['move.json', 'edit.json', 'clone.json']
+          for name in names:
+              data = json.loads((root / name).read_text(encoding='utf-8'))
+              errors = sorted(validator.iter_errors(data), key=lambda e: list(e.absolute_path))
+              if errors:
+                  for error in errors:
+                      print(name, list(error.absolute_path), error.message)
+                  raise SystemExit(f'{name}: {len(errors)} schema errors')
+              print(f'{name}: PASS')
+          PY
 
   javascript-spine:
     runs-on: ubuntu-latest
