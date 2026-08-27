@@ -28,7 +28,7 @@ test('human explicit authority may commit', async () => {
   assert.equal(result.status, 'Committed')
 })
 
-test('agent without approved proposal is denied before mutation', async () => {
+test('AI actor without approved proposal is denied before mutation', async () => {
   const runtime = await createWorkspaceRuntime(fixture, options())
   const before = runtime.snapshot()
 
@@ -36,7 +36,7 @@ test('agent without approved proposal is denied before mutation', async () => {
     runtime.moveObject(MATH_ID, {
       x: '222.0', y: '111.0',
       baseWorkspaceRevision: runtime.workspaceRevision,
-      authority: { actor: { type: 'agent', id: 'agent:test' }, mode: 'explicit' },
+      authority: { actor: { type: 'ai', id: 'agent:test', model: 'test-model' }, mode: 'explicit' },
     }),
     AuthorityDeniedError,
   )
@@ -44,13 +44,13 @@ test('agent without approved proposal is denied before mutation', async () => {
   assert.deepEqual(runtime.snapshot(), before)
 })
 
-test('agent with approved-proposal may commit and provenance records authority context', async () => {
+test('AI actor with approved-proposal may commit and provenance records authority context', async () => {
   const runtime = await createWorkspaceRuntime(fixture, options())
   const result = await runtime.moveObject(MATH_ID, {
     x: '333.0', y: '222.0',
     baseWorkspaceRevision: runtime.workspaceRevision,
     authority: {
-      actor: { type: 'agent', id: 'agent:test', model: 'test-model' },
+      actor: { type: 'ai', id: 'agent:test', model: 'test-model' },
       mode: 'approved-proposal',
       proposalId: 'proposal:test-001',
     },
@@ -58,7 +58,7 @@ test('agent with approved-proposal may commit and provenance records authority c
 
   assert.equal(result.status, 'Committed')
   const event = runtime.snapshot().event_records.at(-1)
-  assert.equal(event.actor.type, 'agent')
+  assert.equal(event.actor.type, 'ai')
   assert.equal(event.actor.id, 'agent:test')
   assert.equal(event.policy.mode, 'approved-proposal')
   assert.equal(event.metadata.proposal_id, 'proposal:test-001')
