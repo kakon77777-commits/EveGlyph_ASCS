@@ -4,12 +4,13 @@ import argparse
 import hashlib
 import json
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 UPSTREAM_REPOSITORY = "kakon77777-commits/eveglyph-editor"
 UPSTREAM_COMMIT = "c3258a2f461d5af5a69c879891b485ccf0f02635"
 HANDOFF_HISTORICAL_COMMIT = "55a2ad77f3131f717cf73992cc2550e4c3a864bb"
 BASELINE_SCHEMA = "eveglyph-ascs-upstream-baseline/1.0"
+OVERLAY_SCHEMA = "eveglyph-ascs-product-overlay/1.0"
 
 DEFAULT_EXCLUDED_NAMES = {
     ".git",
@@ -19,6 +20,11 @@ DEFAULT_EXCLUDED_NAMES = {
     ".cache",
     "coverage",
     ".DS_Store",
+}
+
+LINEAGE_METADATA = {
+    "UPSTREAM_BASELINE.json",
+    "ASCS_OVERLAY.json",
 }
 
 REQUIRED_CAPABILITIES = (
@@ -79,7 +85,7 @@ def inventory_tree(root: Path, exclusions: set[str] | None = None) -> list[dict]
         rel = path.relative_to(root)
         if any(part in excluded for part in rel.parts):
             continue
-        if rel.as_posix() == "UPSTREAM_BASELINE.json":
+        if rel.as_posix() in LINEAGE_METADATA:
             continue
         rows.append(
             {
@@ -107,8 +113,27 @@ def baseline_manifest_path(repo: Path) -> Path:
     return app_root(repo) / "UPSTREAM_BASELINE.json"
 
 
+def overlay_manifest_path(repo: Path) -> Path:
+    return app_root(repo) / "ASCS_OVERLAY.json"
+
+
 def load_baseline_manifest(repo: Path) -> dict:
     return json.loads(baseline_manifest_path(repo).read_text(encoding="utf-8"))
+
+
+def load_overlay_manifest(repo: Path) -> dict:
+    path = overlay_manifest_path(repo)
+    if not path.exists():
+        return {
+            "schema": OVERLAY_SCHEMA,
+            "base_upstream_commit": UPSTREAM_COMMIT,
+            "authority": "implementation-overlay-only",
+            "milestone": None,
+            "added_paths": [],
+            "modified_paths": [],
+            "deleted_paths": [],
+        }
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def build_baseline_manifest(repo: Path) -> dict:
@@ -139,18 +164,79 @@ def write_baseline_manifest(repo: Path) -> dict:
     return manifest
 
 
+def _safe_overlay_path(value: object) -> bool:
+    if not isinstance(value, str) or not value or "\\" in value:
+        return False
+    path = PurePosixPath(value)
+    return not path.is_absolute() and ".." not in path.parts and "." not in path.parts
+
+
+def _validate_overlay(overlay: dict, expected: dict[str, dict], actual: dict[str, dict]) -> list[str]:
+    errors: list[str] = []
+    expected_metadata = {
+        "schema": OVERLAY_SCHEMA,
+        "base_upstream_commit": UPSTREAM_COMMIT,
+        "authority": "implementation-overlay-only",
+    }
+    for key, value in expected_metadata.items():
+        if overlay.get(key) != value:
+            errors.append(f"overlay {key}: expected {value!r}, got {overlay.get(key)!r}")
+
+    groups: dict[str, list[str]] = {}
+    for key in ("added_paths", "modified_paths", "deleted_paths"):
+        value = overlay.get(key)
+        if not isinstance(value, list) or any(not _safe_overlay_path(item) for item in value):
+            errors.append(f"overlay {key} must be a list of safe relative POSIX paths")
+            groups[key] = []
+            continue
+        if value != sorted(set(value)):
+            errors.append(f"overlay {key} must be sorted and unique")
+        groups[key] = value
+
+    added = set(groups["added_paths"])
+    modified = set(groups["modified_paths"])
+    deleted = set(groups["deleted_paths"])
+    if added & modified or added & deleted or modified & deleted:
+        errors.append("overlay path groups must be disjoint")
+
+    for path in sorted(added):
+        if path in expected:
+            errors.append(f"overlay added path already exists in upstream baseline: {path}")
+        if path not in actual:
+            errors.append(f"overlay added path missing from product tree: {path}")
+    for path in sorted(modified):
+        if path not in expected:
+            errors.append(f"overlay modified path absent from upstream baseline: {path}")
+        if path not in actual:
+            errors.append(f"overlay modified path missing from product tree: {path}")
+    for path in sorted(deleted):
+        if path not in expected:
+            errors.append(f"overlay deleted path absent from upstream baseline: {path}")
+        if path in actual:
+            errors.append(f"overlay deleted path still exists in product tree: {path}")
+    return errors
+
+
 def verify_baseline(repo: Path) -> dict:
     manifest = load_baseline_manifest(repo)
+    overlay = load_overlay_manifest(repo)
     actual = {row["path"]: row for row in inventory_tree(app_root(repo))}
     expected = {row["path"]: row for row in manifest["files"]}
-    missing = sorted(set(expected) - set(actual))
-    unexpected = sorted(set(actual) - set(expected))
+
+    overlay_errors = _validate_overlay(overlay, expected, actual)
+    added = set(overlay.get("added_paths", [])) if isinstance(overlay.get("added_paths"), list) else set()
+    modified = set(overlay.get("modified_paths", [])) if isinstance(overlay.get("modified_paths"), list) else set()
+    deleted = set(overlay.get("deleted_paths", [])) if isinstance(overlay.get("deleted_paths"), list) else set()
+
+    missing = sorted((set(expected) - set(actual)) - deleted)
+    unexpected = sorted((set(actual) - set(expected)) - added)
     mismatched = sorted(
         path
-        for path in set(actual) & set(expected)
+        for path in (set(actual) & set(expected)) - modified
         if actual[path]["bytes"] != expected[path]["bytes"]
         or actual[path]["sha256"] != expected[path]["sha256"]
     )
+
     metadata_errors = []
     expected_metadata = {
         "schema": BASELINE_SCHEMA,
@@ -162,20 +248,33 @@ def verify_baseline(repo: Path) -> dict:
     for key, value in expected_metadata.items():
         if manifest.get(key) != value:
             metadata_errors.append(f"{key}: expected {value!r}, got {manifest.get(key)!r}")
+
+    manifest_rows = list(expected.values())
+    if manifest.get("file_count") != len(manifest_rows):
+        metadata_errors.append("baseline file_count mismatch")
+    if manifest.get("total_bytes") != sum(row["bytes"] for row in manifest_rows):
+        metadata_errors.append("baseline total_bytes mismatch")
+    if manifest.get("payload_tree_sha256") != payload_tree_sha256(manifest_rows):
+        metadata_errors.append("baseline payload_tree_sha256 mismatch")
+
     rows = list(actual.values())
     actual_tree = payload_tree_sha256(rows)
-    if manifest.get("payload_tree_sha256") != actual_tree:
-        metadata_errors.append("payload_tree_sha256 mismatch")
     return {
-        "ok": not (missing or unexpected or mismatched or metadata_errors),
+        "ok": not (missing or unexpected or mismatched or metadata_errors or overlay_errors),
         "missing": missing,
         "unexpected": unexpected,
         "mismatched": mismatched,
         "metadata_errors": metadata_errors,
+        "overlay_errors": overlay_errors,
+        "approved_added": sorted(added),
+        "approved_modified": sorted(modified),
+        "approved_deleted": sorted(deleted),
         "files": len(actual),
         "bytes": sum(row["bytes"] for row in actual.values()),
         "payload_tree_sha256": actual_tree,
+        "upstream_payload_tree_sha256": manifest.get("payload_tree_sha256"),
         "upstream_commit": manifest.get("upstream_commit"),
+        "overlay_milestone": overlay.get("milestone"),
     }
 
 
@@ -197,13 +296,15 @@ def collect_parity(repo: Path) -> dict:
         "required_capabilities": list(REQUIRED_CAPABILITIES),
         "capabilities": capabilities,
         "ascs_only_future_milestones": [
-            "canonical_persistent_identity",
             "revision_graph",
             "native_math",
             "native_glyph",
             "spatial_canonical_model",
-            "authority_transactions",
         ],
+        "ascs_capabilities": {
+            "canonical_persistent_identity": (repo / "packages" / "ascs-core" / "src" / "canonical.mjs").exists(),
+            "authority_transactions": (repo / "packages" / "ascs-runtime" / "src" / "runtime.mjs").exists(),
+        },
         "ok": all(item["present"] for item in capabilities.values()),
     }
 
@@ -217,9 +318,9 @@ def write_parity_reports(repo: Path) -> dict:
         encoding="utf-8",
     )
     lines = [
-        "# Milestone A Product Parity",
+        "# Product Parity",
         "",
-        f"**Upstream:** `{UPSTREAM_REPOSITORY}@{UPSTREAM_COMMIT}`",
+        f"**Upstream baseline:** `{UPSTREAM_REPOSITORY}@{UPSTREAM_COMMIT}`",
         "",
         "| Capability | Present | Evidence |",
         "| --- | --- | --- |",
@@ -231,7 +332,7 @@ def write_parity_reports(repo: Path) -> dict:
     lines.extend(
         [
             "",
-            "ASCS-only capabilities remain future milestones in Milestone B and later; Milestone A does not claim them as implemented.",
+            "The upstream baseline remains provenance; explicit ASCS product evolution is recorded through `ASCS_OVERLAY.json`.",
             "",
         ]
     )
@@ -258,6 +359,8 @@ Vendored inventory:
 - payload tree SHA-256: `{manifest['payload_tree_sha256']}`
 
 Default import exclusions: {', '.join(f'`{name}`' for name in manifest['exclusions'])}.
+
+After Milestone A, deliberate product evolution is recorded separately in `ASCS_OVERLAY.json`; the upstream manifest is not regenerated to erase lineage.
 """
     (docs / "MILESTONE_A_BASELINE.md").write_text(text, encoding="utf-8")
 
