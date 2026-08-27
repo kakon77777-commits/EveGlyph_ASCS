@@ -8,6 +8,7 @@ from tools.product_convergence import (
     collect_parity,
     inventory_tree,
     load_baseline_manifest,
+    load_overlay_manifest,
     payload_tree_sha256,
     verify_baseline,
 )
@@ -25,16 +26,42 @@ class ProductConvergenceTests(unittest.TestCase):
         self.assertEqual(manifest["handoff_historical_commit"], "55a2ad77f3131f717cf73992cc2550e4c3a864bb")
         self.assertEqual(manifest["authority"], "implementation-input-only")
 
-    def test_vendored_baseline_matches_recorded_inventory(self):
+    def test_product_overlay_is_explicitly_based_on_pinned_upstream(self):
+        overlay = load_overlay_manifest(REPO)
+        self.assertEqual(overlay["schema"], "eveglyph-ascs-product-overlay/1.0")
+        self.assertEqual(overlay["base_upstream_commit"], "c3258a2f461d5af5a69c879891b485ccf0f02635")
+        self.assertEqual(overlay["authority"], "implementation-overlay-only")
+        self.assertEqual(overlay["deleted_paths"], [])
+        self.assertEqual(
+            set(overlay["added_paths"]),
+            {
+                "src/ascs/register.js",
+                "src/ascs/runtime-bridge.js",
+                "test/ascs-runtime-bridge.test.mjs",
+            },
+        )
+        self.assertEqual(overlay["modified_paths"], ["src/main.js"])
+
+    def test_vendored_baseline_plus_explicit_overlay_matches_recorded_lineage(self):
         result = verify_baseline(REPO)
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["missing"], [])
         self.assertEqual(result["unexpected"], [])
         self.assertEqual(result["mismatched"], [])
+        self.assertEqual(result["overlay_errors"], [])
+        self.assertEqual(result["approved_modified"], ["src/main.js"])
+        self.assertEqual(
+            set(result["approved_added"]),
+            {
+                "src/ascs/register.js",
+                "src/ascs/runtime-bridge.js",
+                "test/ascs-runtime-bridge.test.mjs",
+            },
+        )
         self.assertGreater(result["files"], 0)
         self.assertGreater(result["bytes"], 0)
 
-    def test_inventory_is_sorted_and_excludes_transient_directories(self):
+    def test_inventory_is_sorted_and_excludes_transient_directories_and_lineage_metadata(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             (root / "src").mkdir()
@@ -42,6 +69,8 @@ class ProductConvergenceTests(unittest.TestCase):
             (root / "src" / "a.txt").write_text("a", encoding="utf-8")
             (root / "node_modules").mkdir()
             (root / "node_modules" / "ignored.js").write_text("x", encoding="utf-8")
+            (root / "UPSTREAM_BASELINE.json").write_text("{}", encoding="utf-8")
+            (root / "ASCS_OVERLAY.json").write_text("{}", encoding="utf-8")
             rows = inventory_tree(root)
             self.assertEqual([row["path"] for row in rows], ["src/a.txt", "src/b.txt"])
 

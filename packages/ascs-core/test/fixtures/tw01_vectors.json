@@ -1,0 +1,81 @@
+{
+  "spec": "egir-conformance/0.1",
+  "canonicalization": {
+    "input": {
+      "z": "最後",
+      "a": "alpha",
+      "n": 7,
+      "nested": {
+        "b": "2",
+        "a": "1"
+      }
+    },
+    "canonical_utf8": "{\"a\":\"alpha\",\"n\":7,\"nested\":{\"a\":\"1\",\"b\":\"2\"},\"z\":\"最後\"}",
+    "sha256": "30e681ce4fcb4daf7df8978b2fd982f1be5f72ba74c9c3a0e649693295ce25ff"
+  },
+  "example_expectations": {
+    "math_content_address": "content:sha256:6ac8c86c3536d065ac1ccae3ac87bbfd25099f7fc6341ffaa80c5e78a5756d73",
+    "math_revision_id": "rev:sha256:86d331c03e913846225f7e6df2d984dcd641b56775dc573a36fa5fb84e4ab63f",
+    "relation_content_address": "content:sha256:f08e5b62908311787d8fb9de9b1f899e6b3149de48a644d4304cfe1611c060c2",
+    "relation_revision_id": "rev:sha256:e485e9417a72da06c88671a31c726ad75551495cf5e3c2d0c16dc254087b37ed",
+    "workspace_revision": "wrev:sha256:6b552e4557f63f3af56707fbf1325c218c44edbbc06797c4368e9ea13818ad1c"
+  },
+  "semantic_vectors": [
+    {
+      "id": "edit-preserves-identity",
+      "expect": [
+        "same persistent_id",
+        "different content_address",
+        "different revision_id"
+      ]
+    },
+    {
+      "id": "move-preserves-intrinsic",
+      "expect": [
+        "same persistent_id",
+        "same object revision",
+        "different workspace revision"
+      ]
+    },
+    {
+      "id": "clone-separates-identity",
+      "expect": [
+        "different persistent_id",
+        "content_address may match"
+      ]
+    },
+    {
+      "id": "projection-non-authority",
+      "expect": [
+        "same rendering does not imply semantic or identity equality"
+      ]
+    },
+    {
+      "id": "candidate-non-authority",
+      "expect": [
+        "candidate relation is not included in explicit relation heads until promoted"
+      ]
+    }
+  ],
+  "executable_semantic_vectors": {
+    "edit": {
+      "persistent_id": "urn:uuid:0190a001-1111-7abc-8def-111111111111",
+      "original_content_address": "content:sha256:6ac8c86c3536d065ac1ccae3ac87bbfd25099f7fc6341ffaa80c5e78a5756d73",
+      "edited_content_address": "content:sha256:0714de55b5c1358a584745ecb0d1795e7e061035f583569a01942328db7ec7cc",
+      "edited_revision_id": "rev:sha256:62ab4244d523ae78fc6f1db5dd04af4afb0384e98f2387c66001b401f2d9d5f7"
+    },
+    "move": {
+      "object_revision_before": "rev:sha256:86d331c03e913846225f7e6df2d984dcd641b56775dc573a36fa5fb84e4ab63f",
+      "object_revision_after": "rev:sha256:86d331c03e913846225f7e6df2d984dcd641b56775dc573a36fa5fb84e4ab63f",
+      "workspace_revision_before": "wrev:sha256:6b552e4557f63f3af56707fbf1325c218c44edbbc06797c4368e9ea13818ad1c",
+      "workspace_revision_after": "wrev:sha256:c89315e6dad90ca171fa3f3caa19cd23f1d91ad6b90c9b7884e3bc01f8b42e8d"
+    },
+    "clone": {
+      "original_persistent_id": "urn:uuid:0190a001-1111-7abc-8def-111111111111",
+      "clone_persistent_id": "urn:uuid:0190a001-3333-7abc-8def-333333333333",
+      "original_content_address": "content:sha256:6ac8c86c3536d065ac1ccae3ac87bbfd25099f7fc6341ffaa80c5e78a5756d73",
+      "clone_content_address": "content:sha256:6ac8c86c3536d065ac1ccae3ac87bbfd25099f7fc6341ffaa80c5e78a5756d73",
+      "clone_revision_id": "rev:sha256:22e2a49d4fbeb928df11ed4f487c312d9b26f787b1ff5ba82817e69e91a360c4"
+    }
+  }
+}

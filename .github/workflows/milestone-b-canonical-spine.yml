@@ -1,0 +1,147 @@
+name: Milestone B Canonical Spine
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - workbench/milestone-b-canonical-spine
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-preservation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install validator dependency
+        run: python -m pip install 'jsonschema>=4,<5'
+      - name: Repository preservation
+        run: python -B tools/ascs_repo.py verify --repo . --json
+      - name: ASCS v1 regression
+        run: python -B canonical/v1.0/machine/tests/test_validate_v10.py
+      - name: ASCS v1 validator
+        run: python -B canonical/v1.0/machine/tools/validate_v10.py --json
+
+  canonical-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Extract pinned Architecture and MVP references
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, pathlib, zipfile
+          root = pathlib.Path('canonical/v1.0/source_archives')
+          items = [
+              ('EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip', '19a510cebcbe1d1b0e7c3134d99c88eebf98dd20385863ba71850aaf09ca7778', pathlib.Path('/tmp/ascs-architecture')),
+              ('EveGlyph_Computational_Canvas_MVP_v0.1.zip', 'f49a4f419f9b4539aac0721a1ad85f84151cec71bf3da68db22a197303b5cd3f', pathlib.Path('/tmp/ascs-mvp')),
+          ]
+          for name, expected, out in items:
+              archive = root / name
+              actual = hashlib.sha256(archive.read_bytes()).hexdigest()
+              assert actual == expected, (name, actual, expected)
+              out.mkdir(parents=True, exist_ok=True)
+              with zipfile.ZipFile(archive) as zf:
+                  assert zf.testzip() is None
+                  zf.extractall(out)
+          PY
+      - name: Install reference validator dependencies
+        run: |
+          python -m pip install 'jsonschema>=4,<5' 'brotli>=1.1'
+      - name: TW-01 reference validator
+        run: python -B /tmp/ascs-architecture/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1/TW-01_Support/tools/validate_tw01.py
+      - name: TW-03 reference validator
+        run: python -B /tmp/ascs-architecture/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1/TW-03_Support/tools/validate_tw03.py
+      - name: MVP 26-test suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          MVP=/tmp/ascs-mvp/EveGlyph_Computational_Canvas_MVP_v0.1
+          PYTHONPATH="$MVP/src" python -B -m unittest discover -s "$MVP/tests" -v
+      - name: Generate ASCS JS runtime snapshots
+        run: node packages/ascs-runtime/test/generate-schema-snapshots.mjs /tmp/ascs-js-runtime-snapshots
+      - name: Validate generated snapshots with frozen TW-01 schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+
+          schema_path = Path('/tmp/ascs-architecture/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1/TW-01_Support/schemas/eveglyph-ir.schema.json')
+          schema = json.loads(schema_path.read_text(encoding='utf-8'))
+          validator = jsonschema.Draft202012Validator(schema)
+          root = Path('/tmp/ascs-js-runtime-snapshots')
+          names = ['move.json', 'edit.json', 'clone.json']
+          for name in names:
+              data = json.loads((root / name).read_text(encoding='utf-8'))
+              errors = sorted(validator.iter_errors(data), key=lambda e: list(e.absolute_path))
+              if errors:
+                  for error in errors:
+                      print(name, list(error.absolute_path), error.message)
+                  raise SystemExit(f'{name}: {len(errors)} schema errors')
+              print(f'{name}: PASS')
+          PY
+
+  javascript-spine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify pinned fixture hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum packages/ascs-core/test/fixtures/minimal_workspace.egir.json | awk '{print $1}')" = '0d9cb28fc8c6f9d6e56c99729b14ce9cf873afe7e0f09940298e8ba459f9b78e'
+          test "$(sha256sum packages/ascs-core/test/fixtures/tw01_vectors.json | awk '{print $1}')" = '9043e8002069fc294c125379964d984f0110f27cbf0c500fb1691243dddbe16a'
+      - name: Core and runtime tests
+        run: node --test packages/ascs-core/test/*.test.mjs packages/ascs-runtime/test/*.test.mjs
+
+  current-eveglyph-product:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/eveglyph-editor
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: ASCS bridge test
+        run: node --test test/ascs-runtime-bridge.test.mjs
+      - name: Publication tests
+        run: npm run test:publication
+      - name: Build
+        run: npm run build
+      - name: Dynamic logic regression
+        run: npm run verify:dynamic-logic
+      - name: Dynamic rendering regression
+        run: npm run verify:dynamic-rendering

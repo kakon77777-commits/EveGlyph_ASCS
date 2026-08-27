@@ -59,6 +59,7 @@ import { applyTranslations }       from './i18n/index.js'
 import { applyLayout, initResizers } from './resize.js'
 import { applyWorldStudioVisibility } from './worldfeatures.js'
 import { previewUpdate } from './preview.js'
+import './ascs/register.js'
 
 // Toggle the app-wide theme (CSS variables in styles.css). Light stays the
 // existing .theme-light class on <html>, untouched; every theme past Dark/
