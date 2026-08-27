@@ -106,6 +106,8 @@ jobs:
           cache-dependency-path: apps/eveglyph-editor/package-lock.json
       - name: Install dependencies
         run: npm ci
+      - name: ASCS bridge test
+        run: node --test test/ascs-runtime-bridge.test.mjs
       - name: Publication tests
         run: npm run test:publication
       - name: Build
