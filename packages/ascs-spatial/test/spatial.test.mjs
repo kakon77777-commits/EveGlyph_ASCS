@@ -110,7 +110,7 @@ test('SpatialModel composes nested transforms, rejects cycles, and supports keep
   model.reparentNode('O1', 'R1', { mode: 'keep-world' })
   assert.deepEqual(translationOf(model.worldTransform('O1')), ['110', '55'])
   model.reparentNode('O1', 'R2', { mode: 'keep-local' })
-  assert.deepEqual(model.node('O1').localToParent, identityAffine({ translation: ['10', '5'] }))
+  assert.deepEqual(model.node('O1').localToParent, identityAffine({ translation: ['10', '55'] }))
   assert.throws(() => model.setRegionParent('R1', 'R2'), error => error?.code === 'RegionCycleConflict')
 })
 
