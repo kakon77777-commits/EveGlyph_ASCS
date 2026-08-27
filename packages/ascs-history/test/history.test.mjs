@@ -14,7 +14,7 @@ async function loadStore() {
 
 const baseBundle = JSON.parse(await readFile(new URL('../../ascs-core/test/fixtures/minimal_workspace.egir.json', import.meta.url), 'utf8'))
 const objectId = baseBundle.object_records[0].persistent_id
-const HUMAN = { actor: { type: 'human', id: 'human:test' }, policy: 'explicit' }
+const HUMAN = { actor: { type: 'human', id: 'human:test' }, mode: 'explicit' }
 
 function runtimeOptions() {
   let n = 0
