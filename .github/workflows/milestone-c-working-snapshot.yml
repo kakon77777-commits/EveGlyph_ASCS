@@ -1,0 +1,38 @@
+name: Milestone C Working Snapshot
+
+on:
+  push:
+    branches:
+      - workbench/milestone-c-persistence-history-spatial
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: workbench/milestone-c-persistence-history-spatial
+      - name: Package source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          root=Path('.')
+          out=Path('/tmp/EveGlyph_ASCS_Milestone_C_working.zip')
+          excluded={'.git','node_modules','dist','tmp','.cache','coverage'}
+          with zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+            for p in sorted(x for x in root.rglob('*') if x.is_file()):
+              if any(part in excluded for part in p.parts): continue
+              z.write(p,p.as_posix())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EveGlyph_ASCS_Milestone_C_working_${{ github.sha }}
+          path: /tmp/EveGlyph_ASCS_Milestone_C_working.zip
+          compression-level: 0
+          retention-days: 3
