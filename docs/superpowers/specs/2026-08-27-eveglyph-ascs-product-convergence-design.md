@@ -166,7 +166,7 @@ Retain at minimum:
 
 **First implementation PR:**
 
-> `PR #1 — Current EveGlyph Product Baseline Import & Parity Harness`
+> `Current EveGlyph Product Baseline Import & Parity Harness`
 
 Acceptance:
 
@@ -365,8 +365,18 @@ RESTORE.md
 - creation timestamp;
 - included/excluded path policy;
 - file count/total bytes;
-- verification commands/results;
-- backup archive SHA-256.
+- deterministic payload-tree digest;
+- verification commands/results.
+
+`SHA256SUMS.txt` records the hashes of the files carried inside the backup payload. The ZIP archive's own SHA-256 is computed **after** packaging and therefore is not embedded as a self-referential field inside the ZIP.
+
+The delivery directory must additionally contain:
+
+```text
+ARTIFACT_SHA256.txt
+```
+
+which records the final ZIP filename and archive SHA-256.
 
 ### 8.2 Mandatory merged-main backup
 
@@ -377,6 +387,8 @@ EveGlyph_ASCS_<milestone>_<merge-sha8>_merged-main-backup.zip
 ```
 
 This prevents a valid PR-head backup from being mistaken for the final integrated state.
+
+The merged-main ZIP receives its own adjacent `ARTIFACT_SHA256.txt` or uniquely named equivalent.
 
 ### 8.3 Default exclusions
 
@@ -398,7 +410,7 @@ Executable portable runtime bundles are **separate artifacts**, created only whe
 
 ### 8.5 Delivery requirement
 
-The implementation turn is not complete until the user receives a downloadable sandbox link for the backup artifact(s) and their SHA-256 values.
+The implementation turn is not complete until the user receives a downloadable sandbox link for the backup artifact(s), the adjacent artifact-checksum file(s), and the archive SHA-256 values in the response.
 
 ---
 
@@ -406,6 +418,7 @@ The implementation turn is not complete until the user receives a downloadable s
 
 - No product implementation directly on `main`.
 - One coherent milestone/closure per branch/PR.
+- PR numbers are assigned by GitHub and are not used as stable milestone identifiers in design contracts.
 - Record exact base and final head SHA.
 - Test-first for defects and contract changes.
 - Do not mark Ready for Review without fresh exact-head verification.
@@ -449,6 +462,6 @@ Implementation convenience is not sufficient justification for a silent semantic
 
 Create a detailed implementation plan for:
 
-> **Milestone A / PR #1 — Current EveGlyph Product Baseline Import & Parity Harness**
+> **Milestone A — Current EveGlyph Product Baseline Import & Parity Harness**
 
 That plan will define the exact import inventory, exclusion rules, lineage manifest, CI/parity harness, and PR-final-head backup generation workflow before product code is copied.
