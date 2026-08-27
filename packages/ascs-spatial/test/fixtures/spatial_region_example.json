@@ -1,0 +1,64 @@
+{
+  "profile": "org.evemisslab.spatial-region/0.1",
+  "region_id": "urn:uuid:0190a004-0000-7abc-8def-000000000001",
+  "parent_region": null,
+  "local_to_parent": {
+    "convention": "column-vector-local-to-parent-affine-2d/0.1",
+    "matrix": [
+      "1.0",
+      "0.0",
+      "0.0",
+      "1.0",
+      "120.0",
+      "80.0"
+    ]
+  },
+  "boundary": {
+    "kind": "rect",
+    "width": "800.0",
+    "height": "600.0"
+  },
+  "grammar": {
+    "profile": "dataflow/0.1",
+    "mode": "explicit"
+  },
+  "policy": {
+    "runtime.execute": {
+      "mode": "deny-dominates",
+      "value": "allow"
+    },
+    "external.network": {
+      "mode": "deny-dominates",
+      "value": "deny"
+    },
+    "tags": {
+      "mode": "merge-set",
+      "value": [
+        "local",
+        "formal"
+      ]
+    }
+  },
+  "semantic_zoom": {
+    "profile": "default-semantic-zoom/0.1",
+    "authority": "projection-only",
+    "bands": [
+      "overview",
+      "compact",
+      "full"
+    ]
+  },
+  "ports": [
+    {
+      "id": "in-data",
+      "direction": "in",
+      "type": "eg:any"
+    },
+    {
+      "id": "out-data",
+      "direction": "out",
+      "type": "eg:any"
+    }
+  ],
+  "extensions": {}
+}

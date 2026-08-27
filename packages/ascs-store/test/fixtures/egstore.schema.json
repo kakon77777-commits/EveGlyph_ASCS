@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evemisslab.com/schemas/egstore-0.1.schema.json",
+  "title": "EveGlyph EGStore Manifest v0.1",
+  "type": "object",
+  "required": [
+    "store_version",
+    "manifest_id",
+    "root_payload",
+    "chunking",
+    "codecs",
+    "chunks",
+    "limits"
+  ],
+  "properties": {
+    "store_version": {
+      "const": "egstore/0.1"
+    },
+    "manifest_id": {
+      "type": "string",
+      "pattern": "^store:sha256:[0-9a-f]{64}$"
+    },
+    "egir_version": {
+      "type": "string"
+    },
+    "root_payload": {
+      "type": "object",
+      "required": [
+        "name",
+        "media_type",
+        "decoded_length",
+        "decoded_sha256",
+        "chunk_ids"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "media_type": {
+          "type": "string"
+        },
+        "decoded_length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decoded_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "chunk_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^chunk:sha256:[0-9a-f]{64}$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "chunking": {
+      "type": "object",
+      "required": [
+        "profile",
+        "parameters"
+      ],
+      "properties": {
+        "profile": {
+          "enum": [
+            "fixed-v1",
+            "structural-v1",
+            "external-v1",
+            "cdc-fastcdc-v1-experimental"
+          ]
+        },
+        "parameters": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "codecs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "required"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "parameters": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "chunks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chunk"
+      }
+    },
+    "dictionaries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dictionary"
+      }
+    },
+    "indexes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "max_decoded_bytes",
+        "max_chunk_count",
+        "max_expansion_ratio"
+      ],
+      "properties": {
+        "max_decoded_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_chunk_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_expansion_ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "generator": {
+      "type": "object"
+    },
+    "extensions": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "chunk": {
+      "type": "object",
+      "required": [
+        "chunk_id",
+        "logical_offset",
+        "decoded_length",
+        "decoded_sha256",
+        "codec",
+        "encoded_length",
+        "encoded_sha256",
+        "locator"
+      ],
+      "properties": {
+        "chunk_id": {
+          "type": "string",
+          "pattern": "^chunk:sha256:[0-9a-f]{64}$"
+        },
+        "logical_offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decoded_length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decoded_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "codec": {
+          "type": "string"
+        },
+        "codec_parameters": {
+          "type": "object"
+        },
+        "dictionary_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "encoded_length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "encoded_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "crc32c": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "dictionary": {
+      "type": "object",
+      "required": [
+        "dictionary_id",
+        "algorithm",
+        "decoded_sha256",
+        "decoded_length",
+        "locator"
+      ],
+      "properties": {
+        "dictionary_id": {
+          "type": "string"
+        },
+        "algorithm": {
+          "type": "string"
+        },
+        "decoded_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "decoded_length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "locator": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

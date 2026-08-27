@@ -1,0 +1,86 @@
+{
+  "store_version": "egstore/0.1",
+  "manifest_id": "store:sha256:348a1d13072c3f70af112c9a0b6b8ab70c860386f9864d352c55dccb62904578",
+  "egir_version": "egir/0.1",
+  "root_payload": {
+    "name": "minimal_workspace.egir.json",
+    "media_type": "application/json",
+    "decoded_length": 8014,
+    "decoded_sha256": "0d9cb28fc8c6f9d6e56c99729b14ce9cf873afe7e0f09940298e8ba459f9b78e",
+    "chunk_ids": [
+      "chunk:sha256:814fc3cbb4e25d7412c41326622853a2f9a6646eef854f159ebfa84a8ef67445",
+      "chunk:sha256:485d624361975adc759b0f5982a280faf45454de348fb9eb1fa4cf51ec1a6d1e"
+    ]
+  },
+  "chunking": {
+    "profile": "fixed-v1",
+    "parameters": {
+      "chunk_size": 4096
+    }
+  },
+  "codecs": [
+    {
+      "id": "identity",
+      "name": "Identity / raw bytes",
+      "required": true,
+      "parameters": {}
+    }
+  ],
+  "chunks": [
+    {
+      "chunk_id": "chunk:sha256:814fc3cbb4e25d7412c41326622853a2f9a6646eef854f159ebfa84a8ef67445",
+      "logical_offset": 0,
+      "decoded_length": 4096,
+      "decoded_sha256": "814fc3cbb4e25d7412c41326622853a2f9a6646eef854f159ebfa84a8ef67445",
+      "codec": "identity",
+      "codec_parameters": {},
+      "dictionary_ref": null,
+      "encoded_length": 4096,
+      "encoded_sha256": "814fc3cbb4e25d7412c41326622853a2f9a6646eef854f159ebfa84a8ef67445",
+      "locator": "chunks/814fc3cbb4e25d7412c41326622853a2f9a6646eef854f159ebfa84a8ef67445.bin",
+      "crc32c": null
+    },
+    {
+      "chunk_id": "chunk:sha256:485d624361975adc759b0f5982a280faf45454de348fb9eb1fa4cf51ec1a6d1e",
+      "logical_offset": 4096,
+      "decoded_length": 3918,
+      "decoded_sha256": "485d624361975adc759b0f5982a280faf45454de348fb9eb1fa4cf51ec1a6d1e",
+      "codec": "identity",
+      "codec_parameters": {},
+      "dictionary_ref": null,
+      "encoded_length": 3918,
+      "encoded_sha256": "485d624361975adc759b0f5982a280faf45454de348fb9eb1fa4cf51ec1a6d1e",
+      "locator": "chunks/485d624361975adc759b0f5982a280faf45454de348fb9eb1fa4cf51ec1a6d1e.bin",
+      "crc32c": null
+    }
+  ],
+  "dictionaries": [],
+  "indexes": [
+    {
+      "type": "logical-offset-v1",
+      "records": [
+        {
+          "chunk_id": "chunk:sha256:814fc3cbb4e25d7412c41326622853a2f9a6646eef854f159ebfa84a8ef67445",
+          "logical_offset": 0,
+          "decoded_length": 4096
+        },
+        {
+          "chunk_id": "chunk:sha256:485d624361975adc759b0f5982a280faf45454de348fb9eb1fa4cf51ec1a6d1e",
+          "logical_offset": 4096,
+          "decoded_length": 3918
+        }
+      ]
+    }
+  ],
+  "limits": {
+    "max_decoded_bytes": 10485760,
+    "max_chunk_count": 10000,
+    "max_expansion_ratio": 64.0
+  },
+  "generator": {
+    "implementation": "tw02-reference-builder",
+    "version": "0.1",
+    "source": "TW-01 minimal workspace"
+  },
+  "extensions": {}
+}

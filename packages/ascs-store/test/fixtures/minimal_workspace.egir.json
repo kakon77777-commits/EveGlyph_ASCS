@@ -1,0 +1,277 @@
+{
+  "ir_version": "egir/0.1",
+  "bundle_kind": "workspace-snapshot",
+  "workspace": {
+    "workspace_id": "urn:uuid:018ff8b0-2b20-7cc0-9c7d-5a1e2f3b4c5d",
+    "workspace_revision": "wrev:sha256:6b552e4557f63f3af56707fbf1325c218c44edbbc06797c4368e9ea13818ad1c",
+    "parents": [],
+    "title": "TW-01 Minimal Workspace",
+    "object_heads": [
+      {
+        "persistent_id": "urn:uuid:0190a001-1111-7abc-8def-111111111111",
+        "revision": "rev:sha256:86d331c03e913846225f7e6df2d984dcd641b56775dc573a36fa5fb84e4ab63f"
+      }
+    ],
+    "relation_heads": [
+      {
+        "persistent_id": "urn:uuid:0190a001-2222-7abc-8def-222222222222",
+        "revision": "rev:sha256:e485e9417a72da06c88671a31c726ad75551495cf5e3c2d0c16dc254087b37ed"
+      }
+    ],
+    "placements": [
+      {
+        "placement_id": "place:math-main-001",
+        "object_id": "urn:uuid:0190a001-1111-7abc-8def-111111111111",
+        "region_id": null,
+        "frame": "world",
+        "transform": {
+          "x": "120.0",
+          "y": "80.0",
+          "scale_x": "1.0",
+          "scale_y": "1.0",
+          "rotation_deg": "0.0"
+        },
+        "z": 0,
+        "layer": "main"
+      }
+    ],
+    "event_id": "urn:uuid:0190a001-cccc-7abc-8def-cccccccccccc",
+    "created_at": "2026-08-24T10:32:00.000Z",
+    "metadata": {
+      "example": "tw01-minimal"
+    }
+  },
+  "object_records": [
+    {
+      "record_type": "object",
+      "persistent_id": "urn:uuid:0190a001-1111-7abc-8def-111111111111",
+      "kind": "math",
+      "status": "active",
+      "created_event": "urn:uuid:0190a001-aaaa-7abc-8def-aaaaaaaaaaaa",
+      "heads": {
+        "main": "rev:sha256:86d331c03e913846225f7e6df2d984dcd641b56775dc573a36fa5fb84e4ab63f"
+      },
+      "aliases": [
+        {
+          "scope": "workspace",
+          "name": "x²",
+          "mutable": true,
+          "authority": "user"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "record_type": "object",
+      "persistent_id": "urn:uuid:0190a001-2222-7abc-8def-222222222222",
+      "kind": "relation",
+      "status": "active",
+      "created_event": "urn:uuid:0190a001-bbbb-7abc-8def-bbbbbbbbbbbb",
+      "heads": {
+        "main": "rev:sha256:e485e9417a72da06c88671a31c726ad75551495cf5e3c2d0c16dc254087b37ed"
+      },
+      "aliases": [],
+      "metadata": {}
+    }
+  ],
+  "revision_records": [
+    {
+      "record_type": "revision",
+      "persistent_id": "urn:uuid:0190a001-1111-7abc-8def-111111111111",
+      "revision_id": "rev:sha256:86d331c03e913846225f7e6df2d984dcd641b56775dc573a36fa5fb84e4ab63f",
+      "kind": "math",
+      "parents": [],
+      "content_address": "content:sha256:6ac8c86c3536d065ac1ccae3ac87bbfd25099f7fc6341ffaa80c5e78a5756d73",
+      "intrinsic": {
+        "profile": "ncm/0.1",
+        "expression": {
+          "root": "n3",
+          "nodes": [
+            {
+              "id": "n1",
+              "type": "symbol",
+              "name": "x"
+            },
+            {
+              "id": "n2",
+              "type": "integer",
+              "value": "2"
+            },
+            {
+              "id": "n3",
+              "type": "apply",
+              "operator": {
+                "builtin": "pow"
+              },
+              "args": [
+                "n1",
+                "n2"
+              ]
+            }
+          ]
+        },
+        "bindings": [],
+        "type_info": {
+          "domain": "real-expression"
+        },
+        "assumptions": [],
+        "constraints": [],
+        "units": {
+          "kind": "dimensionless"
+        },
+        "numeric_policy": {
+          "mode": "exact"
+        },
+        "presentation": {
+          "preferred": "traditional"
+        },
+        "execution": {
+          "operator_set": "eg-math-core/0.1"
+        }
+      },
+      "event_id": "urn:uuid:0190a001-aaaa-7abc-8def-aaaaaaaaaaaa",
+      "created_at": "2026-08-24T10:30:00.000Z",
+      "metadata": {}
+    },
+    {
+      "record_type": "revision",
+      "persistent_id": "urn:uuid:0190a001-2222-7abc-8def-222222222222",
+      "revision_id": "rev:sha256:e485e9417a72da06c88671a31c726ad75551495cf5e3c2d0c16dc254087b37ed",
+      "kind": "relation",
+      "parents": [],
+      "content_address": "content:sha256:f08e5b62908311787d8fb9de9b1f899e6b3149de48a644d4304cfe1611c060c2",
+      "intrinsic": {
+        "profile": "relation/0.1",
+        "source": {
+          "type": "identity",
+          "value": "urn:uuid:0190a001-1111-7abc-8def-111111111111"
+        },
+        "predicate": "eg:hasRole",
+        "target": {
+          "type": "semantic",
+          "schema": "eg-sem/0.1",
+          "ontology": "eg:math",
+          "anchors": [
+            "polynomial-expression"
+          ],
+          "negative_anchors": [],
+          "relations": [],
+          "constraints": [],
+          "open_variables": [],
+          "confidence": "1.0",
+          "authority": "explicit"
+        },
+        "qualifiers": {},
+        "authority": {
+          "class": "explicit",
+          "source": "user",
+          "rule": null,
+          "confidence": "1.0"
+        }
+      },
+      "event_id": "urn:uuid:0190a001-bbbb-7abc-8def-bbbbbbbbbbbb",
+      "created_at": "2026-08-24T10:31:00.000Z",
+      "metadata": {}
+    }
+  ],
+  "event_records": [
+    {
+      "record_type": "event",
+      "event_id": "urn:uuid:0190a001-aaaa-7abc-8def-aaaaaaaaaaaa",
+      "actor": {
+        "type": "human",
+        "id": "Neo.K",
+        "model": null
+      },
+      "op": "create-object",
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "version",
+          "object": "urn:uuid:0190a001-1111-7abc-8def-111111111111",
+          "revision": "rev:sha256:86d331c03e913846225f7e6df2d984dcd641b56775dc573a36fa5fb84e4ab63f"
+        }
+      ],
+      "base_workspace_revision": null,
+      "tool": {
+        "name": "eveglyph-spec-example",
+        "version": "0.1"
+      },
+      "policy": {
+        "mode": "explicit"
+      },
+      "created_at": "2026-08-24T10:30:00.000Z",
+      "metadata": {}
+    },
+    {
+      "record_type": "event",
+      "event_id": "urn:uuid:0190a001-bbbb-7abc-8def-bbbbbbbbbbbb",
+      "actor": {
+        "type": "human",
+        "id": "Neo.K",
+        "model": null
+      },
+      "op": "create-relation",
+      "inputs": [
+        {
+          "type": "identity",
+          "value": "urn:uuid:0190a001-1111-7abc-8def-111111111111"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "version",
+          "object": "urn:uuid:0190a001-2222-7abc-8def-222222222222",
+          "revision": "rev:sha256:e485e9417a72da06c88671a31c726ad75551495cf5e3c2d0c16dc254087b37ed"
+        }
+      ],
+      "base_workspace_revision": null,
+      "tool": {
+        "name": "eveglyph-spec-example",
+        "version": "0.1"
+      },
+      "policy": {
+        "mode": "explicit"
+      },
+      "created_at": "2026-08-24T10:31:00.000Z",
+      "metadata": {}
+    },
+    {
+      "record_type": "event",
+      "event_id": "urn:uuid:0190a001-cccc-7abc-8def-cccccccccccc",
+      "actor": {
+        "type": "system",
+        "id": "eveglyph-runtime",
+        "model": null
+      },
+      "op": "commit-workspace",
+      "inputs": [
+        {
+          "type": "version",
+          "object": "urn:uuid:0190a001-1111-7abc-8def-111111111111",
+          "revision": "rev:sha256:86d331c03e913846225f7e6df2d984dcd641b56775dc573a36fa5fb84e4ab63f"
+        },
+        {
+          "type": "version",
+          "object": "urn:uuid:0190a001-2222-7abc-8def-222222222222",
+          "revision": "rev:sha256:e485e9417a72da06c88671a31c726ad75551495cf5e3c2d0c16dc254087b37ed"
+        }
+      ],
+      "outputs": [],
+      "base_workspace_revision": null,
+      "tool": {
+        "name": "eveglyph-runtime",
+        "version": "0.1"
+      },
+      "policy": {
+        "mode": "deterministic"
+      },
+      "created_at": "2026-08-24T10:32:00.000Z",
+      "metadata": {
+        "workspace_revision": "wrev:sha256:6b552e4557f63f3af56707fbf1325c218c44edbbc06797c4368e9ea13818ad1c"
+      }
+    }
+  ],
+  "candidate_records": [],
+  "extensions": {}
+}

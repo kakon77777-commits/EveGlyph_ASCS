@@ -1,0 +1,320 @@
+{
+  "profile": "org.evemisslab.spatial-conformance/0.1",
+  "vectors": [
+    {
+      "id": "V1",
+      "name": "nested-transform-composition",
+      "operation": "compose-transform",
+      "input": {
+        "r1": [
+          "1",
+          "0",
+          "0",
+          "1",
+          "100",
+          "0"
+        ],
+        "r2": [
+          "2",
+          "0",
+          "0",
+          "2",
+          "0",
+          "50"
+        ],
+        "object": [
+          "1",
+          "0",
+          "0",
+          "1",
+          "10",
+          "5"
+        ]
+      },
+      "expected": {
+        "world_translation": [
+          "120",
+          "60"
+        ],
+        "status": "Resolved"
+      }
+    },
+    {
+      "id": "V2",
+      "name": "view-transform-non-authority",
+      "operation": "view-pan-zoom",
+      "input": {
+        "workspace_revision": "W1",
+        "view": {
+          "pan": [
+            100,
+            50
+          ],
+          "zoom": "2.0"
+        }
+      },
+      "expected": {
+        "workspace_revision": "W1",
+        "canonical_mutation": false
+      }
+    },
+    {
+      "id": "V3",
+      "name": "keep-world-reparent",
+      "operation": "reparent-keep-world",
+      "input": {
+        "old_world_translation": [
+          "300",
+          "200"
+        ],
+        "new_parent_world_translation": [
+          "100",
+          "50"
+        ]
+      },
+      "expected": {
+        "new_local_translation": [
+          "200",
+          "150"
+        ],
+        "world_preserved": true
+      }
+    },
+    {
+      "id": "V4",
+      "name": "keep-local-reparent",
+      "operation": "reparent-keep-local",
+      "input": {
+        "old_local_translation": [
+          "20",
+          "30"
+        ],
+        "new_parent_world_translation": [
+          "100",
+          "50"
+        ]
+      },
+      "expected": {
+        "new_local_translation": [
+          "20",
+          "30"
+        ],
+        "world_translation": [
+          "120",
+          "80"
+        ]
+      }
+    },
+    {
+      "id": "V5",
+      "name": "region-cycle-rejection",
+      "operation": "set-parent",
+      "input": {
+        "A_parent": "B",
+        "B_parent": "A"
+      },
+      "expected": {
+        "status": "RegionCycleConflict",
+        "committed": false
+      }
+    },
+    {
+      "id": "V6",
+      "name": "parent-move-preserves-child-local",
+      "operation": "move-parent",
+      "input": {
+        "child_local": [
+          "10",
+          "20"
+        ],
+        "parent_world_before": [
+          "0",
+          "0"
+        ],
+        "parent_world_after": [
+          "100",
+          "50"
+        ]
+      },
+      "expected": {
+        "child_local": [
+          "10",
+          "20"
+        ],
+        "child_world_after": [
+          "110",
+          "70"
+        ]
+      }
+    },
+    {
+      "id": "V7",
+      "name": "semantic-zoom-identity-preservation",
+      "operation": "semantic-zoom",
+      "input": {
+        "object_id": "O1",
+        "content": "C1",
+        "zoom_before": "overview",
+        "zoom_after": "full"
+      },
+      "expected": {
+        "object_id": "O1",
+        "content": "C1",
+        "execution_graph_changed": false
+      }
+    },
+    {
+      "id": "V8",
+      "name": "deny-dominates-policy",
+      "operation": "resolve-policy",
+      "input": {
+        "ancestor": "deny",
+        "child": "allow",
+        "mode": "deny-dominates"
+      },
+      "expected": {
+        "effective": "deny"
+      }
+    },
+    {
+      "id": "V9",
+      "name": "grammar-nearest-override",
+      "operation": "resolve-grammar",
+      "input": {
+        "ancestor": "freeform/0.1",
+        "child": "math-layout/0.1",
+        "child_mode": "explicit"
+      },
+      "expected": {
+        "effective": "math-layout/0.1"
+      }
+    },
+    {
+      "id": "V10",
+      "name": "candidate-non-authority",
+      "operation": "spatial-parse",
+      "input": {
+        "derived_candidate": "Near(A,B)"
+      },
+      "expected": {
+        "explicit_relation_created": false,
+        "authority": "candidate"
+      }
+    },
+    {
+      "id": "V11",
+      "name": "cross-region-proximity-isolation",
+      "operation": "spatial-parse",
+      "input": {
+        "A_region": "R1",
+        "B_region": "R2",
+        "distance": "2.0"
+      },
+      "expected": {
+        "candidate_created": false
+      }
+    },
+    {
+      "id": "V12",
+      "name": "explicit-cross-region-connector",
+      "operation": "commit-relation",
+      "input": {
+        "A_region": "R1",
+        "B_region": "R2",
+        "relation": "dependsOn"
+      },
+      "expected": {
+        "committed": true,
+        "survives_region_move": true
+      }
+    },
+    {
+      "id": "V13",
+      "name": "reparent-is-placement-mutation",
+      "operation": "reparent-keep-world",
+      "input": {
+        "object_content": "content:sha256:abc",
+        "object_revision": "rev:sha256:def"
+      },
+      "expected": {
+        "object_content": "content:sha256:abc",
+        "object_revision": "rev:sha256:def",
+        "workspace_revision_changed": true
+      }
+    },
+    {
+      "id": "V14",
+      "name": "move-vs-move-conflict",
+      "operation": "merge-placement",
+      "input": {
+        "base": [
+          "0",
+          "0"
+        ],
+        "left": [
+          "10",
+          "0"
+        ],
+        "right": [
+          "0",
+          "10"
+        ]
+      },
+      "expected": {
+        "status": "SpatialPlacementConflict"
+      }
+    },
+    {
+      "id": "V15",
+      "name": "content-edit-region-move-auto-merge",
+      "operation": "merge-channels",
+      "input": {
+        "left": "intrinsic-edit",
+        "right": "parent-region-move"
+      },
+      "expected": {
+        "status": "Merged",
+        "preserve_both": true
+      }
+    },
+    {
+      "id": "V16",
+      "name": "region-delete-vs-child-edit-conflict",
+      "operation": "merge-lifecycle",
+      "input": {
+        "left": "delete-region",
+        "right": "edit-child"
+      },
+      "expected": {
+        "status": "DeleteVsDescendantEditConflict"
+      }
+    },
+    {
+      "id": "V17",
+      "name": "session-collapse-noncanonical",
+      "operation": "collapse-region",
+      "input": {
+        "workspace_revision": "W7",
+        "collapsed": true
+      },
+      "expected": {
+        "workspace_revision": "W7",
+        "canonical_mutation": false
+      }
+    },
+    {
+      "id": "V18",
+      "name": "execution-export-port-required",
+      "operation": "compile-cross-region",
+      "input": {
+        "source_region": "R1",
+        "target_region": "R2",
+        "has_export_port": false
+      },
+      "expected": {
+        "status": "ExecutionBoundaryViolation",
+        "compiled": false
+      }
+    }
+  ]
+}
