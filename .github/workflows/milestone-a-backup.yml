@@ -1,0 +1,186 @@
+name: Milestone A Backup
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  exact-head-source-backup:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-a-product-baseline' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Use Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install ASCS validator dependency
+        run: python -m pip install 'jsonschema>=4,<5'
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+
+      - name: Verify canonical preservation
+        run: |
+          set -euo pipefail
+          python -B tools/ascs_repo.py verify --repo . --json
+          python -B canonical/v1.0/machine/tests/test_validate_v10.py
+          python -B canonical/v1.0/machine/tools/validate_v10.py --json
+          python -B -m unittest tests.test_product_convergence -v
+          python -B tools/product_convergence.py verify --repo . --json
+          python -B tools/product_convergence.py parity --repo . --json
+
+      - name: Verify current EveGlyph product baseline
+        working-directory: apps/eveglyph-editor
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run test:publication
+          npm run build
+          npm run verify:dynamic-logic
+          npm run verify:dynamic-rendering
+
+      - name: Build exact-head source backup
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA8="${HEAD_SHA:0:8}"
+          OUT="$RUNNER_TEMP/ascs-backup-output"
+          PKG="$RUNNER_TEMP/EveGlyph_ASCS_Milestone_A_${SHA8}_source-backup"
+          ZIP="$OUT/EveGlyph_ASCS_Milestone_A_${SHA8}_source-backup.zip"
+          rm -rf "$OUT" "$PKG"
+          mkdir -p "$OUT" "$PKG/repository"
+
+          rsync -a ./ "$PKG/repository/" \
+            --exclude='.git/' \
+            --exclude='node_modules/' \
+            --exclude='dist/' \
+            --exclude='tmp/' \
+            --exclude='.cache/' \
+            --exclude='coverage/' \
+            --exclude='.DS_Store'
+
+          git diff --binary "$BASE_SHA...$HEAD_SHA" > "$PKG/PR.patch"
+
+          python - "$PKG" "$REPOSITORY" "$BRANCH" "$PR_NUMBER" "$BASE_SHA" "$HEAD_SHA" <<'PY'
+          import hashlib
+          import json
+          import sys
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          pkg = Path(sys.argv[1])
+          repository, branch, pr_number, base_sha, head_sha = sys.argv[2:]
+          snapshot = pkg / "repository"
+          rows = []
+          for path in sorted(p for p in snapshot.rglob("*") if p.is_file()):
+              rel = path.relative_to(pkg).as_posix()
+              data = path.read_bytes()
+              rows.append({"path": rel, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+
+          with (pkg / "SHA256SUMS.txt").open("w", encoding="utf-8", newline="\n") as f:
+              for row in rows:
+                  f.write(f'{row["sha256"]}  {row["path"]}\n')
+
+          tree = hashlib.sha256()
+          for row in rows:
+              tree.update(f'{row["path"]}\0{row["sha256"]}\0{row["bytes"]}\0'.encode("utf-8"))
+
+          manifest = {
+              "schema": "eveglyph-ascs-source-backup/1.0",
+              "repository": repository,
+              "milestone": "A-product-baseline-parity",
+              "branch": branch,
+              "pr_number": int(pr_number),
+              "base_sha": base_sha,
+              "head_sha": head_sha,
+              "ascs_canonical_release": "ascs/1.0",
+              "eveglyph_upstream_repository": "kakon77777-commits/eveglyph-editor",
+              "eveglyph_upstream_sha": "c3258a2f461d5af5a69c879891b485ccf0f02635",
+              "handoff_historical_editor_sha": "55a2ad77f3131f717cf73992cc2550e4c3a864bb",
+              "authority": "implementation-input-only",
+              "created_at": datetime.now(timezone.utc).isoformat(),
+              "snapshot_root": "repository/",
+              "exclusions": [".git", "node_modules", "dist", "tmp", ".cache", "coverage", ".DS_Store"],
+              "snapshot_file_count": len(rows),
+              "snapshot_total_bytes": sum(row["bytes"] for row in rows),
+              "payload_tree_sha256": tree.hexdigest(),
+              "verification": {
+                  "repository_preservation": "PASS",
+                  "ascs_v1_regression": "PASS",
+                  "ascs_v1_validator": "PASS",
+                  "product_convergence_tests": "PASS",
+                  "vendored_baseline_verify": "PASS",
+                  "product_parity": "PASS",
+                  "npm_ci": "PASS",
+                  "publication_tests": "PASS",
+                  "build": "PASS",
+                  "dynamic_logic": "PASS",
+                  "dynamic_rendering": "PASS"
+              }
+          }
+          (pkg / "BACKUP_MANIFEST.json").write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8"
+          )
+          PY
+
+          cat > "$PKG/RESTORE.md" <<EOF
+          # EveGlyph ASCS Milestone A Restore
+
+          This backup corresponds to PR #${PR_NUMBER} exact head \`${HEAD_SHA}\` on branch \`${BRANCH}\`.
+
+          ## A. Direct snapshot restore
+
+          1. Extract this ZIP.
+          2. Use the \`repository/\` directory as the restorable source tree.
+          3. From the package root, verify tracked payload bytes with:
+
+             \`sha256sum -c SHA256SUMS.txt\`
+
+          ## B. Reconstruct from the recorded base plus patch
+
+          1. Clone \`${REPOSITORY}\`.
+          2. Checkout base commit \`${BASE_SHA}\`.
+          3. Apply \`PR.patch\` with \`git apply --binary PR.patch\`.
+          4. Compare the reconstructed tree with \`repository/\` and \`SHA256SUMS.txt\`.
+
+          The ASCS canonical authority remains \`canonical/v1.0/\`; the vendored EveGlyph app is implementation input only.
+          EOF
+
+          (cd "$PKG" && sha256sum -c SHA256SUMS.txt)
+          (cd "$(dirname "$PKG")" && zip -q -r -9 "$ZIP" "$(basename "$PKG")")
+          (cd "$OUT" && sha256sum "$(basename "$ZIP")" > ARTIFACT_SHA256.txt)
+          unzip -t "$ZIP"
+          (cd "$OUT" && sha256sum -c ARTIFACT_SHA256.txt)
+
+      - name: Upload exact-head backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: EveGlyph_ASCS_Milestone_A_${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/ascs-backup-output/EveGlyph_ASCS_Milestone_A_*_source-backup.zip
+            ${{ runner.temp }}/ascs-backup-output/ARTIFACT_SHA256.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
