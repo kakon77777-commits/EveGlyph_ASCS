@@ -20,6 +20,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Install validator dependency
+        run: python -m pip install 'jsonschema>=4,<5'
       - name: Repository preservation
         run: python -B tools/ascs_repo.py verify --repo . --json
       - name: ASCS v1 regression
