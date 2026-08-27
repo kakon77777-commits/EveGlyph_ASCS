@@ -4,7 +4,7 @@ import { test } from 'node:test'
 import { createWorkspaceRuntime } from '../src/index.mjs'
 
 const bundle = JSON.parse(await readFile(new URL('../../ascs-core/test/fixtures/minimal_workspace.egir.json', import.meta.url), 'utf8'))
-const HUMAN = { actor: { type: 'human', id: 'human:test' }, policy: 'explicit' }
+const HUMAN = { actor: { type: 'human', id: 'human:test' }, mode: 'explicit' }
 
 test('trusted extension mutation uses the same authority/base/hash/atomic-swap pipeline', async () => {
   const runtime = await createWorkspaceRuntime(bundle, {
