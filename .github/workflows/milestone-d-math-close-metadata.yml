@@ -1,0 +1,51 @@
+name: Milestone D Math Close Metadata
+
+on:
+  push:
+    branches:
+      - workbench/milestone-d-native-math
+
+permissions:
+  contents: write
+
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: workbench/milestone-d-native-math
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Advance Native Math parity metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('tools/product_convergence.py')
+          text = path.read_text(encoding='utf-8')
+          old_future = '''        "ascs_only_future_milestones": [\n            "native_math",\n            "native_glyph",\n            "agent_mcp_authority_rebinding",\n        ],'''
+          new_future = '''        "ascs_only_future_milestones": [\n            "native_glyph",\n            "agent_mcp_authority_rebinding",\n        ],'''
+          old_caps = '''            "spatial_canonical_model": (repo / "packages" / "ascs-spatial" / "src" / "index.mjs").exists(),\n            "persistent_editor_bridge": (root / "test" / "ascs-persistent-bridge.test.mjs").exists(),'''
+          new_caps = '''            "spatial_canonical_model": (repo / "packages" / "ascs-spatial" / "src" / "index.mjs").exists(),\n            "persistent_editor_bridge": (root / "test" / "ascs-persistent-bridge.test.mjs").exists(),\n            "native_math_candidate_runtime": (repo / "packages" / "ascs-math" / "src" / "index.mjs").exists(),\n            "native_math_editor_bridge": (root / "test" / "ascs-native-math-bridge.test.mjs").exists(),'''
+          assert old_future in text, 'future milestone block drifted'
+          assert old_caps in text, 'capability block drifted'
+          text = text.replace(old_future, new_future, 1).replace(old_caps, new_caps, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+          python -B -m unittest tests.test_product_convergence -v
+          python -B tools/product_convergence.py verify --repo . --json
+          python -B tools/product_convergence.py parity --repo . --json
+      - name: Commit verified parity metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/product_convergence.py
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'docs: advance parity through Native Math'
+          git push origin HEAD:workbench/milestone-d-native-math
