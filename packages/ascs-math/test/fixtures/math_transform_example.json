@@ -1,0 +1,20 @@
+{
+  "profile": "org.evemisslab.math-transform/0.1",
+  "record_type": "transform",
+  "transform_id": "transform-x-over-x",
+  "input": {"revision": "rev:sha256:input", "node": "n-div"},
+  "output": {"revision": "rev:sha256:output", "node": "n-one"},
+  "rule": {
+    "namespace": "eveglyph",
+    "theory": "eg.math.field",
+    "name": "self-division",
+    "version": "1"
+  },
+  "conditions": ["n-x-nonzero"],
+  "evidence_class": "verified",
+  "backend": {"name": "reference-rewriter", "version": "0.1"},
+  "node_map": [
+    {"from": "n-div", "status": "mapped", "to": ["n-one"]},
+    {"from": "n-x", "status": "deleted", "to": []}
+  ]
+}

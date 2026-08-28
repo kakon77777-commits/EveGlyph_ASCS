@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.evemisslab.local/ascs/v0.5/math-transform-evidence.schema.json",
+  "title": "EveGlyph Math Transform and Equality Evidence Profile",
+  "oneOf": [
+    {"$ref": "#/$defs/transformRecord"},
+    {"$ref": "#/$defs/equalityVerdict"},
+    {"$ref": "#/$defs/adapterFidelity"}
+  ],
+  "$defs": {
+    "semanticRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "theory", "name", "version"],
+      "properties": {
+        "namespace": {"type": "string", "minLength": 1},
+        "theory": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1}
+      }
+    },
+    "subaddress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "node"],
+      "properties": {
+        "revision": {"type": "string", "minLength": 1},
+        "node": {"type": "string", "minLength": 1}
+      }
+    },
+    "nodeMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "status", "to"],
+      "properties": {
+        "from": {"type": "string", "minLength": 1},
+        "status": {"enum": ["mapped", "deleted", "split", "merged", "ambiguous", "unmapped"]},
+        "to": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "transformRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "record_type", "transform_id", "input", "output", "rule", "conditions", "evidence_class", "backend", "node_map"],
+      "properties": {
+        "profile": {"const": "org.evemisslab.math-transform/0.1"},
+        "record_type": {"const": "transform"},
+        "transform_id": {"type": "string", "minLength": 1},
+        "input": {"$ref": "#/$defs/subaddress"},
+        "output": {"$ref": "#/$defs/subaddress"},
+        "rule": {"$ref": "#/$defs/semanticRef"},
+        "conditions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "evidence_class": {"enum": ["computed", "verified", "proved", "heuristic", "external"]},
+        "backend": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": {"type": "string"},
+            "version": {"type": "string"}
+          }
+        },
+        "node_map": {"type": "array", "items": {"$ref": "#/$defs/nodeMap"}}
+      }
+    },
+    "equalityVerdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "record_type", "left", "right", "equality_class", "status", "theory", "evidence_refs"],
+      "properties": {
+        "profile": {"const": "org.evemisslab.math-equality/0.1"},
+        "record_type": {"const": "equality-verdict"},
+        "left": {"type": "object"},
+        "right": {"type": "object"},
+        "equality_class": {"enum": ["surface", "structural", "alpha", "definitional", "theorem", "approximate"]},
+        "status": {"enum": ["true", "false", "unknown"]},
+        "theory": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/semanticRef"}]},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "fidelityValue": {
+      "enum": ["exact", "preserved-subset", "approximated", "dropped", "unknown", "not-applicable"]
+    },
+    "adapterFidelity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "record_type", "adapter", "semantics", "binding", "conditions", "presentation", "provenance"],
+      "properties": {
+        "profile": {"const": "org.evemisslab.math-adapter-fidelity/0.1"},
+        "record_type": {"const": "adapter-fidelity"},
+        "adapter": {"type": "string", "minLength": 1},
+        "semantics": {"$ref": "#/$defs/fidelityValue"},
+        "binding": {"$ref": "#/$defs/fidelityValue"},
+        "conditions": {"$ref": "#/$defs/fidelityValue"},
+        "presentation": {"$ref": "#/$defs/fidelityValue"},
+        "provenance": {"$ref": "#/$defs/fidelityValue"}
+      }
+    }
+  }
+}

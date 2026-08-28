@@ -1,0 +1,10 @@
+{
+  "profile": "org.evemisslab.math-adapter-fidelity/0.1",
+  "record_type": "adapter-fidelity",
+  "adapter": "openmath-2.0r2",
+  "semantics": "exact",
+  "binding": "exact",
+  "conditions": "preserved-subset",
+  "presentation": "approximated",
+  "provenance": "dropped"
+}

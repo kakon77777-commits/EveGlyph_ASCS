@@ -1,0 +1,138 @@
+{
+  "profile": "ncm/1.0-candidate.1",
+  "object_role": "expression",
+  "expression": {
+    "root": "n-int",
+    "nodes": [
+      {
+        "id": "n-int",
+        "kind": "binder",
+        "operator": {
+          "namespace": "eveglyph",
+          "theory": "eg.math.calculus",
+          "name": "integral",
+          "version": "1"
+        },
+        "bindings": [
+          {
+            "binding_id": "b-x",
+            "display_name": "x",
+            "domain": {
+              "namespace": "eveglyph",
+              "theory": "eg.math.types",
+              "name": "Real",
+              "version": "1"
+            }
+          }
+        ],
+        "body": "n-pow",
+        "limits": {
+          "lower": "n-zero",
+          "upper": "n-one"
+        }
+      },
+      {
+        "id": "n-one",
+        "kind": "integer",
+        "value": "1"
+      },
+      {
+        "id": "n-pow",
+        "kind": "apply",
+        "operator": {
+          "namespace": "eveglyph",
+          "theory": "eg.math.arithmetic",
+          "name": "power",
+          "version": "1"
+        },
+        "args": ["n-x", "n-two"]
+      },
+      {
+        "id": "n-two",
+        "kind": "integer",
+        "value": "2"
+      },
+      {
+        "id": "n-x",
+        "kind": "bound-ref",
+        "binding_id": "b-x"
+      },
+      {
+        "id": "n-zero",
+        "kind": "integer",
+        "value": "0"
+      }
+    ]
+  },
+  "environment": {
+    "theory": {
+      "namespace": "eveglyph",
+      "theory": "eg.math.real-analysis",
+      "name": "context",
+      "version": "1"
+    },
+    "declarations": []
+  },
+  "assumptions": [],
+  "constraints": [],
+  "type_assertions": [
+    {
+      "node": "n-int",
+      "status": "verified",
+      "type": {
+        "namespace": "eveglyph",
+        "theory": "eg.math.types",
+        "name": "Real",
+        "version": "1"
+      },
+      "evidence_ref": "ev-type-01"
+    }
+  ],
+  "unit_assertions": [],
+  "numeric_policy": {
+    "mode": "exact-preferred",
+    "approximation": "explicit-only",
+    "default_precision_digits": 50,
+    "rounding": "nearest-even"
+  },
+  "presentation": {
+    "primary_notation": "traditional",
+    "hints": {
+      "integral_style": "limits-above-below"
+    }
+  },
+  "evidence": [
+    {
+      "evidence_id": "ev-type-01",
+      "class": "verified",
+      "producer": {
+        "kind": "verifier",
+        "name": "ncm-type-checker-reference",
+        "version": "0.1"
+      },
+      "event_ref": null,
+      "inputs": [],
+      "conditions": [],
+      "certificate_ref": null
+    }
+  ],
+  "result_state": {
+    "status": "unevaluated",
+    "value_root": null,
+    "condition_roots": [],
+    "reason_code": "not-requested"
+  },
+  "execution": {
+    "preferred_backends": [],
+    "required_theories": [
+      {
+        "namespace": "eveglyph",
+        "theory": "eg.math.calculus",
+        "name": "core",
+        "version": "1"
+      }
+    ],
+    "resource_policy": {}
+  },
+  "extensions": {}
+}
