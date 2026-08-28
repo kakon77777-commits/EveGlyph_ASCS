@@ -1,4 +1,9 @@
-import { createCanonicalWorkspaceBridge } from './runtime-bridge.js'
+import {
+  createCanonicalWorkspaceBridge,
+  createHistoryRepository,
+  createPersistentWorkspace,
+  createSpatialModel,
+} from './runtime-bridge.js'
 
 const existing = globalThis.EveGlyphASCS && typeof globalThis.EveGlyphASCS === 'object'
   ? globalThis.EveGlyphASCS
@@ -7,4 +12,7 @@ const existing = globalThis.EveGlyphASCS && typeof globalThis.EveGlyphASCS === '
 globalThis.EveGlyphASCS = Object.freeze({
   ...existing,
   createCanonicalWorkspaceBridge,
+  createPersistentWorkspace,
+  createHistoryRepository,
+  createSpatialModel,
 })
