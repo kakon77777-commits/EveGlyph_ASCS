@@ -1,0 +1,8 @@
+{
+  "name": "@evemisslab/ascs-agent",
+  "version": "0.1.0-candidate.1",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "exports": "./src/index.mjs"
+}
