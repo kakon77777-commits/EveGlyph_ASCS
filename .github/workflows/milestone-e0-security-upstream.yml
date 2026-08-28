@@ -1,0 +1,109 @@
+name: Milestone E0 Security Upstream Freeze
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  ascs-reference:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-e0-security-upstream' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR merge view
+        uses: actions/checkout@v4
+      - name: Use Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install validator dependencies
+        run: python -m pip install 'jsonschema>=4,<5' 'brotli>=1.1'
+      - name: Verify canonical preservation and E0 contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -B tools/ascs_repo.py verify --repo . --json
+          python -B canonical/v1.0/machine/tests/test_validate_v10.py
+          python -B canonical/v1.0/machine/tools/validate_v10.py --json
+          python -B -m unittest tests.test_security_upstream -v
+          python -B -m unittest tests.test_product_convergence -v
+          python -B tools/security_upstream.py verify-manifest --repo . --json
+          python -B tools/product_convergence.py verify --repo . --json
+          python -B tools/product_convergence.py parity --repo . --json
+
+  pinned-upstream:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-e0-security-upstream' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ASCS
+        uses: actions/checkout@v4
+      - name: Use Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fetch exact reviewed EveGlyph security upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          UP=/tmp/eveglyph-security-upstream
+          rm -rf "$UP"
+          git init "$UP"
+          git -C "$UP" remote add origin https://github.com/kakon77777-commits/eveglyph-editor.git
+          git -C "$UP" fetch --depth=1 origin 061a57ebd3f86dd6df83e6ff8472f5e194c567e5
+          git -C "$UP" checkout --detach FETCH_HEAD
+          python -B tools/security_upstream.py verify-checkout \
+            --repo . \
+            --upstream-checkout "$UP" \
+            --json
+      - name: Run pinned non-Wasmtime security and product contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/eveglyph-security-upstream
+          npm ci
+          npm run test:capabilities
+          npm run test:credential-broker
+          npm run test:github-connector
+          npm run test:google-connector
+          npm run test:mcp-delegation
+          npm run test:publication
+          npm run build
+          npm run verify:dynamic-logic
+          npm run verify:dynamic-rendering
+
+  ascs-product-regress:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-e0-security-upstream' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+      - name: Verify ASCS A/B/C/D runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test packages/ascs-core/test/*.test.mjs packages/ascs-runtime/test/*.test.mjs packages/ascs-store/test/*.test.mjs packages/ascs-history/test/*.test.mjs packages/ascs-spatial/test/*.test.mjs
+          node --test packages/ascs-math/test/*.test.mjs
+          node --test packages/ascs-glyph/test/*.test.mjs
+      - name: Verify current EveGlyph ASCS product surface
+        working-directory: apps/eveglyph-editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          node --test test/ascs-runtime-bridge.test.mjs test/ascs-persistent-bridge.test.mjs test/ascs-native-math-bridge.test.mjs test/ascs-native-glyph-bridge.test.mjs
+          npm run test:publication
+          npm run build
+          npm run verify:dynamic-logic
+          npm run verify:dynamic-rendering
