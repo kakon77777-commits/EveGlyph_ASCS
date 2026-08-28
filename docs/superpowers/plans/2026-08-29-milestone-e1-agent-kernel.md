@@ -97,8 +97,8 @@ Add focused tests that import `buildContextPack`, `createAgentRun`, `createAgent
 ```python
 V07_ARCHIVE_SHA256 = "ac8b37e81ad343153f920df18a8b1976a8e091cf5d22fb827feed63c62c9604c"
 EXPECTED_VECTOR_COUNT = 36
-EXPECTED_E1_COVERED = 18
-EXPECTED_DEFERRED = 18
+EXPECTED_E1_COVERED = 17
+EXPECTED_DEFERRED = 19
 ```
 
 It must open the ZIP through Python `zipfile`, locate the internal `V0.7_Support` root, and compare future copied reference files against ZIP entry bytes. It must also assert the frozen conformance file contains exactly 36 unique ids `AG-01` through `AG-36`.
@@ -233,11 +233,12 @@ feat: add frozen v0.7 agent record model
 
 **Interfaces:**
 - Produces `contextPackAddress(pack)` -> `Promise<string>`.
-- Produces `buildContextPack(input)` -> validated record with computed `context_pack_id`.
+- Produces `buildContextPack(input)` -> `Promise<object>` validated record with computed `context_pack_id`.
 - Produces `classifyContextTrust({ role, authorityOrigin })` -> frozen trust class.
 - Produces `verifyContextFresh(pack, resolveSourceBytes)` -> `Promise<{ ok, staleSources }>`.
 - Produces `verifyToolManifestFresh(pack, resolveToolSchemaHash)` -> `Promise<{ ok, staleTools }>`.
-- Produces `createAgentRun(input, options?)` -> validated run with a fresh `run_id` per call.
+- Produces `createAgentRun(input, options?)` -> finalized immutable frozen AgentRun record; input MUST include a frozen terminal status.
+- `createAgentKernel().startRun(...)` produces an implementation-only active attempt handle with a fresh `run_id`; `finishRun(...)` materializes the frozen AgentRun record. The active attempt MUST NOT use the frozen `agent-run/1.0-candidate.1` profile.
 
 - [ ] **Step 1: Write Context Pack RED tests**
 
@@ -286,7 +287,7 @@ Content bytes MUST NOT change the derived class.
 
 `verifyToolManifestFresh()` receives a caller-provided resolver `async toolName => sha256|null` and reports changed tool schemas. It never executes a tool.
 
-- [ ] **Step 5: Write Run RED tests and implement Run creation**
+- [ ] **Step 5: Write Run RED tests and implement final Run creation**
 
 Tests must prove:
 
@@ -298,7 +299,9 @@ model binding is always binding_is_identity_authority=false
 run pins context_pack_id, base_workspace_revision, mode, policy/grant IDs
 ```
 
-`createAgentRun()` must use a supplied `idFactory` for deterministic tests and default to `newUuid7Urn()` in production. It starts as an immutable record snapshot; lifecycle updates in Task 5 create replacement records rather than mutating caller-owned objects.
+`createAgentRun()` is a final record constructor: it requires a terminal frozen status (`completed|failed|cancelled|timed-out|conflicted`) and a finished timestamp (or null only where the frozen schema permits it). It must use a supplied `idFactory` when `run_id` is not provided and default to `newUuid7Urn()` in production.
+
+The runtime sequence in Task 5 MUST NOT invent `status=running` inside `agent-run/1.0-candidate.1`. `startRun()` instead creates a private implementation-only attempt state containing the assigned `run_id`, pins, bindings, start time, proposal/effect ids and diagnostics. `finishRun()` converts that attempt into the frozen immutable AgentRun record.
 
 - [ ] **Step 6: Verify and commit**
 
@@ -331,7 +334,8 @@ feat: add E1 context pack and run semantics
 - Produces `evaluateReviewPolicy(policy, proposal)`.
 - Produces `authorityPinDigest({ capabilityGrantIds, policyRevision })` -> `Promise<string>` with prefix `authority-pin:sha256:`.
 - Produces `createReviewDecision(input, options?)` -> additive `agent-review-decision/1.0-candidate.1` record.
-- Produces `reviewDecisionStillValid(decision, proposal, policy, authorityPinDigest)`.
+- Produces `reviewDecisionStillValid(decision, proposal, policy, currentAuthorityPinDigest)`.
+- Produces `validateReviewDecision(value)` for the additive E1 review-evidence profile.
 
 - [ ] **Step 1: Define the material proposal digest with RED tests**
 
@@ -394,7 +398,7 @@ patch   -> canonicalMutation=proposal-only, humanReview=required, autoCommitElig
 direct  -> canonicalMutation=allowed-if-capable, humanReview=policy-dependent, autoCommitEligible=<policy.auto_commit>
 ```
 
-For all modes, `deterministicValidationRequired=true`; mode never creates capabilities or external-effect authority.
+For all modes, `deterministicValidationRequired=true`; mode never creates capabilities or external-effect authority. Full AG-13 conformance is intentionally deferred to E2 because the frozen expected result also requires explicit capability authorization.
 
 - [ ] **Step 5: Implement additive review-decision evidence**
 
@@ -417,7 +421,7 @@ The record shape is:
 }
 ```
 
-`approved` and `auto-approved` require proposal status `validated`, exact policy id/revision, exact current material digest, and a non-empty authority pin digest. This digest only binds pinned grant IDs/policy revision in E1; it does NOT claim the grants are authorized. E2 later owns actual authority compilation.
+`approved` and `auto-approved` require proposal status `validated`, exact policy id/revision, exact current material digest, and a non-empty authority pin digest. `authorityPinDigest()` canonicalizes `{ capability_grant_ids: [...ids].sort(), policy_revision }` so set ordering cannot drift the evidence digest. This digest only binds pinned grant IDs/policy revision in E1; it does NOT claim the grants are authorized. E2 later owns actual authority compilation.
 
 - [ ] **Step 6: Prove approval invalidation**
 
@@ -457,13 +461,14 @@ Required scenario:
 ```text
 register principal
 → put deterministic context pack
-→ start patch run
+→ start patch run (implementation-only active attempt)
 → put proposed edit
 → deterministic validator callback returns evidence
 → proposal becomes validated
 → review policy says needs-human
 → record approved human review bound to exact digest
 → proposal becomes approved
+→ finish run into immutable frozen AgentRun record
 ```
 
 At the end, an external `WorkspaceRuntime` fixture supplied only to the test must remain deep-equal to its initial snapshot because E1 never receives it.
@@ -478,13 +483,15 @@ async proposal => ({ ok: true, evidenceRefs: ['validator:test:v1'] })
 
 The callback result, not model text, controls `validated` vs `rejected`. `model_self_validation_authoritative` must remain false.
 
-- [ ] **Step 3: Implement failure/cancellation semantics**
+- [ ] **Step 3: Implement active-attempt/final-run separation and failure/cancellation semantics**
 
-`finishRun(runId, { status, diagnostics })` accepts only frozen terminal statuses `completed|failed|cancelled|timed-out|conflicted`; it records diagnostics and finished_at. Failed/cancelled/timed-out runs do not change any proposal to committed and cannot create canonical state.
+`startRun()` creates only an internal active-attempt object and assigns the immutable `run_id`; it MUST NOT expose that object as `agent-run/1.0-candidate.1` and MUST NOT invent a `running` frozen status.
+
+`finishRun(runId, { status, diagnostics })` accepts only frozen terminal statuses `completed|failed|cancelled|timed-out|conflicted`, materializes the immutable `agent-run/1.0-candidate.1` record through `createAgentRun()`, stores that final record, and removes the active attempt. Failed/cancelled/timed-out runs do not change any proposal to committed and cannot create canonical state.
 
 - [ ] **Step 4: Add a source-level no-runtime-authority gate**
 
-The test scans `packages/ascs-agent/src/**/*.mjs` and rejects imports/references to:
+The test scans `packages/ascs-agent/src/**/*.mjs` and rejects import specifiers/exported API names that introduce:
 
 ```text
 ascs-runtime
@@ -496,7 +503,7 @@ DelegationTicket
 McpServer
 ```
 
-False positives in comments are avoided by testing import specifiers and exported API names, not arbitrary prose.
+Do not fail merely because documentation comments mention a forbidden concept.
 
 - [ ] **Step 5: Verify and commit**
 
@@ -527,12 +534,12 @@ feat: add E1 agent orchestration kernel
 
 - [ ] **Step 1: Freeze the E1 coverage map**
 
-E1-covered vectors (18):
+E1-covered vectors (17):
 
 ```text
 AG-01 AG-02 AG-03 AG-04
 AG-05 AG-06 AG-07 AG-08 AG-09
-AG-11 AG-12 AG-13 AG-14
+AG-11 AG-12 AG-14
 AG-17 AG-18
 AG-31
 AG-33 AG-34
@@ -541,7 +548,7 @@ AG-33 AG-34
 Deferred vectors are explicit and not counted PASS:
 
 ```text
-E2: AG-10 AG-15 AG-16 AG-19 AG-20 AG-32 AG-35
+E2: AG-10 AG-13 AG-15 AG-16 AG-19 AG-20 AG-32 AG-35
 E3: AG-21 AG-22 AG-23 AG-24 AG-30
 E4: AG-25 AG-26 AG-29
 E6: AG-27 AG-28 AG-36
@@ -555,8 +562,8 @@ Tests require:
 
 ```text
 total = 36
-passed = 18
-deferred = 18
+passed = 17
+deferred = 19
 failed = 0
 no unclassified vector ids
 no result obtains its observed outcome by returning vector.expected verbatim
@@ -564,16 +571,18 @@ no result obtains its observed outcome by returning vector.expected verbatim
 
 Each covered vector must execute real production functions from Tasks 2–5. Examples:
 
-- AG-01/02/03 use principal/run constructors.
-- AG-04 creates two runs and compares IDs.
+- AG-01/02/03 use principal/run identity boundaries.
+- AG-04 creates two active attempts for the same principal/task and compares run IDs, then finalizes both separately.
 - AG-05 computes context ID twice.
 - AG-07/08 use host trust classification.
 - AG-09 uses source freshness mismatch.
-- AG-11/12/13 use review-policy evaluation.
+- AG-11/12 use review-policy evaluation.
 - AG-14 uses `checkProposalBase()`.
 - AG-17/18 use deterministic validator callback behavior.
 - AG-31 uses tool-manifest freshness check.
 - AG-33/34 use run termination + absence of canonical runtime integration.
+
+Direct-mode policy eligibility is tested in E1 unit tests, while full AG-13 is deferred to E2 because its expected result requires explicit capability authorization.
 
 - [ ] **Step 3: Implement generic scenario execution**
 
@@ -624,7 +633,7 @@ e1-reference
 
 e1-agent-kernel
   - all packages/ascs-agent tests
-  - E1 conformance: 18 PASS / 18 DEFERRED / 0 FAIL
+  - E1 conformance: 17 PASS / 19 DEFERRED / 0 FAIL
   - source-level no-runtime-authority gate
 
 cross-milestone-regression
@@ -646,7 +655,7 @@ Context Pack != Prompt
 Model Output != Proposal != Validated Command != Commit
 Direct != Bypass
 E1 has no canonical mutation authority
-E1 covers 18 v0.7 vectors and explicitly defers 18 to E2/E3/E4/E6
+E1 covers 17 v0.7 vectors and explicitly defers 19 to E2/E3/E4/E6
 ```
 
 List final run IDs and exact head only after they exist; do not fabricate them beforehand.
@@ -686,7 +695,7 @@ base lineage = E0 exact head / actual PR base
 head_sha = exact PR head
 source_pr = actual PR number
 v0.7 archive SHA-256
-E1 vector coverage = 18 PASS / 18 DEFERRED / 0 FAIL
+E1 vector coverage = 17 PASS / 19 DEFERRED / 0 FAIL
 E0 security upstream commit/tree
 all verification fields
 snapshot counts and payload-tree SHA-256
