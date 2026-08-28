@@ -99,6 +99,7 @@ jobs:
           node --test test/ascs-runtime-bridge.test.mjs
           node --test test/ascs-persistent-bridge.test.mjs
           node --test test/ascs-native-math-bridge.test.mjs
+          node --test test/ascs-native-glyph-bridge.test.mjs
           npm run test:publication
           npm run build
           npm run verify:dynamic-logic
