@@ -1,0 +1,16 @@
+{
+  "schema": "eveglyph-ascs-e1-vector-coverage/1.0",
+  "authority": "implementation-coverage-only",
+  "total": 36,
+  "covered": [
+    "AG-01", "AG-02", "AG-03", "AG-04", "AG-05", "AG-06", "AG-07", "AG-08", "AG-09",
+    "AG-11", "AG-12", "AG-14", "AG-17", "AG-18", "AG-31", "AG-33", "AG-34"
+  ],
+  "deferred": [
+    {"id":"AG-10","slice":"E2"},{"id":"AG-13","slice":"E2"},{"id":"AG-15","slice":"E2"},{"id":"AG-16","slice":"E2"},
+    {"id":"AG-19","slice":"E2"},{"id":"AG-20","slice":"E2"},{"id":"AG-32","slice":"E2"},{"id":"AG-35","slice":"E2"},
+    {"id":"AG-21","slice":"E3"},{"id":"AG-22","slice":"E3"},{"id":"AG-23","slice":"E3"},{"id":"AG-24","slice":"E3"},{"id":"AG-30","slice":"E3"},
+    {"id":"AG-25","slice":"E4"},{"id":"AG-26","slice":"E4"},{"id":"AG-29","slice":"E4"},
+    {"id":"AG-27","slice":"E6"},{"id":"AG-28","slice":"E6"},{"id":"AG-36","slice":"E6"}
+  ]
+}

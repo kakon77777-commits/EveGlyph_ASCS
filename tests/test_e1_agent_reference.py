@@ -1,5 +1,7 @@
+import base64
 import hashlib
 import json
+import gzip
 import unittest
 import zipfile
 from pathlib import Path
@@ -7,6 +9,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 ARCHIVE = REPO / 'canonical' / 'v1.0' / 'source_archives' / 'EveGlyph_ASCS_v0.7_Agentic_Workspace_Round_Complete.zip'
 PACKAGE_REF = REPO / 'packages' / 'ascs-agent' / 'reference' / 'v07'
+BUNDLE = PACKAGE_REF / 'REFERENCE_BUNDLE.json.gz'
 COVERAGE = PACKAGE_REF / 'E1_VECTOR_COVERAGE.json'
 
 V07_ARCHIVE_SHA256 = 'ac8b37e81ad343153f920df18a8b1976a8e091cf5d22fb827feed63c62c9604c'
@@ -14,20 +17,20 @@ EXPECTED_VECTOR_COUNT = 36
 EXPECTED_E1_COVERED = 17
 EXPECTED_DEFERRED = 19
 
-COPIES = {
-    'schemas/agent-principal.schema.json': 'schemas/agent-principal.schema.json',
-    'schemas/agent-context-pack.schema.json': 'schemas/agent-context-pack.schema.json',
-    'schemas/agent-run.schema.json': 'schemas/agent-run.schema.json',
-    'schemas/agent-proposal.schema.json': 'schemas/agent-proposal.schema.json',
-    'schemas/agent-review-policy.schema.json': 'schemas/agent-review-policy.schema.json',
-    'examples/agent_principal_example.json': 'examples/agent_principal_example.json',
-    'examples/context_pack_example.json': 'examples/context_pack_example.json',
-    'examples/agent_run_example.json': 'examples/agent_run_example.json',
-    'examples/patch_proposal_example.json': 'examples/patch_proposal_example.json',
-    'examples/direct_proposal_example.json': 'examples/direct_proposal_example.json',
-    'examples/review_policy_example.json': 'examples/review_policy_example.json',
-    'conformance/agent_conformance_vectors.json': 'conformance/agent_conformance_vectors.json',
-}
+COPIES = [
+    'schemas/agent-principal.schema.json',
+    'schemas/agent-context-pack.schema.json',
+    'schemas/agent-run.schema.json',
+    'schemas/agent-proposal.schema.json',
+    'schemas/agent-review-policy.schema.json',
+    'examples/agent_principal_example.json',
+    'examples/context_pack_example.json',
+    'examples/agent_run_example.json',
+    'examples/patch_proposal_example.json',
+    'examples/direct_proposal_example.json',
+    'examples/review_policy_example.json',
+    'conformance/agent_conformance_vectors.json',
+]
 
 
 def archive_sha256():
@@ -52,13 +55,16 @@ class E1AgentReferenceTests(unittest.TestCase):
         self.assertEqual(ids, [f'AG-{n:02d}' for n in range(1, 37)])
         self.assertEqual(len(set(ids)), EXPECTED_VECTOR_COUNT)
 
-    def test_package_reference_copies_are_byte_identical_to_frozen_archive(self):
+    def test_reference_bundle_is_byte_identical_to_frozen_archive(self):
+        self.assertTrue(BUNDLE.is_file(), 'reference bundle is missing')
+        bundle = json.loads(gzip.decompress(BUNDLE.read_bytes()).decode('utf-8'))
+        self.assertEqual(bundle['schema'], 'eveglyph-ascs-v07-reference-bundle/1.0')
+        self.assertEqual(bundle['authority'], 'implementation-reference-only')
+        self.assertEqual(sorted(bundle['files']), sorted(COPIES))
         with zipfile.ZipFile(ARCHIVE) as zf:
             prefix = support_prefix(zf.namelist())
-            for archive_rel, package_rel in COPIES.items():
-                local = PACKAGE_REF / package_rel
-                self.assertTrue(local.is_file(), f'missing copied reference: {package_rel}')
-                self.assertEqual(local.read_bytes(), zf.read(f'{prefix}/{archive_rel}'), package_rel)
+            for rel in COPIES:
+                self.assertEqual(base64.b64decode(bundle['files'][rel]), zf.read(f'{prefix}/{rel}'), rel)
 
     def test_e1_coverage_accounts_for_all_vectors_without_overclaim(self):
         self.assertTrue(COVERAGE.is_file(), 'E1 vector coverage manifest is missing')

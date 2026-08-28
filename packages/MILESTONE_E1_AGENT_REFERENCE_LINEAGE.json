@@ -1,0 +1,20 @@
+{
+  "authority": "implementation-reference-only",
+  "frozen_vector_count": 36,
+  "package": "packages/ascs-agent",
+  "reference_artifacts": [
+    {
+      "bytes": 10748,
+      "path": "packages/ascs-agent/reference/v07/REFERENCE_BUNDLE.json.gz",
+      "sha256": "50059403e864b15e24f054cd7d2ac77d9fdaf9f74ec1c755b599b003f8eab36b"
+    },
+    {
+      "bytes": 874,
+      "path": "packages/ascs-agent/reference/v07/E1_VECTOR_COVERAGE.json",
+      "sha256": "35b74ebaa44378e9ff26da0601d9a54b58052ac40b31853856f5486d71ceae03"
+    }
+  ],
+  "schema": "eveglyph-ascs-agent-reference-lineage/1.0",
+  "source_archive": "canonical/v1.0/source_archives/EveGlyph_ASCS_v0.7_Agentic_Workspace_Round_Complete.zip",
+  "source_archive_sha256": "ac8b37e81ad343153f920df18a8b1976a8e091cf5d22fb827feed63c62c9604c"
+}

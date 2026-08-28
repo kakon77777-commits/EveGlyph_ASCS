@@ -15,5 +15,6 @@ test('E1 package declares frozen v0.7 implementation-reference lineage', () => {
   assert.equal(lineage.authority, 'implementation-reference-only')
   assert.equal(lineage.source_archive_sha256, 'ac8b37e81ad343153f920df18a8b1976a8e091cf5d22fb827feed63c62c9604c')
   assert.equal(lineage.frozen_vector_count, 36)
-  assert.equal(fs.existsSync(path.join(PKG, 'reference', 'v07', 'conformance', 'agent_conformance_vectors.json')), true)
+  assert.equal(fs.existsSync(path.join(PKG, 'reference', 'v07', 'REFERENCE_BUNDLE.json.gz')), true)
+  assert.equal(fs.existsSync(path.join(PKG, 'reference', 'v07', 'E1_VECTOR_COVERAGE.json')), true)
 })
