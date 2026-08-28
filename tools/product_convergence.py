@@ -6,7 +6,10 @@ import json
 import sys
 from pathlib import Path, PurePosixPath
 
-from tools.security_upstream import load_security_manifest, validate_security_manifest
+try:
+    from tools.security_upstream import load_security_manifest, validate_security_manifest
+except ModuleNotFoundError:
+    from security_upstream import load_security_manifest, validate_security_manifest
 
 UPSTREAM_REPOSITORY = "kakon77777-commits/eveglyph-editor"
 UPSTREAM_COMMIT = "c3258a2f461d5af5a69c879891b485ccf0f02635"
