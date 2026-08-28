@@ -296,7 +296,6 @@ def collect_parity(repo: Path) -> dict:
         "required_capabilities": list(REQUIRED_CAPABILITIES),
         "capabilities": capabilities,
         "ascs_only_future_milestones": [
-            "native_math",
             "native_glyph",
             "agent_mcp_authority_rebinding",
         ],
@@ -307,6 +306,8 @@ def collect_parity(repo: Path) -> dict:
             "revision_history_graph": (repo / "packages" / "ascs-history" / "src" / "index.mjs").exists(),
             "spatial_canonical_model": (repo / "packages" / "ascs-spatial" / "src" / "index.mjs").exists(),
             "persistent_editor_bridge": (root / "test" / "ascs-persistent-bridge.test.mjs").exists(),
+            "native_math_candidate_runtime": (repo / "packages" / "ascs-math" / "src" / "index.mjs").exists(),
+            "native_math_editor_bridge": (root / "test" / "ascs-native-math-bridge.test.mjs").exists(),
         },
         "ok": all(item["present"] for item in capabilities.values()),
     }
