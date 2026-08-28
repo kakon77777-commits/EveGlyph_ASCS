@@ -55,7 +55,7 @@ jobs:
           rm -rf "$UP"
           git init "$UP"
           git -C "$UP" remote add origin https://github.com/kakon77777-commits/eveglyph-editor.git
-          git -C "$UP" fetch --depth=1 origin 061a57ebd3f86dd6df83e6ff8472f5e194c567e5
+          git -C "$UP" fetch --depth=2 origin 061a57ebd3f86dd6df83e6ff8472f5e194c567e5
           git -C "$UP" checkout --detach FETCH_HEAD
           python -B tools/security_upstream.py verify-checkout \
             --repo . \
