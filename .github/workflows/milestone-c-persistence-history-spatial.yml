@@ -114,6 +114,8 @@ jobs:
       - run: npm ci
       - name: Milestone B bridge regression
         run: node --test test/ascs-runtime-bridge.test.mjs
+      - name: Milestone C persistent bridge contract
+        run: node --test test/ascs-persistent-bridge.test.mjs
       - run: npm run test:publication
       - run: npm run build
       - run: npm run verify:dynamic-logic
