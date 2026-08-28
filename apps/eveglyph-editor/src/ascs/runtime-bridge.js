@@ -8,6 +8,7 @@ import {
 import { createHistoryRepository as createRawHistoryRepository } from '../../../../packages/ascs-history/src/index.mjs'
 import { createSpatialModel as createRawSpatialModel } from '../../../../packages/ascs-spatial/src/index.mjs'
 import { createNativeMathService as createRawNativeMathService } from '../../../../packages/ascs-math/src/index.mjs'
+import { createNativeGlyphService as createRawNativeGlyphService } from '../../../../packages/ascs-glyph/src/index.mjs'
 
 async function createConfiguredCarrier(persistence = { kind: 'memory' }) {
   const config = persistence ?? { kind: 'memory' }
@@ -121,4 +122,8 @@ export function createSpatialModel(options) {
 
 export function createNativeMathService(workspaceBridge) {
   return createRawNativeMathService(workspaceBridge)
+}
+
+export function createNativeGlyphService(workspaceBridge) {
+  return createRawNativeGlyphService(workspaceBridge)
 }

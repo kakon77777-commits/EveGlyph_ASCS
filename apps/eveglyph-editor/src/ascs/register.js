@@ -4,6 +4,7 @@ import {
   createPersistentWorkspace,
   createSpatialModel,
   createNativeMathService,
+  createNativeGlyphService,
 } from './runtime-bridge.js'
 
 const existing = globalThis.EveGlyphASCS && typeof globalThis.EveGlyphASCS === 'object'
@@ -17,4 +18,5 @@ globalThis.EveGlyphASCS = Object.freeze({
   createHistoryRepository,
   createSpatialModel,
   createNativeMathService,
+  createNativeGlyphService,
 })
