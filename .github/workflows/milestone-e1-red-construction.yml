@@ -20,11 +20,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Verify exact Task 2 source bytes
-        run: test "$(sha256sum packages/ascs-agent/src/model.mjs | cut -d' ' -f1)" = "ece5a870c9005d7330509c132c91af135683ea93d57ed972c5586ccaa57a096e"
-      - name: Verify completed Task 2 contracts
+      - name: Verify exact completed source bytes
+        run: |
+          test "$(sha256sum packages/ascs-agent/src/model.mjs | cut -d' ' -f1)" = "ece5a870c9005d7330509c132c91af135683ea93d57ed972c5586ccaa57a096e"
+          test "$(sha256sum packages/ascs-agent/src/context.mjs | cut -d' ' -f1)" = "a11618c49ced566d3141ebc20b02cb2e714ae00dd043884c080b939389fe5d3f"
+          test "$(sha256sum packages/ascs-agent/src/run.mjs | cut -d' ' -f1)" = "88aa13064d42acd9e7a752e7e23e234d7fdc38708443caa7beb662f8d32fe3a3"
+          test "$(sha256sum packages/ascs-agent/src/index.mjs | cut -d' ' -f1)" = "94321c441ceb644aaba6c0f1f53f14627436a9589e8df7e90bb8611ad1f80d01"
+      - name: Verify Task 2 contracts
         run: |
           node --test packages/ascs-agent/test/kernel.test.mjs packages/ascs-agent/test/model.test.mjs packages/ascs-agent/test/reference-lineage.test.mjs
           python -B -m unittest tests.test_e1_agent_reference -v
-      - name: Task 3 context/run contract
+      - name: Verify Task 3 context and run contracts
         run: node --test packages/ascs-agent/test/context.test.mjs packages/ascs-agent/test/run.test.mjs

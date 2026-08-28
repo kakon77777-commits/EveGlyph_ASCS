@@ -7,8 +7,16 @@ export {
   createAgentPrincipal,
 } from './model.mjs'
 
-// E1 Task 1 exports are filled by later RED/GREEN slices.
-export function buildContextPack() { throw new Error('E1 context semantics not implemented yet') }
-export function createAgentRun() { throw new Error('E1 run semantics not implemented yet') }
+export {
+  contextPackAddress,
+  buildContextPack,
+  classifyContextTrust,
+  verifyContextFresh,
+  verifyToolManifestFresh,
+} from './context.mjs'
+
+export { createAgentRun } from './run.mjs'
+
+// Filled by later E1 RED/GREEN slices.
 export function createAgentProposal() { throw new Error('E1 proposal semantics not implemented yet') }
 export function evaluateReviewPolicy() { throw new Error('E1 review semantics not implemented yet') }
