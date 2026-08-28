@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -100,6 +102,30 @@ class ProductConvergenceTests(unittest.TestCase):
         encoded = json.dumps(parity, ensure_ascii=False, sort_keys=True)
         self.assertIn("typst_pdf_publication", encoded)
         self.assertIn("real_corpus_publication_tests", encoded)
+
+    def test_product_convergence_cli_can_load_security_reference(self):
+        proc = subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                "tools/product_convergence.py",
+                "parity",
+                "--repo",
+                ".",
+                "--json",
+            ],
+            cwd=REPO,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        payload = json.loads(proc.stdout)
+        self.assertEqual(
+            payload["security_upstream_reference"]["commit"],
+            "061a57ebd3f86dd6df83e6ff8472f5e194c567e5",
+        )
 
     def test_security_upstream_reference_is_additive_not_a_baseline_rewrite(self):
         baseline = load_baseline_manifest(REPO)
