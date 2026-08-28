@@ -1,0 +1,52 @@
+{
+  "archive": "EveGlyph_ASCS_v0.5_Native_Math_Round_Complete.zip",
+  "archive_sha256": "16f499d1721191ebf11c11baada3440332e5ddbcafa59cc26c7aecc7fe0edebe",
+  "base_main_sha": "08133a2b794e242723c4c3f6618de2a8d78ad84f",
+  "candidate_profile": "ncm/1.0-candidate.1",
+  "design_commit": "e942a0bc1fec2838579ffcdddddc8bafffb7d30d",
+  "fixtures": [
+    {
+      "bytes": 899,
+      "path": "math-conformance-vectors.schema.json",
+      "sha256": "264353944476ef2276f3ced86371b94a3880d05e27b2a58389ce2284c30805e7"
+    },
+    {
+      "bytes": 4141,
+      "path": "math-transform-evidence.schema.json",
+      "sha256": "8fe5fa004057baaf25d1d145a0e68af606fec5686b9b72be838aa4ac5b2fe22a"
+    },
+    {
+      "bytes": 271,
+      "path": "math_adapter_fidelity_example.json",
+      "sha256": "ee6ced99da72c7d10494222b2df15d7798c96e456d34c5cedd8052f38d2b8b0e"
+    },
+    {
+      "bytes": 324,
+      "path": "math_equality_example.json",
+      "sha256": "da693c4d33f691e7d0aaa93cb2e214f24c752c6976f065f67f5f80c98f49f638"
+    },
+    {
+      "bytes": 634,
+      "path": "math_transform_example.json",
+      "sha256": "51738721f8ae127c99df132cc9ed21818028766d78795564748b77acee701d4c"
+    },
+    {
+      "bytes": 15720,
+      "path": "native-math-object-v1-candidate.schema.json",
+      "sha256": "6963f166ed84def5e8037e5b6786876c5b5e4fb8891aab5147910d4d2deae145"
+    },
+    {
+      "bytes": 8025,
+      "path": "native_math_conformance_vectors.json",
+      "sha256": "70bebeb1e00ad2ad2fbbfffd5ccac261ed2b3d59f6dbfee8cbbb06d200045a28"
+    },
+    {
+      "bytes": 2936,
+      "path": "native_math_integral_example.json",
+      "sha256": "bb04aacb1495cffac0dc3c1d722f446ab7ab5541248d0ff5fffec8d67d7105d1"
+    }
+  ],
+  "schema": "eveglyph-ascs-milestone-d-math-lineage/1.0",
+  "vector_count": 30,
+  "vector_profile": "org.evemisslab.math-conformance-vectors/0.1"
+}

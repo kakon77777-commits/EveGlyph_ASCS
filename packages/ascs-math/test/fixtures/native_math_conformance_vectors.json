@@ -1,0 +1,215 @@
+{
+  "profile": "org.evemisslab.math-conformance-vectors/0.1",
+  "vectors": [
+    {
+      "id": "MATH-001",
+      "category": "numeric-exact",
+      "operation": "validate-integer",
+      "input": {"kind": "integer", "value": "123456789012345678901234567890"},
+      "expected": {"status": "valid", "host_integer_width_independent": true}
+    },
+    {
+      "id": "MATH-002",
+      "category": "numeric-exact",
+      "operation": "validate-rational",
+      "input": {"numerator": "1", "denominator": "3"},
+      "expected": {"status": "valid", "canonical": true}
+    },
+    {
+      "id": "MATH-003",
+      "category": "numeric-exact",
+      "operation": "validate-rational",
+      "input": {"numerator": "2", "denominator": "6"},
+      "expected": {"status": "reject-noncanonical", "canonical_form": {"numerator": "1", "denominator": "3"}}
+    },
+    {
+      "id": "MATH-004",
+      "category": "numeric-exact",
+      "operation": "validate-decimal-exact",
+      "input": {"coefficient": "123", "exponent10": "-2"},
+      "expected": {"status": "valid", "semantic_value": "1.23", "binary_float_required": false}
+    },
+    {
+      "id": "MATH-005",
+      "category": "numeric-approx",
+      "operation": "validate-approximate",
+      "input": {"format": "decimal", "value": "0.333333", "precision": {"kind": "absolute-error", "value": "0.000001"}},
+      "expected": {"status": "valid", "exact": false}
+    },
+    {
+      "id": "MATH-006",
+      "category": "equality",
+      "operation": "compare",
+      "input": {"left": "1/3", "right": "0.333333", "class": "theorem"},
+      "expected": {"status": "false-or-unknown", "must_not_promote_approximate_to_theorem": true}
+    },
+    {
+      "id": "MATH-007",
+      "category": "binding",
+      "operation": "resolve-free-reference",
+      "input": {"display_name": "x", "declaration_id": "d-1"},
+      "expected": {"identity_source": "declaration_id", "display_name_authoritative": false}
+    },
+    {
+      "id": "MATH-008",
+      "category": "binding",
+      "operation": "alpha-equivalence",
+      "input": {"left": "lambda x. x", "right": "lambda y. y"},
+      "expected": {"status": true, "class": "alpha"}
+    },
+    {
+      "id": "MATH-009",
+      "category": "binding",
+      "operation": "compare-free-bound",
+      "input": {"left": "free:x", "right": "bound:x"},
+      "expected": {"status": false, "reason": "visible-name-does-not-define-binding"}
+    },
+    {
+      "id": "MATH-010",
+      "category": "binding",
+      "operation": "substitute",
+      "input": {"expression": "lambda y. x", "substitution": {"x": "y"}},
+      "expected": {"capture_avoiding": true, "result_semantics": "free substituted y remains free"}
+    },
+    {
+      "id": "MATH-011",
+      "category": "conditions",
+      "operation": "classify-context",
+      "input": {"assumption": "x > 0", "constraint": "x != 0"},
+      "expected": {"same_class": false, "assumption_is_premise": true, "constraint_is_obligation": true}
+    },
+    {
+      "id": "MATH-012",
+      "category": "rewrite",
+      "operation": "rewrite",
+      "input": {"rule": "x/x -> 1", "source": "x/x"},
+      "expected": {"result": "1", "required_condition": "x != 0", "condition_must_be_preserved": true}
+    },
+    {
+      "id": "MATH-013",
+      "category": "result-state",
+      "operation": "evaluate",
+      "input": {"expression": "1/0", "domain": "real"},
+      "expected": {"status": "undefined", "reason_code": "division-by-zero", "nan_substitution_allowed": false}
+    },
+    {
+      "id": "MATH-014",
+      "category": "result-state",
+      "operation": "rewrite",
+      "input": {"expression": "(x^2-1)/(x-1)"},
+      "expected": {"status": "conditional", "value": "x+1", "condition": "x != 1"}
+    },
+    {
+      "id": "MATH-015",
+      "category": "result-state",
+      "operation": "resolve-operator",
+      "input": {"glyph": "ambiguous-plus", "candidate_domains": ["integer", "matrix"]},
+      "expected": {"status": "unresolved", "candidate_count": 2}
+    },
+    {
+      "id": "MATH-016",
+      "category": "typing",
+      "operation": "validate-unknown-type",
+      "input": {"node": "n1", "type_status": "unknown"},
+      "expected": {"status": "valid", "must_not_invent_type": true}
+    },
+    {
+      "id": "MATH-017",
+      "category": "units",
+      "operation": "add",
+      "input": {"left": {"value": "3", "dimension": {"L": "1"}}, "right": {"value": "5", "dimension": {"T": "1"}}},
+      "expected": {"status": "dimension-mismatch", "numeric_addition_before_validation": false}
+    },
+    {
+      "id": "MATH-018",
+      "category": "structure",
+      "operation": "validate-matrix",
+      "input": {"rows": 2, "columns": 2, "cells": [["a", "b"], ["c", "d"]]},
+      "expected": {"status": "valid", "shape": [2, 2]}
+    },
+    {
+      "id": "MATH-019",
+      "category": "structure",
+      "operation": "evaluate-piecewise",
+      "input": {"cases": [{"condition": "x>0", "value": "1"}], "otherwise": null, "x": "unknown"},
+      "expected": {"status": "conditional-or-undefined", "must_not_invent_otherwise": true}
+    },
+    {
+      "id": "MATH-020",
+      "category": "evidence",
+      "operation": "classify",
+      "input": {"backend": "cas", "backend_return": "2*x"},
+      "expected": {"evidence_class": "computed", "proved": false}
+    },
+    {
+      "id": "MATH-021",
+      "category": "evidence",
+      "operation": "validate-proved-evidence",
+      "input": {"class": "proved", "certificate_ref": null},
+      "expected": {"status": "reject", "reason": "proof-or-certificate-required"}
+    },
+    {
+      "id": "MATH-022",
+      "category": "equality",
+      "operation": "validate-verdict",
+      "input": {"equal": true, "equality_class": null},
+      "expected": {"status": "reject", "reason": "equality-class-required"}
+    },
+    {
+      "id": "MATH-023",
+      "category": "presentation",
+      "operation": "compare",
+      "input": {"semantic_object": "derivative(f,x)", "left_projection": "df/dx", "right_projection": "f'(x)"},
+      "expected": {"semantic_equality_may_hold": true, "surface_equality_required": false}
+    },
+    {
+      "id": "MATH-024",
+      "category": "addressing",
+      "operation": "resolve-subaddress",
+      "input": {"address": {"revision": "rev:v1", "node": "n3"}, "current_revision": "rev:v2"},
+      "expected": {"direct_reuse_allowed": false, "mapping_required": true}
+    },
+    {
+      "id": "MATH-025",
+      "category": "rewrite",
+      "operation": "map-node",
+      "input": {"from": {"revision": "v1", "node": "n3"}, "rewrite": "expand", "output_revision": "v2"},
+      "expected": {"mapping_status_one_of": ["mapped", "split", "merged", "deleted", "ambiguous", "unmapped"]}
+    },
+    {
+      "id": "MATH-026",
+      "category": "adapter",
+      "operation": "latex-import",
+      "input": {"source": "custom macro expression"},
+      "expected": {"fidelity_dimensions_required": true, "semantic_exactness_must_not_be_assumed": true}
+    },
+    {
+      "id": "MATH-027",
+      "category": "adapter",
+      "operation": "mathml-import",
+      "input": {"source_kind": "presentation-mathml"},
+      "expected": {"presentation_preservation_possible": true, "full_semantics_must_not_be_assumed": true}
+    },
+    {
+      "id": "MATH-028",
+      "category": "adapter",
+      "operation": "openmath-map",
+      "input": {"symbol": {"theory": "arith1", "name": "times"}},
+      "expected": {"semantic_symbol_mapping_supported": true, "workspace_identity_exported_as_formula_semantics": false}
+    },
+    {
+      "id": "MATH-029",
+      "category": "adapter",
+      "operation": "smtlib-solve",
+      "input": {"solver_result": "unsat"},
+      "expected": {"automatic_evidence_class": "verified-or-external", "automatic_proved_without_certificate": false}
+    },
+    {
+      "id": "MATH-030",
+      "category": "compatibility",
+      "operation": "load-legacy-profile",
+      "input": {"profile": "ncm/0.1"},
+      "expected": {"load_allowed": true, "reinterpret_as_candidate_profile": false, "migration": "explicit-optional"}
+    }
+  ]
+}

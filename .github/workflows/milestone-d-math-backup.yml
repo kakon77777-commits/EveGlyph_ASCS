@@ -1,0 +1,205 @@
+name: Milestone D Math Backup
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-source-backup:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-d-native-math' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Use Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+
+      - name: Install reference validator dependencies
+        run: python -m pip install 'jsonschema>=4,<5' 'brotli>=1.1'
+
+      - name: Verify exact head, canonical preservation and product lineage
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          python -B tools/ascs_repo.py verify --repo . --json
+          python -B canonical/v1.0/machine/tests/test_validate_v10.py
+          python -B canonical/v1.0/machine/tools/validate_v10.py --json
+          python -B -m unittest tests.test_product_convergence -v
+          python -B tools/product_convergence.py verify --repo . --json
+          python -B tools/product_convergence.py parity --repo . --json
+
+      - name: Verify frozen v0.5 reference
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, pathlib, zipfile
+          import jsonschema
+          archive = pathlib.Path('canonical/v1.0/source_archives/EveGlyph_ASCS_v0.5_Native_Math_Round_Complete.zip')
+          expected = '16f499d1721191ebf11c11baada3440332e5ddbcafa59cc26c7aecc7fe0edebe'
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected
+          out = pathlib.Path('/tmp/v05')
+          with zipfile.ZipFile(archive) as zf:
+              assert zf.testzip() is None
+              zf.extractall(out)
+          pins = json.loads(pathlib.Path('packages/MILESTONE_D_MATH_REFERENCE_LINEAGE.json').read_text(encoding='utf-8'))
+          root = pathlib.Path('packages/ascs-math/test/fixtures')
+          assert pins['archive_sha256'] == expected
+          assert pins['vector_count'] == 30
+          for row in pins['fixtures']:
+              data = (root / row['path']).read_bytes()
+              assert len(data) == row['bytes']
+              assert hashlib.sha256(data).hexdigest() == row['sha256']
+          vectors = json.loads((root / 'native_math_conformance_vectors.json').read_text(encoding='utf-8'))
+          schema = json.loads((root / 'math-conformance-vectors.schema.json').read_text(encoding='utf-8'))
+          jsonschema.Draft202012Validator(schema).validate(vectors)
+          assert len(vectors['vectors']) == 30
+          assert len({item['id'] for item in vectors['vectors']}) == 30
+          PY
+          V05=/tmp/v05/EveGlyph_ASCS_v0.5_Native_Math_Round_Complete/EveGlyph_ASCS_v1.0_Roadmap/v0.5
+          python -B "$V05/V0.5_Support/tools/validate_v05.py" --json
+
+      - name: Verify Milestone B/C and Native Math runtime
+        run: |
+          node --test packages/ascs-core/test/*.test.mjs packages/ascs-runtime/test/*.test.mjs packages/ascs-store/test/*.test.mjs packages/ascs-history/test/*.test.mjs packages/ascs-spatial/test/*.test.mjs
+          node --test packages/ascs-math/test/*.test.mjs
+
+      - name: Verify EveGlyph product surface
+        working-directory: apps/eveglyph-editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          node --test test/ascs-runtime-bridge.test.mjs
+          node --test test/ascs-persistent-bridge.test.mjs
+          node --test test/ascs-native-math-bridge.test.mjs
+          npm run test:publication
+          npm run build
+          npm run verify:dynamic-logic
+          npm run verify:dynamic-rendering
+
+      - name: Build exact-head source backup
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: 08133a2b794e242723c4c3f6618de2a8d78ad84f
+          REPOSITORY: kakon77777-commits/EveGlyph_ASCS
+          PR_NUMBER: '4'
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA8="${HEAD_SHA:0:8}"
+          OUT="$RUNNER_TEMP/ascs-d-math-backup-output"
+          PKG="$RUNNER_TEMP/EveGlyph_ASCS_Milestone_D_Math_${SHA8}_source-backup"
+          ZIP="$OUT/EveGlyph_ASCS_Milestone_D_Math_${SHA8}_source-backup.zip"
+          rm -rf "$OUT" "$PKG"
+          mkdir -p "$OUT" "$PKG/repository"
+
+          rsync -a ./ "$PKG/repository/" \
+            --exclude='.git/' \
+            --exclude='node_modules/' \
+            --exclude='dist/' \
+            --exclude='tmp/' \
+            --exclude='.cache/' \
+            --exclude='coverage/' \
+            --exclude='.DS_Store'
+
+          git diff --binary "$BASE_SHA...$HEAD_SHA" > "$PKG/PR.patch"
+
+          python - "$PKG" "$ZIP" "$REPOSITORY" "$BASE_SHA" "$HEAD_SHA" "$PR_NUMBER" <<'PY'
+          import hashlib, json, sys, zipfile
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          pkg = Path(sys.argv[1]); zip_path = Path(sys.argv[2])
+          repository, base_sha, head_sha, pr_number = sys.argv[3:]
+          snapshot = pkg / 'repository'
+          rows=[]
+          for path in sorted(p for p in snapshot.rglob('*') if p.is_file()):
+              rel=path.relative_to(snapshot).as_posix(); data=path.read_bytes()
+              rows.append({'path':rel,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+          tree=hashlib.sha256()
+          for row in rows:
+              tree.update(f'{row["path"]}\0{row["sha256"]}\0{row["bytes"]}\0'.encode('utf-8'))
+          manifest={
+              'schema':'eveglyph-ascs-source-backup/1.0',
+              'repository':repository,
+              'milestone':'D-native-math',
+              'branch':'workbench/milestone-d-native-math',
+              'pr_number':int(pr_number),
+              'base_sha':base_sha,
+              'head_sha':head_sha,
+              'design_commit':'e942a0bc1fec2838579ffcdddddc8bafffb7d30d',
+              'ascs_canonical_release':'ascs/1.0',
+              'native_math_archive_sha256':'16f499d1721191ebf11c11baada3440332e5ddbcafa59cc26c7aecc7fe0edebe',
+              'native_math_profile':'ncm/1.0-candidate.1',
+              'native_math_vector_count':30,
+              'eveglyph_upstream_sha':'c3258a2f461d5af5a69c879891b485ccf0f02635',
+              'created_at':datetime.now(timezone.utc).isoformat(),
+              'snapshot_root':'repository/',
+              'snapshot_file_count':len(rows),
+              'snapshot_total_bytes':sum(row['bytes'] for row in rows),
+              'payload_tree_sha256':tree.hexdigest(),
+              'exclusions':['.git','node_modules','dist','tmp','.cache','coverage','.DS_Store'],
+              'verification':{
+                  'exact_head':'PASS','repository_preservation':'PASS','ascs_v1_regression':'PASS','ascs_v1_validator':'PASS',
+                  'product_overlay_lineage':'PASS','v05_reference':'PASS','native_math_vectors_30':'PASS','native_math_runtime':'PASS',
+                  'milestone_b_c_runtime':'PASS','editor_b_bridge':'PASS','editor_c_bridge':'PASS','editor_d_math_bridge':'PASS',
+                  'publication_tests':'PASS','build':'PASS','dynamic_logic':'PASS','dynamic_rendering':'PASS'
+              }
+          }
+          (pkg/'BACKUP_MANIFEST.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          (pkg/'RESTORE.md').write_text(
+              '# EveGlyph ASCS Milestone D-Math exact-head restore\n\n'
+              f'This archive corresponds to PR #4 head `{head_sha}` with base `{base_sha}`.\n\n'
+              '1. Extract the archive.\n2. Use `repository/` as the restored source tree.\n'
+              '3. Verify package files with `SHA256SUMS.txt`.\n4. `PR.patch` records the exact D-Math delta.\n', encoding='utf-8')
+          package_rows=[]
+          for path in sorted(p for p in pkg.rglob('*') if p.is_file() and p.name!='SHA256SUMS.txt'):
+              package_rows.append((hashlib.sha256(path.read_bytes()).hexdigest(),path.relative_to(pkg).as_posix()))
+          (pkg/'SHA256SUMS.txt').write_text(''.join(f'{d}  {r}\n' for d,r in package_rows),encoding='utf-8')
+          zip_path.parent.mkdir(parents=True,exist_ok=True)
+          with zipfile.ZipFile(zip_path,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as zf:
+              for path in sorted(p for p in pkg.rglob('*') if p.is_file()):
+                  zf.write(path,f'{pkg.name}/{path.relative_to(pkg).as_posix()}')
+          digest=hashlib.sha256(zip_path.read_bytes()).hexdigest()
+          (zip_path.parent/'ARTIFACT_SHA256.txt').write_text(f'{digest}  {zip_path.name}\n',encoding='utf-8')
+          print(json.dumps({'archive':zip_path.name,'sha256':digest,'payload_tree_sha256':tree.hexdigest(),'files':len(rows)},indent=2))
+          PY
+
+          python - "$ZIP" <<'PY'
+          import sys,zipfile
+          with zipfile.ZipFile(sys.argv[1]) as zf:
+              bad=zf.testzip()
+              if bad: raise SystemExit(f'bad zip member: {bad}')
+          PY
+          (cd "$OUT" && sha256sum -c ARTIFACT_SHA256.txt)
+
+      - name: Upload exact-head backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: EveGlyph_ASCS_Milestone_D_Math_${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/ascs-d-math-backup-output/EveGlyph_ASCS_Milestone_D_Math_*_source-backup.zip
+            ${{ runner.temp }}/ascs-d-math-backup-output/ARTIFACT_SHA256.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30

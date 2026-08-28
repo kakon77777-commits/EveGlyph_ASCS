@@ -1,0 +1,10 @@
+{
+  "profile": "org.evemisslab.math-equality/0.1",
+  "record_type": "equality-verdict",
+  "left": {"revision": "rev:sha256:left", "node": "n-lambda-x"},
+  "right": {"revision": "rev:sha256:right", "node": "n-lambda-y"},
+  "equality_class": "alpha",
+  "status": "true",
+  "theory": null,
+  "evidence_refs": ["ev-alpha-01"]
+}

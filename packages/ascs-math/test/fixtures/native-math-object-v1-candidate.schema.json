@@ -1,0 +1,454 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.evemisslab.local/ascs/v0.5/native-math-object-v1-candidate.schema.json",
+  "title": "EveGlyph Native Math Object v1 Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "object_role",
+    "expression",
+    "environment",
+    "assumptions",
+    "constraints",
+    "type_assertions",
+    "unit_assertions",
+    "numeric_policy",
+    "presentation",
+    "evidence",
+    "result_state",
+    "execution",
+    "extensions"
+  ],
+  "properties": {
+    "profile": {"const": "ncm/1.0-candidate.1"},
+    "object_role": {
+      "enum": ["expression", "definition", "claim", "computation-result", "proof-artifact", "constraint-set"]
+    },
+    "expression": {"$ref": "#/$defs/expressionGraph"},
+    "environment": {"$ref": "#/$defs/environment"},
+    "assumptions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/assumption"}
+    },
+    "constraints": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/constraint"}
+    },
+    "type_assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/typeAssertion"}
+    },
+    "unit_assertions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/unitAssertion"}
+    },
+    "numeric_policy": {"$ref": "#/$defs/numericPolicy"},
+    "presentation": {"$ref": "#/$defs/presentation"},
+    "evidence": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/evidence"}
+    },
+    "result_state": {"$ref": "#/$defs/resultState"},
+    "execution": {"$ref": "#/$defs/execution"},
+    "extensions": {"type": "object"}
+  },
+  "$defs": {
+    "idString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "signedIntegerString": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)$"
+    },
+    "positiveIntegerString": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "decimalLexical": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+    },
+    "semanticRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "theory", "name", "version"],
+      "properties": {
+        "namespace": {"$ref": "#/$defs/idString"},
+        "theory": {"$ref": "#/$defs/idString"},
+        "name": {"$ref": "#/$defs/idString"},
+        "version": {"$ref": "#/$defs/idString"}
+      }
+    },
+    "expressionGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "nodes"],
+      "properties": {
+        "root": {"$ref": "#/$defs/idString"},
+        "nodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/node"}
+        }
+      }
+    },
+    "node": {
+      "oneOf": [
+        {"$ref": "#/$defs/freeRefNode"},
+        {"$ref": "#/$defs/boundRefNode"},
+        {"$ref": "#/$defs/integerNode"},
+        {"$ref": "#/$defs/rationalNode"},
+        {"$ref": "#/$defs/decimalExactNode"},
+        {"$ref": "#/$defs/numberApproxNode"},
+        {"$ref": "#/$defs/applyNode"},
+        {"$ref": "#/$defs/binderNode"},
+        {"$ref": "#/$defs/sequenceNode"},
+        {"$ref": "#/$defs/matrixNode"},
+        {"$ref": "#/$defs/piecewiseNode"},
+        {"$ref": "#/$defs/quantityNode"},
+        {"$ref": "#/$defs/externalRefNode"},
+        {"$ref": "#/$defs/holeNode"}
+      ]
+    },
+    "nodeBase": {
+      "type": "object",
+      "required": ["id", "kind"]
+    },
+    "freeRefNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "declaration_id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "free-ref"},
+        "declaration_id": {"$ref": "#/$defs/idString"}
+      }
+    },
+    "boundRefNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "binding_id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "bound-ref"},
+        "binding_id": {"$ref": "#/$defs/idString"}
+      }
+    },
+    "integerNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "value"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "integer"},
+        "value": {"$ref": "#/$defs/signedIntegerString"}
+      }
+    },
+    "rationalNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "numerator", "denominator"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "rational"},
+        "numerator": {"$ref": "#/$defs/signedIntegerString"},
+        "denominator": {"$ref": "#/$defs/positiveIntegerString"}
+      }
+    },
+    "decimalExactNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "coefficient", "exponent10"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "decimal-exact"},
+        "coefficient": {"$ref": "#/$defs/signedIntegerString"},
+        "exponent10": {"$ref": "#/$defs/signedIntegerString"}
+      }
+    },
+    "precision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"enum": ["absolute-error", "relative-error", "digits", "unknown-error"]},
+        "value": {"type": ["string", "null"]}
+      }
+    },
+    "numberApproxNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "format", "value", "precision"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "number-approx"},
+        "format": {"enum": ["decimal", "binary32", "binary64", "arbitrary", "backend-native"]},
+        "value": {"type": "string", "minLength": 1},
+        "precision": {"$ref": "#/$defs/precision"}
+      }
+    },
+    "applyNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "operator", "args"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "apply"},
+        "operator": {"$ref": "#/$defs/semanticRef"},
+        "args": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/idString"}
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding_id", "display_name", "domain"],
+      "properties": {
+        "binding_id": {"$ref": "#/$defs/idString"},
+        "display_name": {"type": "string"},
+        "domain": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/semanticRef"},
+            {"type": "object", "required": ["node"], "properties": {"node": {"$ref": "#/$defs/idString"}}, "additionalProperties": false}
+          ]
+        }
+      }
+    },
+    "binderLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lower": {"$ref": "#/$defs/idString"},
+        "upper": {"$ref": "#/$defs/idString"}
+      }
+    },
+    "binderNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "operator", "bindings", "body"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "binder"},
+        "operator": {"$ref": "#/$defs/semanticRef"},
+        "bindings": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/binding"}},
+        "body": {"$ref": "#/$defs/idString"},
+        "limits": {"$ref": "#/$defs/binderLimits"}
+      }
+    },
+    "sequenceNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "items", "semantic_kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "sequence"},
+        "semantic_kind": {"enum": ["tuple", "list", "set-ordered-source", "arguments", "other"]},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/idString"}}
+      }
+    },
+    "matrixNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "rows", "columns", "cells"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "matrix"},
+        "rows": {"type": "integer", "minimum": 0},
+        "columns": {"type": "integer", "minimum": 0},
+        "cells": {
+          "type": "array",
+          "items": {"type": "array", "items": {"$ref": "#/$defs/idString"}}
+        }
+      }
+    },
+    "piecewiseCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["condition", "value"],
+      "properties": {
+        "condition": {"$ref": "#/$defs/idString"},
+        "value": {"$ref": "#/$defs/idString"}
+      }
+    },
+    "piecewiseNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "cases", "otherwise"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "piecewise"},
+        "cases": {"type": "array", "items": {"$ref": "#/$defs/piecewiseCase"}},
+        "otherwise": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/idString"}]}
+      }
+    },
+    "quantityNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "value", "unit"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "quantity"},
+        "value": {"$ref": "#/$defs/idString"},
+        "unit": {"$ref": "#/$defs/semanticRef"}
+      }
+    },
+    "externalRefNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "address"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "external-ref"},
+        "address": {"type": "object", "minProperties": 1}
+      }
+    },
+    "holeNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "status", "reason"],
+      "properties": {
+        "id": {"$ref": "#/$defs/idString"},
+        "kind": {"const": "hole"},
+        "status": {"enum": ["unresolved", "incomplete", "ambiguous"]},
+        "reason": {"type": "string"}
+      }
+    },
+    "declaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declaration_id", "display_name", "type"],
+      "properties": {
+        "declaration_id": {"$ref": "#/$defs/idString"},
+        "display_name": {"type": "string"},
+        "type": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/semanticRef"}]}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["theory", "declarations"],
+      "properties": {
+        "theory": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/semanticRef"}]},
+        "declarations": {"type": "array", "items": {"$ref": "#/$defs/declaration"}}
+      }
+    },
+    "assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assumption_id", "expression_root", "authority"],
+      "properties": {
+        "assumption_id": {"$ref": "#/$defs/idString"},
+        "expression_root": {"$ref": "#/$defs/idString"},
+        "authority": {"enum": ["explicit", "imported", "verified"]}
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["constraint_id", "expression_root", "status", "origin", "evidence_ref"],
+      "properties": {
+        "constraint_id": {"$ref": "#/$defs/idString"},
+        "expression_root": {"$ref": "#/$defs/idString"},
+        "status": {"enum": ["pending", "discharged", "violated", "unknown"]},
+        "origin": {"type": "string"},
+        "evidence_ref": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/idString"}]}
+      }
+    },
+    "typeAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "status", "type", "evidence_ref"],
+      "properties": {
+        "node": {"$ref": "#/$defs/idString"},
+        "status": {"enum": ["explicit", "verified", "unknown"]},
+        "type": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/semanticRef"}]},
+        "evidence_ref": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/idString"}]}
+      }
+    },
+    "dimension": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/signedIntegerString"}
+    },
+    "unitAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "dimension", "status", "evidence_ref"],
+      "properties": {
+        "node": {"$ref": "#/$defs/idString"},
+        "dimension": {"$ref": "#/$defs/dimension"},
+        "status": {"enum": ["explicit", "verified", "unknown"]},
+        "evidence_ref": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/idString"}]}
+      }
+    },
+    "numericPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "approximation", "default_precision_digits", "rounding"],
+      "properties": {
+        "mode": {"enum": ["exact-preferred", "exact-only", "approximate-allowed", "backend-defined-explicit"]},
+        "approximation": {"enum": ["explicit-only", "allowed-with-evidence"]},
+        "default_precision_digits": {"type": "integer", "minimum": 1, "maximum": 1000000},
+        "rounding": {"enum": ["nearest-even", "toward-zero", "toward-positive", "toward-negative", "backend-explicit"]}
+      }
+    },
+    "presentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_notation", "hints"],
+      "properties": {
+        "primary_notation": {"type": "string", "minLength": 1},
+        "hints": {"type": "object"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "class", "producer", "event_ref", "inputs", "conditions", "certificate_ref"],
+      "properties": {
+        "evidence_id": {"$ref": "#/$defs/idString"},
+        "class": {"enum": ["assumed", "computed", "verified", "proved", "heuristic", "external"]},
+        "producer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name", "version"],
+          "properties": {
+            "kind": {"enum": ["human", "cas", "prover", "verifier", "solver", "runtime", "external"]},
+            "name": {"type": "string"},
+            "version": {"type": "string"}
+          }
+        },
+        "event_ref": {"oneOf": [{"type": "null"}, {"type": "string"}]},
+        "inputs": {"type": "array", "items": {"type": "object"}},
+        "conditions": {"type": "array", "items": {"$ref": "#/$defs/idString"}},
+        "certificate_ref": {"oneOf": [{"type": "null"}, {"type": "object"}]}
+      }
+    },
+    "resultState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "value_root", "condition_roots", "reason_code"],
+      "properties": {
+        "status": {"enum": ["defined", "conditional", "undefined", "unresolved", "unevaluated"]},
+        "value_root": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/idString"}]},
+        "condition_roots": {"type": "array", "items": {"$ref": "#/$defs/idString"}},
+        "reason_code": {"oneOf": [{"type": "null"}, {"type": "string"}]}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preferred_backends", "required_theories", "resource_policy"],
+      "properties": {
+        "preferred_backends": {"type": "array", "items": {"type": "string"}},
+        "required_theories": {"type": "array", "items": {"$ref": "#/$defs/semanticRef"}},
+        "resource_policy": {"type": "object"}
+      }
+    }
+  }
+}
