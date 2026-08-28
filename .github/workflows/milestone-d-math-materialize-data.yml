@@ -1,0 +1,85 @@
+name: Milestone D Math Materialize Data
+
+on:
+  push:
+    branches:
+      - workbench/milestone-d-native-math
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: workbench/milestone-d-native-math
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Materialize exact v0.5 fixtures and RED test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, pathlib, zipfile
+          root = pathlib.Path('.')
+          archive = root / 'canonical/v1.0/source_archives/EveGlyph_ASCS_v0.5_Native_Math_Round_Complete.zip'
+          expected = '16f499d1721191ebf11c11baada3440332e5ddbcafa59cc26c7aecc7fe0edebe'
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected
+          temp = pathlib.Path('/tmp/v05')
+          with zipfile.ZipFile(archive) as zf:
+              assert zf.testzip() is None
+              zf.extractall(temp)
+          support = temp / 'EveGlyph_ASCS_v0.5_Native_Math_Round_Complete/EveGlyph_ASCS_v1.0_Roadmap/v0.5/V0.5_Support'
+          fixtures = root / 'packages/ascs-math/test/fixtures'
+          fixtures.mkdir(parents=True, exist_ok=True)
+          mapping = {
+              'schemas/native-math-object-v1-candidate.schema.json': 'native-math-object-v1-candidate.schema.json',
+              'schemas/math-transform-evidence.schema.json': 'math-transform-evidence.schema.json',
+              'schemas/math-conformance-vectors.schema.json': 'math-conformance-vectors.schema.json',
+              'conformance/native_math_conformance_vectors.json': 'native_math_conformance_vectors.json',
+              'examples/native_math_integral_example.json': 'native_math_integral_example.json',
+              'examples/math_transform_example.json': 'math_transform_example.json',
+              'examples/math_equality_example.json': 'math_equality_example.json',
+              'examples/math_adapter_fidelity_example.json': 'math_adapter_fidelity_example.json',
+          }
+          rows=[]
+          for src, dst in mapping.items():
+              data=(support/src).read_bytes()
+              (fixtures/dst).write_bytes(data)
+              rows.append({'path':dst,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+          rows.sort(key=lambda x:x['path'])
+          lineage={
+              'schema':'eveglyph-ascs-milestone-d-math-lineage/1.0',
+              'base_main_sha':'08133a2b794e242723c4c3f6618de2a8d78ad84f',
+              'design_commit':'e942a0bc1fec2838579ffcdddddc8bafffb7d30d',
+              'archive':'EveGlyph_ASCS_v0.5_Native_Math_Round_Complete.zip',
+              'archive_sha256':expected,
+              'candidate_profile':'ncm/1.0-candidate.1',
+              'vector_profile':'org.evemisslab.math-conformance-vectors/0.1',
+              'vector_count':30,
+              'fixtures':rows,
+          }
+          (root/'packages/MILESTONE_D_MATH_REFERENCE_LINEAGE.json').write_text(json.dumps(lineage,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          pkg=root/'packages/ascs-math/package.json'; pkg.parent.mkdir(parents=True,exist_ok=True)
+          pkg.write_text('{\n  "name": "@evemisslab/ascs-math",\n  "version": "0.1.0-candidate.1",\n  "private": true,\n  "type": "module"\n}\n',encoding='utf-8')
+          test=root/'packages/ascs-math/test/red-contracts.test.mjs'; test.parent.mkdir(parents=True,exist_ok=True)
+          test.write_text(r'''import test from 'node:test'\nimport assert from 'node:assert/strict'\nimport fs from 'node:fs'\nimport path from 'node:path'\nimport { fileURLToPath } from 'node:url'\n\nimport { validateNativeMathObject, executeMathConformanceVector, projectNativeMathToLatex, projectNativeMathToMathML } from '../src/index.mjs'\n\nconst here = path.dirname(fileURLToPath(import.meta.url))\nconst fixture = (name) => JSON.parse(fs.readFileSync(path.join(here, 'fixtures', name), 'utf8'))\n\ntest('frozen v0.5 Native Math fixture set is exactly 30 unique vectors', () => {\n  const vectors = fixture('native_math_conformance_vectors.json')\n  assert.equal(vectors.profile, 'org.evemisslab.math-conformance-vectors/0.1')\n  assert.equal(vectors.vectors.length, 30)\n  assert.equal(new Set(vectors.vectors.map((item) => item.id)).size, 30)\n})\n\ntest('Native Math public APIs validate, execute vectors, and project without source authority', () => {\n  const example = fixture('native_math_integral_example.json')\n  assert.equal(validateNativeMathObject(example).ok, true)\n  const vector = fixture('native_math_conformance_vectors.json').vectors[0]\n  assert.deepEqual(executeMathConformanceVector(vector), vector.expected)\n  assert.equal(typeof projectNativeMathToLatex(example).source, 'string')\n  assert.equal(typeof projectNativeMathToMathML(example).source, 'string')\n})\n''',encoding='utf-8')
+          print(json.dumps({'fixtures':len(rows),'vector_count':30,'archive_sha256':expected},indent=2))
+          PY
+      - name: Commit materialized data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add packages/ascs-math packages/MILESTONE_D_MATH_REFERENCE_LINEAGE.json
+          if git diff --cached --quiet; then
+            echo 'No materialization changes.'
+            exit 0
+          fi
+          git commit -m 'test: define Native Math candidate contracts'
+          git push origin HEAD:workbench/milestone-d-native-math
