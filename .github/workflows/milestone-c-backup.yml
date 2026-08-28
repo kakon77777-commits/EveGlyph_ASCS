@@ -1,0 +1,247 @@
+name: Milestone C Backup
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-source-backup:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-c-persistence-history-spatial' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Use Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+
+      - name: Install canonical validator dependencies
+        run: python -m pip install 'jsonschema>=4,<5' 'brotli>=1.1'
+
+      - name: Verify exact head and canonical preservation
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+          python -B tools/ascs_repo.py verify --repo . --json
+          python -B canonical/v1.0/machine/tests/test_validate_v10.py
+          python -B canonical/v1.0/machine/tools/validate_v10.py --json
+          python -B -m unittest tests.test_product_convergence -v
+          python -B tools/product_convergence.py verify --repo . --json
+          python -B tools/product_convergence.py parity --repo . --json
+
+      - name: Verify pinned Milestone C references
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, pathlib, zipfile
+          root = pathlib.Path('canonical/v1.0/source_archives')
+          specs = [
+              ('EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip', '19a510cebcbe1d1b0e7c3134d99c88eebf98dd20385863ba71850aaf09ca7778', pathlib.Path('/tmp/arch')),
+              ('EveGlyph_Computational_Canvas_MVP_v0.1.zip', 'f49a4f419f9b4539aac0721a1ad85f84151cec71bf3da68db22a197303b5cd3f', pathlib.Path('/tmp/mvp')),
+              ('EveGlyph_ASCS_v0.3_Persistent_Editing_Round_Complete.zip', '8c3aa6f55ac35ee94b8e8e6846d8ece0543b52f6fe1fc8c90a2c4efb16acacfb', pathlib.Path('/tmp/v03')),
+              ('EveGlyph_ASCS_v0.4_Spatial_Region_Round_Complete.zip', '29dd5cb0d17f75a2dbc727315a4f341551f8223ead6c5605edd4a36e685adce7', pathlib.Path('/tmp/v04')),
+          ]
+          for name, expected, out in specs:
+              archive = root / name
+              actual = hashlib.sha256(archive.read_bytes()).hexdigest()
+              assert actual == expected, (name, actual, expected)
+              out.mkdir(parents=True, exist_ok=True)
+              with zipfile.ZipFile(archive) as zf:
+                  assert zf.testzip() is None
+                  zf.extractall(out)
+          PY
+          ARCH=/tmp/arch/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1
+          python -B "$ARCH/TW-01_Support/tools/validate_tw01.py"
+          python -B "$ARCH/TW-02_Support/tools/validate_tw02.py"
+          python -B "$ARCH/TW-03_Support/tools/validate_tw03.py"
+          MVP=/tmp/mvp/EveGlyph_Computational_Canvas_MVP_v0.1
+          PYTHONPATH="$MVP/src" python -B -m unittest discover -s "$MVP/tests" -v
+          test "$(sha256sum packages/ascs-store/test/fixtures/tw02_vectors.json | awk '{print $1}')" = '8840e674d4e209357f9244826f669b4fade1095dbf2d184b96ba1e38e9098de3'
+          test "$(sha256sum packages/ascs-history/test/fixtures/history_merge_vectors.json | awk '{print $1}')" = 'c0afe5c97be7b231764874a4c7466636f1cdcf146796f6af04019e336d777d00'
+          test "$(sha256sum packages/ascs-spatial/test/fixtures/spatial_conformance_vectors.json | awk '{print $1}')" = 'c35cb6782227cb0010508211b3aab04675c97324202c2cfb2b8638e94af9b940'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+          spatial_schema = json.loads(Path('packages/ascs-spatial/test/fixtures/spatial-region-profile.schema.json').read_text(encoding='utf-8'))
+          spatial_example = json.loads(Path('packages/ascs-spatial/test/fixtures/spatial_region_example.json').read_text(encoding='utf-8'))
+          jsonschema.Draft202012Validator(spatial_schema).validate(spatial_example)
+          history = json.loads(Path('packages/ascs-history/test/fixtures/history_merge_vectors.json').read_text(encoding='utf-8'))
+          spatial = json.loads(Path('packages/ascs-spatial/test/fixtures/spatial_conformance_vectors.json').read_text(encoding='utf-8'))
+          assert history['profile'] == 'org.evemisslab.history-conformance/0.1' and len(history['vectors']) == 12
+          assert spatial['profile'] == 'org.evemisslab.spatial-conformance/0.1' and len(spatial['vectors']) == 18
+          print('Milestone C v0.3/v0.4 reference fixtures: PASS')
+          PY
+
+      - name: Verify Milestone B and C JavaScript runtime
+        run: node --test packages/ascs-core/test/*.test.mjs packages/ascs-runtime/test/*.test.mjs packages/ascs-store/test/*.test.mjs packages/ascs-history/test/*.test.mjs packages/ascs-spatial/test/*.test.mjs
+
+      - name: Verify EveGlyph product surface
+        working-directory: apps/eveglyph-editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          node --test test/ascs-runtime-bridge.test.mjs
+          node --test test/ascs-persistent-bridge.test.mjs
+          npm run test:publication
+          npm run build
+          npm run verify:dynamic-logic
+          npm run verify:dynamic-rendering
+
+      - name: Build exact-head source backup
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: 17c57fff08d1c2278823f86b19312ecae9c377cc
+          REPOSITORY: kakon77777-commits/EveGlyph_ASCS
+          PR_NUMBER: '3'
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA8="${HEAD_SHA:0:8}"
+          OUT="$RUNNER_TEMP/ascs-c-backup-output"
+          PKG="$RUNNER_TEMP/EveGlyph_ASCS_Milestone_C_${SHA8}_source-backup"
+          ZIP="$OUT/EveGlyph_ASCS_Milestone_C_${SHA8}_source-backup.zip"
+          rm -rf "$OUT" "$PKG"
+          mkdir -p "$OUT" "$PKG/repository"
+
+          rsync -a ./ "$PKG/repository/" \
+            --exclude='.git/' \
+            --exclude='node_modules/' \
+            --exclude='dist/' \
+            --exclude='tmp/' \
+            --exclude='.cache/' \
+            --exclude='coverage/' \
+            --exclude='.DS_Store'
+
+          git diff --binary "$BASE_SHA...$HEAD_SHA" > "$PKG/PR.patch"
+
+          python - "$PKG" "$ZIP" "$REPOSITORY" "$BASE_SHA" "$HEAD_SHA" "$PR_NUMBER" <<'PY'
+          import hashlib
+          import json
+          import sys
+          import zipfile
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          pkg = Path(sys.argv[1])
+          zip_path = Path(sys.argv[2])
+          repository, base_sha, head_sha, pr_number = sys.argv[3:]
+          snapshot = pkg / 'repository'
+
+          rows = []
+          for path in sorted(p for p in snapshot.rglob('*') if p.is_file()):
+              rel = path.relative_to(snapshot).as_posix()
+              data = path.read_bytes()
+              rows.append({'path': rel, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
+
+          tree = hashlib.sha256()
+          for row in rows:
+              tree.update(f'{row["path"]}\0{row["sha256"]}\0{row["bytes"]}\0'.encode('utf-8'))
+
+          manifest = {
+              'schema': 'eveglyph-ascs-source-backup/1.0',
+              'repository': repository,
+              'milestone': 'C-persistence-history-spatial',
+              'branch': 'workbench/milestone-c-persistence-history-spatial',
+              'pr_number': int(pr_number),
+              'base_sha': base_sha,
+              'head_sha': head_sha,
+              'ascs_canonical_release': 'ascs/1.0',
+              'architecture_archive_sha256': '19a510cebcbe1d1b0e7c3134d99c88eebf98dd20385863ba71850aaf09ca7778',
+              'mvp_archive_sha256': 'f49a4f419f9b4539aac0721a1ad85f84151cec71bf3da68db22a197303b5cd3f',
+              'persistent_editing_archive_sha256': '8c3aa6f55ac35ee94b8e8e6846d8ece0543b52f6fe1fc8c90a2c4efb16acacfb',
+              'spatial_region_archive_sha256': '29dd5cb0d17f75a2dbc727315a4f341551f8223ead6c5605edd4a36e685adce7',
+              'eveglyph_upstream_sha': 'c3258a2f461d5af5a69c879891b485ccf0f02635',
+              'created_at': datetime.now(timezone.utc).isoformat(),
+              'snapshot_root': 'repository/',
+              'snapshot_file_count': len(rows),
+              'snapshot_total_bytes': sum(row['bytes'] for row in rows),
+              'payload_tree_sha256': tree.hexdigest(),
+              'exclusions': ['.git', 'node_modules', 'dist', 'tmp', '.cache', 'coverage', '.DS_Store'],
+              'verification': {
+                  'exact_head': 'PASS',
+                  'repository_preservation': 'PASS',
+                  'ascs_v1_regression': 'PASS',
+                  'ascs_v1_validator': 'PASS',
+                  'product_overlay_lineage': 'PASS',
+                  'tw01_reference': 'PASS',
+                  'tw02_reference': 'PASS',
+                  'tw03_reference': 'PASS',
+                  'mvp_suite': 'PASS',
+                  'history_vectors_12': 'PASS',
+                  'spatial_vectors_18': 'PASS',
+                  'javascript_b_c_runtime': 'PASS',
+                  'editor_b_bridge': 'PASS',
+                  'editor_c_bridge': 'PASS',
+                  'publication_tests': 'PASS',
+                  'build': 'PASS',
+                  'dynamic_logic': 'PASS',
+                  'dynamic_rendering': 'PASS'
+              }
+          }
+          (pkg / 'BACKUP_MANIFEST.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          (pkg / 'RESTORE.md').write_text(
+              '# EveGlyph ASCS Milestone C exact-head restore\n\n'
+              f'This archive corresponds to PR #3 head `{head_sha}` with base `{base_sha}`.\n\n'
+              '1. Extract the archive.\n'
+              '2. Use `repository/` as the restored source tree.\n'
+              '3. Verify package files using `SHA256SUMS.txt`.\n'
+              '4. `PR.patch` records the exact Milestone C delta from the base.\n',
+              encoding='utf-8'
+          )
+
+          package_rows = []
+          for path in sorted(p for p in pkg.rglob('*') if p.is_file() and p.name != 'SHA256SUMS.txt'):
+              rel = path.relative_to(pkg).as_posix()
+              package_rows.append((hashlib.sha256(path.read_bytes()).hexdigest(), rel))
+          (pkg / 'SHA256SUMS.txt').write_text(''.join(f'{digest}  {rel}\n' for digest, rel in package_rows), encoding='utf-8')
+
+          zip_path.parent.mkdir(parents=True, exist_ok=True)
+          root_name = pkg.name
+          with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+              for path in sorted(p for p in pkg.rglob('*') if p.is_file()):
+                  zf.write(path, f'{root_name}/{path.relative_to(pkg).as_posix()}')
+          digest = hashlib.sha256(zip_path.read_bytes()).hexdigest()
+          (zip_path.parent / 'ARTIFACT_SHA256.txt').write_text(f'{digest}  {zip_path.name}\n', encoding='utf-8')
+          print(json.dumps({'archive': zip_path.name, 'sha256': digest, 'payload_tree_sha256': tree.hexdigest(), 'files': len(rows)}, indent=2))
+          PY
+
+          python - "$ZIP" <<'PY'
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as zf:
+              bad = zf.testzip()
+              if bad:
+                  raise SystemExit(f'bad zip member: {bad}')
+          PY
+          (cd "$OUT" && sha256sum -c ARTIFACT_SHA256.txt)
+
+      - name: Upload exact-head backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: EveGlyph_ASCS_Milestone_C_${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/ascs-c-backup-output/EveGlyph_ASCS_Milestone_C_*_source-backup.zip
+            ${{ runner.temp }}/ascs-c-backup-output/ARTIFACT_SHA256.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
