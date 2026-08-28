@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evemisslab.example/schemas/glyph-binding-evidence.schema.json",
+  "type": "object",
+  "required": [
+    "profile",
+    "binding_id",
+    "glyph_ref",
+    "kind",
+    "authority",
+    "target",
+    "required_capabilities",
+    "provenance"
+  ],
+  "properties": {
+    "profile": {
+      "const": "glyph-binding/1.0-candidate.1"
+    },
+    "binding_id": {
+      "type": "string"
+    },
+    "glyph_ref": {
+      "type": "object",
+      "required": [
+        "persistent_id",
+        "revision_id"
+      ],
+      "properties": {
+        "persistent_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "kind": {
+      "enum": [
+        "semantic-symbol",
+        "unicode-sequence",
+        "opentype-glyph",
+        "behavior"
+      ]
+    },
+    "authority": {
+      "enum": [
+        "candidate",
+        "explicit",
+        "derived-validated",
+        "revoked"
+      ]
+    },
+    "target": {
+      "type": "object"
+    },
+    "required_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "actor_class",
+        "tool",
+        "evidence_class"
+      ],
+      "properties": {
+        "actor_class": {
+          "enum": [
+            "human",
+            "ai",
+            "system",
+            "importer"
+          ]
+        },
+        "tool": {
+          "type": "string"
+        },
+        "evidence_class": {
+          "enum": [
+            "declared",
+            "recognized",
+            "verified",
+            "imported",
+            "computed"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

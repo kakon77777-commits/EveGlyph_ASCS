@@ -1,0 +1,2037 @@
+{
+  "schema": "evemisslab.symbolic-image",
+  "version": "0.7",
+  "mode": "strict-source-blind",
+  "encoding": "palette-runs",
+  "canvas": {
+    "width": 4,
+    "height": 4,
+    "pixelAspect": 1
+  },
+  "palette": [
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      255,
+      255,
+      255,
+      255
+    ],
+    [
+      255,
+      0,
+      0,
+      255
+    ]
+  ],
+  "tokens": [
+    {
+      "op": "RUN",
+      "y": 0,
+      "x": 0,
+      "length": 1,
+      "paletteIndex": 0
+    },
+    {
+      "op": "RUN",
+      "y": 0,
+      "x": 1,
+      "length": 2,
+      "paletteIndex": 1
+    },
+    {
+      "op": "RUN",
+      "y": 0,
+      "x": 3,
+      "length": 1,
+      "paletteIndex": 0
+    },
+    {
+      "op": "RUN",
+      "y": 1,
+      "x": 0,
+      "length": 1,
+      "paletteIndex": 1
+    },
+    {
+      "op": "RUN",
+      "y": 1,
+      "x": 1,
+      "length": 2,
+      "paletteIndex": 2
+    },
+    {
+      "op": "RUN",
+      "y": 1,
+      "x": 3,
+      "length": 1,
+      "paletteIndex": 1
+    },
+    {
+      "op": "RUN",
+      "y": 2,
+      "x": 0,
+      "length": 1,
+      "paletteIndex": 1
+    },
+    {
+      "op": "RUN",
+      "y": 2,
+      "x": 1,
+      "length": 2,
+      "paletteIndex": 2
+    },
+    {
+      "op": "RUN",
+      "y": 2,
+      "x": 3,
+      "length": 1,
+      "paletteIndex": 1
+    },
+    {
+      "op": "RUN",
+      "y": 3,
+      "x": 0,
+      "length": 1,
+      "paletteIndex": 0
+    },
+    {
+      "op": "RUN",
+      "y": 3,
+      "x": 1,
+      "length": 2,
+      "paletteIndex": 1
+    },
+    {
+      "op": "RUN",
+      "y": 3,
+      "x": 3,
+      "length": 1,
+      "paletteIndex": 0
+    }
+  ],
+  "regions": [
+    {
+      "id": "REGION_0000",
+      "paletteIndex": 0,
+      "area": 1,
+      "bbox": {
+        "x": 0,
+        "y": 0,
+        "width": 1,
+        "height": 1
+      },
+      "centroid": {
+        "x": 0,
+        "y": 0
+      },
+      "topology": {
+        "boundary": [
+          [
+            0,
+            0
+          ]
+        ],
+        "boundaryPixelCount": 1,
+        "perimeter": 4,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 0,
+              "y": 0,
+              "type": "NW",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 1,
+              "y": 0,
+              "type": "NE",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.785398
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "type": "SW",
+              "source": "corner",
+              "angle": 1.570796
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 0,
+              "y": 0,
+              "type": "NW",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 0,
+              "type": "NE",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "type": "SE",
+              "angle": 0.785398,
+              "source": "corner"
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "type": "SW",
+              "angle": 1.570796,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [],
+          "endpointPixels": [],
+          "junctionPixels": [],
+          "skeletonPixelCount": 0,
+          "endpointCount": 0,
+          "junctionCount": 0,
+          "maxRadius": 0,
+          "meanRadius": 0,
+          "thinningIterations": 0,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [],
+            "edges": [],
+            "nodeCount": 0,
+            "edgeCount": 0,
+            "branchlessPathCount": 0,
+            "skipped": true
+          },
+          "skipped": true
+        },
+        "isTransparent": true
+      },
+      "partGrammar": {
+        "id": "PART_0000",
+        "regionId": "REGION_0000",
+        "paletteIndex": 0,
+        "primitive": "carrier",
+        "orientation": "background",
+        "role": "background-carrier",
+        "symmetryClass": "bilateral",
+        "areaRank": null,
+        "adjacencyDegree": 2,
+        "attachments": [
+          "REGION_0001",
+          "REGION_0003"
+        ],
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1,
+          "height": 1
+        },
+        "area": 1,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      }
+    },
+    {
+      "id": "REGION_0001",
+      "paletteIndex": 1,
+      "area": 2,
+      "bbox": {
+        "x": 1,
+        "y": 0,
+        "width": 2,
+        "height": 1
+      },
+      "centroid": {
+        "x": 1.5,
+        "y": 0
+      },
+      "topology": {
+        "boundary": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "boundaryPixelCount": 2,
+        "perimeter": 6,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 3,
+              "y": 0,
+              "type": "NE",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.588003
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "type": "SW",
+              "source": "corner",
+              "angle": 2.034444
+            },
+            {
+              "x": 1,
+              "y": 0,
+              "type": "NW",
+              "source": "corner",
+              "angle": 3.141593
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 3,
+              "y": 0,
+              "type": "NE",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "type": "SE",
+              "angle": 0.588003,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "type": "SW",
+              "angle": 2.034444,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 0,
+              "type": "NW",
+              "angle": 3.141593,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [
+            {
+              "x": 1,
+              "y": 0,
+              "radius": 1,
+              "degree": 1
+            },
+            {
+              "x": 2,
+              "y": 0,
+              "radius": 1,
+              "degree": 1
+            }
+          ],
+          "endpointPixels": [
+            {
+              "x": 1,
+              "y": 0,
+              "radius": 1,
+              "degree": 1
+            },
+            {
+              "x": 2,
+              "y": 0,
+              "radius": 1,
+              "degree": 1
+            }
+          ],
+          "junctionPixels": [],
+          "skeletonPixelCount": 2,
+          "endpointCount": 2,
+          "junctionCount": 0,
+          "maxRadius": 1,
+          "meanRadius": 1,
+          "thinningIterations": 1,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [
+              {
+                "id": "n0",
+                "kind": "endpoint",
+                "x": 1,
+                "y": 0,
+                "radius": 1,
+                "degree": 1
+              },
+              {
+                "id": "n1",
+                "kind": "endpoint",
+                "x": 2,
+                "y": 0,
+                "radius": 1,
+                "degree": 1
+              }
+            ],
+            "edges": [
+              {
+                "id": "e0",
+                "from": "n0",
+                "to": "n1",
+                "length": 2,
+                "polyline": [
+                  {
+                    "x": 1,
+                    "y": 0,
+                    "radius": 1
+                  },
+                  {
+                    "x": 2,
+                    "y": 0,
+                    "radius": 1
+                  }
+                ]
+              }
+            ],
+            "nodeCount": 2,
+            "edgeCount": 1,
+            "branchlessPathCount": 1,
+            "skipped": false
+          },
+          "skipped": false
+        },
+        "isTransparent": false
+      },
+      "partGrammar": {
+        "id": "PART_0001",
+        "regionId": "REGION_0001",
+        "paletteIndex": 1,
+        "primitive": "dot",
+        "orientation": "horizontal",
+        "role": "detail-mark",
+        "symmetryClass": "bilateral",
+        "areaRank": 2,
+        "adjacencyDegree": 3,
+        "attachments": [
+          "REGION_0000",
+          "REGION_0002",
+          "REGION_0004"
+        ],
+        "bbox": {
+          "x": 1,
+          "y": 0,
+          "width": 2,
+          "height": 1
+        },
+        "area": 2,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 2,
+        "graphEdgeCount": 1
+      }
+    },
+    {
+      "id": "REGION_0002",
+      "paletteIndex": 0,
+      "area": 1,
+      "bbox": {
+        "x": 3,
+        "y": 0,
+        "width": 1,
+        "height": 1
+      },
+      "centroid": {
+        "x": 3,
+        "y": 0
+      },
+      "topology": {
+        "boundary": [
+          [
+            3,
+            0
+          ]
+        ],
+        "boundaryPixelCount": 1,
+        "perimeter": 4,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 3,
+              "y": 0,
+              "type": "NW",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 4,
+              "y": 0,
+              "type": "NE",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 4,
+              "y": 1,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.785398
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "type": "SW",
+              "source": "corner",
+              "angle": 1.570796
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 3,
+              "y": 0,
+              "type": "NW",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 4,
+              "y": 0,
+              "type": "NE",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 4,
+              "y": 1,
+              "type": "SE",
+              "angle": 0.785398,
+              "source": "corner"
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "type": "SW",
+              "angle": 1.570796,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [],
+          "endpointPixels": [],
+          "junctionPixels": [],
+          "skeletonPixelCount": 0,
+          "endpointCount": 0,
+          "junctionCount": 0,
+          "maxRadius": 0,
+          "meanRadius": 0,
+          "thinningIterations": 0,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [],
+            "edges": [],
+            "nodeCount": 0,
+            "edgeCount": 0,
+            "branchlessPathCount": 0,
+            "skipped": true
+          },
+          "skipped": true
+        },
+        "isTransparent": true
+      },
+      "partGrammar": {
+        "id": "PART_0002",
+        "regionId": "REGION_0002",
+        "paletteIndex": 0,
+        "primitive": "carrier",
+        "orientation": "background",
+        "role": "background-carrier",
+        "symmetryClass": "bilateral",
+        "areaRank": null,
+        "adjacencyDegree": 2,
+        "attachments": [
+          "REGION_0001",
+          "REGION_0005"
+        ],
+        "bbox": {
+          "x": 3,
+          "y": 0,
+          "width": 1,
+          "height": 1
+        },
+        "area": 1,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      }
+    },
+    {
+      "id": "REGION_0003",
+      "paletteIndex": 1,
+      "area": 2,
+      "bbox": {
+        "x": 0,
+        "y": 1,
+        "width": 1,
+        "height": 2
+      },
+      "centroid": {
+        "x": 0,
+        "y": 1.5
+      },
+      "topology": {
+        "boundary": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "boundaryPixelCount": 2,
+        "perimeter": 6,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 0,
+              "y": 1,
+              "type": "NW",
+              "source": "corner",
+              "angle": -1.570796
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "type": "NE",
+              "source": "corner",
+              "angle": -0.463648
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.982794
+            },
+            {
+              "x": 0,
+              "y": 3,
+              "type": "SW",
+              "source": "corner",
+              "angle": 1.570796
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 0,
+              "y": 1,
+              "type": "NW",
+              "angle": -1.570796,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 1,
+              "type": "NE",
+              "angle": -0.463648,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "type": "SE",
+              "angle": 0.982794,
+              "source": "corner"
+            },
+            {
+              "x": 0,
+              "y": 3,
+              "type": "SW",
+              "angle": 1.570796,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [
+            {
+              "x": 0,
+              "y": 1,
+              "radius": 1,
+              "degree": 1
+            },
+            {
+              "x": 0,
+              "y": 2,
+              "radius": 1,
+              "degree": 1
+            }
+          ],
+          "endpointPixels": [
+            {
+              "x": 0,
+              "y": 1,
+              "radius": 1,
+              "degree": 1
+            },
+            {
+              "x": 0,
+              "y": 2,
+              "radius": 1,
+              "degree": 1
+            }
+          ],
+          "junctionPixels": [],
+          "skeletonPixelCount": 2,
+          "endpointCount": 2,
+          "junctionCount": 0,
+          "maxRadius": 1,
+          "meanRadius": 1,
+          "thinningIterations": 1,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [
+              {
+                "id": "n0",
+                "kind": "endpoint",
+                "x": 0,
+                "y": 1,
+                "radius": 1,
+                "degree": 1
+              },
+              {
+                "id": "n1",
+                "kind": "endpoint",
+                "x": 0,
+                "y": 2,
+                "radius": 1,
+                "degree": 1
+              }
+            ],
+            "edges": [
+              {
+                "id": "e0",
+                "from": "n0",
+                "to": "n1",
+                "length": 2,
+                "polyline": [
+                  {
+                    "x": 0,
+                    "y": 1,
+                    "radius": 1
+                  },
+                  {
+                    "x": 0,
+                    "y": 2,
+                    "radius": 1
+                  }
+                ]
+              }
+            ],
+            "nodeCount": 2,
+            "edgeCount": 1,
+            "branchlessPathCount": 1,
+            "skipped": false
+          },
+          "skipped": false
+        },
+        "isTransparent": false
+      },
+      "partGrammar": {
+        "id": "PART_0003",
+        "regionId": "REGION_0003",
+        "paletteIndex": 1,
+        "primitive": "dot",
+        "orientation": "vertical",
+        "role": "detail-mark",
+        "symmetryClass": "bilateral",
+        "areaRank": 3,
+        "adjacencyDegree": 3,
+        "attachments": [
+          "REGION_0000",
+          "REGION_0004",
+          "REGION_0006"
+        ],
+        "bbox": {
+          "x": 0,
+          "y": 1,
+          "width": 1,
+          "height": 2
+        },
+        "area": 2,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 2,
+        "graphEdgeCount": 1
+      }
+    },
+    {
+      "id": "REGION_0004",
+      "paletteIndex": 2,
+      "area": 4,
+      "bbox": {
+        "x": 1,
+        "y": 1,
+        "width": 2,
+        "height": 2
+      },
+      "centroid": {
+        "x": 1.5,
+        "y": 1.5
+      },
+      "topology": {
+        "boundary": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "boundaryPixelCount": 4,
+        "perimeter": 8,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 1,
+              "y": 1,
+              "type": "NW",
+              "source": "corner",
+              "angle": -2.356194
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "type": "NE",
+              "source": "corner",
+              "angle": -0.321751
+            },
+            {
+              "x": 3,
+              "y": 3,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.785398
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "type": "SW",
+              "source": "corner",
+              "angle": 1.892547
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 1,
+              "y": 1,
+              "type": "NW",
+              "angle": -2.356194,
+              "source": "corner"
+            },
+            {
+              "x": 3,
+              "y": 1,
+              "type": "NE",
+              "angle": -0.321751,
+              "source": "corner"
+            },
+            {
+              "x": 3,
+              "y": 3,
+              "type": "SE",
+              "angle": 0.785398,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "type": "SW",
+              "angle": 1.892547,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [],
+          "endpointPixels": [],
+          "junctionPixels": [],
+          "skeletonPixelCount": 0,
+          "endpointCount": 0,
+          "junctionCount": 0,
+          "maxRadius": 0,
+          "meanRadius": 0,
+          "thinningIterations": 2,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [],
+            "edges": [],
+            "nodeCount": 0,
+            "edgeCount": 0,
+            "branchlessPathCount": 0,
+            "skipped": false
+          },
+          "skipped": false
+        },
+        "isTransparent": false
+      },
+      "partGrammar": {
+        "id": "PART_0004",
+        "regionId": "REGION_0004",
+        "paletteIndex": 2,
+        "primitive": "block",
+        "orientation": "square",
+        "role": "primary-mass",
+        "symmetryClass": "bilateral",
+        "areaRank": 1,
+        "adjacencyDegree": 4,
+        "attachments": [
+          "REGION_0001",
+          "REGION_0003",
+          "REGION_0005",
+          "REGION_0007"
+        ],
+        "bbox": {
+          "x": 1,
+          "y": 1,
+          "width": 2,
+          "height": 2
+        },
+        "area": 4,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      }
+    },
+    {
+      "id": "REGION_0005",
+      "paletteIndex": 1,
+      "area": 2,
+      "bbox": {
+        "x": 3,
+        "y": 1,
+        "width": 1,
+        "height": 2
+      },
+      "centroid": {
+        "x": 3,
+        "y": 1.5
+      },
+      "topology": {
+        "boundary": [
+          [
+            3,
+            1
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "boundaryPixelCount": 2,
+        "perimeter": 6,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 3,
+              "y": 1,
+              "type": "NW",
+              "source": "corner",
+              "angle": -1.570796
+            },
+            {
+              "x": 4,
+              "y": 1,
+              "type": "NE",
+              "source": "corner",
+              "angle": -0.463648
+            },
+            {
+              "x": 4,
+              "y": 3,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.982794
+            },
+            {
+              "x": 3,
+              "y": 3,
+              "type": "SW",
+              "source": "corner",
+              "angle": 1.570796
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 3,
+              "y": 1,
+              "type": "NW",
+              "angle": -1.570796,
+              "source": "corner"
+            },
+            {
+              "x": 4,
+              "y": 1,
+              "type": "NE",
+              "angle": -0.463648,
+              "source": "corner"
+            },
+            {
+              "x": 4,
+              "y": 3,
+              "type": "SE",
+              "angle": 0.982794,
+              "source": "corner"
+            },
+            {
+              "x": 3,
+              "y": 3,
+              "type": "SW",
+              "angle": 1.570796,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [
+            {
+              "x": 3,
+              "y": 1,
+              "radius": 1,
+              "degree": 1
+            },
+            {
+              "x": 3,
+              "y": 2,
+              "radius": 1,
+              "degree": 1
+            }
+          ],
+          "endpointPixels": [
+            {
+              "x": 3,
+              "y": 1,
+              "radius": 1,
+              "degree": 1
+            },
+            {
+              "x": 3,
+              "y": 2,
+              "radius": 1,
+              "degree": 1
+            }
+          ],
+          "junctionPixels": [],
+          "skeletonPixelCount": 2,
+          "endpointCount": 2,
+          "junctionCount": 0,
+          "maxRadius": 1,
+          "meanRadius": 1,
+          "thinningIterations": 1,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [
+              {
+                "id": "n0",
+                "kind": "endpoint",
+                "x": 3,
+                "y": 1,
+                "radius": 1,
+                "degree": 1
+              },
+              {
+                "id": "n1",
+                "kind": "endpoint",
+                "x": 3,
+                "y": 2,
+                "radius": 1,
+                "degree": 1
+              }
+            ],
+            "edges": [
+              {
+                "id": "e0",
+                "from": "n0",
+                "to": "n1",
+                "length": 2,
+                "polyline": [
+                  {
+                    "x": 3,
+                    "y": 1,
+                    "radius": 1
+                  },
+                  {
+                    "x": 3,
+                    "y": 2,
+                    "radius": 1
+                  }
+                ]
+              }
+            ],
+            "nodeCount": 2,
+            "edgeCount": 1,
+            "branchlessPathCount": 1,
+            "skipped": false
+          },
+          "skipped": false
+        },
+        "isTransparent": false
+      },
+      "partGrammar": {
+        "id": "PART_0005",
+        "regionId": "REGION_0005",
+        "paletteIndex": 1,
+        "primitive": "dot",
+        "orientation": "vertical",
+        "role": "detail-mark",
+        "symmetryClass": "bilateral",
+        "areaRank": 4,
+        "adjacencyDegree": 3,
+        "attachments": [
+          "REGION_0002",
+          "REGION_0004",
+          "REGION_0008"
+        ],
+        "bbox": {
+          "x": 3,
+          "y": 1,
+          "width": 1,
+          "height": 2
+        },
+        "area": 2,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 2,
+        "graphEdgeCount": 1
+      }
+    },
+    {
+      "id": "REGION_0006",
+      "paletteIndex": 0,
+      "area": 1,
+      "bbox": {
+        "x": 0,
+        "y": 3,
+        "width": 1,
+        "height": 1
+      },
+      "centroid": {
+        "x": 0,
+        "y": 3
+      },
+      "topology": {
+        "boundary": [
+          [
+            0,
+            3
+          ]
+        ],
+        "boundaryPixelCount": 1,
+        "perimeter": 4,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 0,
+              "y": 3,
+              "type": "NW",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "type": "NE",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 1,
+              "y": 4,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.785398
+            },
+            {
+              "x": 0,
+              "y": 4,
+              "type": "SW",
+              "source": "corner",
+              "angle": 1.570796
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 0,
+              "y": 3,
+              "type": "NW",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "type": "NE",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 4,
+              "type": "SE",
+              "angle": 0.785398,
+              "source": "corner"
+            },
+            {
+              "x": 0,
+              "y": 4,
+              "type": "SW",
+              "angle": 1.570796,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [],
+          "endpointPixels": [],
+          "junctionPixels": [],
+          "skeletonPixelCount": 0,
+          "endpointCount": 0,
+          "junctionCount": 0,
+          "maxRadius": 0,
+          "meanRadius": 0,
+          "thinningIterations": 0,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [],
+            "edges": [],
+            "nodeCount": 0,
+            "edgeCount": 0,
+            "branchlessPathCount": 0,
+            "skipped": true
+          },
+          "skipped": true
+        },
+        "isTransparent": true
+      },
+      "partGrammar": {
+        "id": "PART_0006",
+        "regionId": "REGION_0006",
+        "paletteIndex": 0,
+        "primitive": "carrier",
+        "orientation": "background",
+        "role": "background-carrier",
+        "symmetryClass": "bilateral",
+        "areaRank": null,
+        "adjacencyDegree": 2,
+        "attachments": [
+          "REGION_0003",
+          "REGION_0007"
+        ],
+        "bbox": {
+          "x": 0,
+          "y": 3,
+          "width": 1,
+          "height": 1
+        },
+        "area": 1,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      }
+    },
+    {
+      "id": "REGION_0007",
+      "paletteIndex": 1,
+      "area": 2,
+      "bbox": {
+        "x": 1,
+        "y": 3,
+        "width": 2,
+        "height": 1
+      },
+      "centroid": {
+        "x": 1.5,
+        "y": 3
+      },
+      "topology": {
+        "boundary": [
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "boundaryPixelCount": 2,
+        "perimeter": 6,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 3,
+              "y": 3,
+              "type": "NE",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.588003
+            },
+            {
+              "x": 1,
+              "y": 4,
+              "type": "SW",
+              "source": "corner",
+              "angle": 2.034444
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "type": "NW",
+              "source": "corner",
+              "angle": 3.141593
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 3,
+              "y": 3,
+              "type": "NE",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "type": "SE",
+              "angle": 0.588003,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 4,
+              "type": "SW",
+              "angle": 2.034444,
+              "source": "corner"
+            },
+            {
+              "x": 1,
+              "y": 3,
+              "type": "NW",
+              "angle": 3.141593,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [
+            {
+              "x": 1,
+              "y": 3,
+              "radius": 1,
+              "degree": 1
+            },
+            {
+              "x": 2,
+              "y": 3,
+              "radius": 1,
+              "degree": 1
+            }
+          ],
+          "endpointPixels": [
+            {
+              "x": 1,
+              "y": 3,
+              "radius": 1,
+              "degree": 1
+            },
+            {
+              "x": 2,
+              "y": 3,
+              "radius": 1,
+              "degree": 1
+            }
+          ],
+          "junctionPixels": [],
+          "skeletonPixelCount": 2,
+          "endpointCount": 2,
+          "junctionCount": 0,
+          "maxRadius": 1,
+          "meanRadius": 1,
+          "thinningIterations": 1,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [
+              {
+                "id": "n0",
+                "kind": "endpoint",
+                "x": 1,
+                "y": 3,
+                "radius": 1,
+                "degree": 1
+              },
+              {
+                "id": "n1",
+                "kind": "endpoint",
+                "x": 2,
+                "y": 3,
+                "radius": 1,
+                "degree": 1
+              }
+            ],
+            "edges": [
+              {
+                "id": "e0",
+                "from": "n0",
+                "to": "n1",
+                "length": 2,
+                "polyline": [
+                  {
+                    "x": 1,
+                    "y": 3,
+                    "radius": 1
+                  },
+                  {
+                    "x": 2,
+                    "y": 3,
+                    "radius": 1
+                  }
+                ]
+              }
+            ],
+            "nodeCount": 2,
+            "edgeCount": 1,
+            "branchlessPathCount": 1,
+            "skipped": false
+          },
+          "skipped": false
+        },
+        "isTransparent": false
+      },
+      "partGrammar": {
+        "id": "PART_0007",
+        "regionId": "REGION_0007",
+        "paletteIndex": 1,
+        "primitive": "dot",
+        "orientation": "horizontal",
+        "role": "detail-mark",
+        "symmetryClass": "bilateral",
+        "areaRank": 5,
+        "adjacencyDegree": 3,
+        "attachments": [
+          "REGION_0004",
+          "REGION_0006",
+          "REGION_0008"
+        ],
+        "bbox": {
+          "x": 1,
+          "y": 3,
+          "width": 2,
+          "height": 1
+        },
+        "area": 2,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 2,
+        "graphEdgeCount": 1
+      }
+    },
+    {
+      "id": "REGION_0008",
+      "paletteIndex": 0,
+      "area": 1,
+      "bbox": {
+        "x": 3,
+        "y": 3,
+        "width": 1,
+        "height": 1
+      },
+      "centroid": {
+        "x": 3,
+        "y": 3
+      },
+      "topology": {
+        "boundary": [
+          [
+            3,
+            3
+          ]
+        ],
+        "boundaryPixelCount": 1,
+        "perimeter": 4,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "symmetry": {
+          "vertical": 1,
+          "horizontal": 1
+        },
+        "contour": {
+          "orderedAnchors": [
+            {
+              "x": 3,
+              "y": 3,
+              "type": "NW",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 4,
+              "y": 3,
+              "type": "NE",
+              "source": "corner",
+              "angle": 0
+            },
+            {
+              "x": 4,
+              "y": 4,
+              "type": "SE",
+              "source": "corner",
+              "angle": 0.785398
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "type": "SW",
+              "source": "corner",
+              "angle": 1.570796
+            }
+          ],
+          "turningPoints": [
+            {
+              "x": 3,
+              "y": 3,
+              "type": "NW",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 4,
+              "y": 3,
+              "type": "NE",
+              "angle": 0,
+              "source": "corner"
+            },
+            {
+              "x": 4,
+              "y": 4,
+              "type": "SE",
+              "angle": 0.785398,
+              "source": "corner"
+            },
+            {
+              "x": 3,
+              "y": 4,
+              "type": "SW",
+              "angle": 1.570796,
+              "source": "corner"
+            }
+          ],
+          "anchorCount": 4,
+          "turnCount": 4
+        },
+        "medial": {
+          "algorithm": "zhang-suen+manhattan-distance-v0.1",
+          "skeletonPixels": [],
+          "endpointPixels": [],
+          "junctionPixels": [],
+          "skeletonPixelCount": 0,
+          "endpointCount": 0,
+          "junctionCount": 0,
+          "maxRadius": 0,
+          "meanRadius": 0,
+          "thinningIterations": 0,
+          "graph": {
+            "algorithm": "skeleton-graph-v0.1",
+            "nodes": [],
+            "edges": [],
+            "nodeCount": 0,
+            "edgeCount": 0,
+            "branchlessPathCount": 0,
+            "skipped": true
+          },
+          "skipped": true
+        },
+        "isTransparent": true
+      },
+      "partGrammar": {
+        "id": "PART_0008",
+        "regionId": "REGION_0008",
+        "paletteIndex": 0,
+        "primitive": "carrier",
+        "orientation": "background",
+        "role": "background-carrier",
+        "symmetryClass": "bilateral",
+        "areaRank": null,
+        "adjacencyDegree": 2,
+        "attachments": [
+          "REGION_0005",
+          "REGION_0007"
+        ],
+        "bbox": {
+          "x": 3,
+          "y": 3,
+          "width": 1,
+          "height": 1
+        },
+        "area": 1,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      }
+    }
+  ],
+  "adjacency": [
+    {
+      "a": "REGION_0000",
+      "b": "REGION_0001"
+    },
+    {
+      "a": "REGION_0000",
+      "b": "REGION_0003"
+    },
+    {
+      "a": "REGION_0001",
+      "b": "REGION_0004"
+    },
+    {
+      "a": "REGION_0001",
+      "b": "REGION_0002"
+    },
+    {
+      "a": "REGION_0002",
+      "b": "REGION_0005"
+    },
+    {
+      "a": "REGION_0003",
+      "b": "REGION_0004"
+    },
+    {
+      "a": "REGION_0004",
+      "b": "REGION_0005"
+    },
+    {
+      "a": "REGION_0003",
+      "b": "REGION_0006"
+    },
+    {
+      "a": "REGION_0004",
+      "b": "REGION_0007"
+    },
+    {
+      "a": "REGION_0005",
+      "b": "REGION_0008"
+    },
+    {
+      "a": "REGION_0006",
+      "b": "REGION_0007"
+    },
+    {
+      "a": "REGION_0007",
+      "b": "REGION_0008"
+    }
+  ],
+  "topology": {
+    "regionCount": 9,
+    "adjacencyCount": 12,
+    "totalBoundaryPixels": 16,
+    "totalPerimeter": 48,
+    "totalHoles": 0,
+    "totalContourAnchors": 36,
+    "totalTurningPoints": 36,
+    "totalSkeletonPixels": 8,
+    "totalSkeletonEndpoints": 8,
+    "totalSkeletonJunctions": 0,
+    "totalSkeletonGraphNodes": 8,
+    "totalSkeletonGraphEdges": 4,
+    "totalSkeletonBranchlessPaths": 4,
+    "maxMedialRadius": 1,
+    "symmetry": {
+      "vertical": 1,
+      "horizontal": 1
+    }
+  },
+  "partGrammar": {
+    "grammarVersion": "part-grammar-v0.1",
+    "partCount": 9,
+    "opaquePartCount": 5,
+    "transparentPartCount": 4,
+    "countsByPrimitive": {
+      "carrier": 4,
+      "dot": 4,
+      "block": 1
+    },
+    "countsByRole": {
+      "background-carrier": 4,
+      "detail-mark": 4,
+      "primary-mass": 1
+    },
+    "primaryPartIds": [
+      "REGION_0004",
+      "REGION_0001",
+      "REGION_0003"
+    ],
+    "parts": [
+      {
+        "id": "PART_0000",
+        "regionId": "REGION_0000",
+        "paletteIndex": 0,
+        "primitive": "carrier",
+        "orientation": "background",
+        "role": "background-carrier",
+        "symmetryClass": "bilateral",
+        "areaRank": null,
+        "adjacencyDegree": 2,
+        "attachments": [
+          "REGION_0001",
+          "REGION_0003"
+        ],
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1,
+          "height": 1
+        },
+        "area": 1,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      },
+      {
+        "id": "PART_0001",
+        "regionId": "REGION_0001",
+        "paletteIndex": 1,
+        "primitive": "dot",
+        "orientation": "horizontal",
+        "role": "detail-mark",
+        "symmetryClass": "bilateral",
+        "areaRank": 2,
+        "adjacencyDegree": 3,
+        "attachments": [
+          "REGION_0000",
+          "REGION_0002",
+          "REGION_0004"
+        ],
+        "bbox": {
+          "x": 1,
+          "y": 0,
+          "width": 2,
+          "height": 1
+        },
+        "area": 2,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 2,
+        "graphEdgeCount": 1
+      },
+      {
+        "id": "PART_0002",
+        "regionId": "REGION_0002",
+        "paletteIndex": 0,
+        "primitive": "carrier",
+        "orientation": "background",
+        "role": "background-carrier",
+        "symmetryClass": "bilateral",
+        "areaRank": null,
+        "adjacencyDegree": 2,
+        "attachments": [
+          "REGION_0001",
+          "REGION_0005"
+        ],
+        "bbox": {
+          "x": 3,
+          "y": 0,
+          "width": 1,
+          "height": 1
+        },
+        "area": 1,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      },
+      {
+        "id": "PART_0003",
+        "regionId": "REGION_0003",
+        "paletteIndex": 1,
+        "primitive": "dot",
+        "orientation": "vertical",
+        "role": "detail-mark",
+        "symmetryClass": "bilateral",
+        "areaRank": 3,
+        "adjacencyDegree": 3,
+        "attachments": [
+          "REGION_0000",
+          "REGION_0004",
+          "REGION_0006"
+        ],
+        "bbox": {
+          "x": 0,
+          "y": 1,
+          "width": 1,
+          "height": 2
+        },
+        "area": 2,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 2,
+        "graphEdgeCount": 1
+      },
+      {
+        "id": "PART_0004",
+        "regionId": "REGION_0004",
+        "paletteIndex": 2,
+        "primitive": "block",
+        "orientation": "square",
+        "role": "primary-mass",
+        "symmetryClass": "bilateral",
+        "areaRank": 1,
+        "adjacencyDegree": 4,
+        "attachments": [
+          "REGION_0001",
+          "REGION_0003",
+          "REGION_0005",
+          "REGION_0007"
+        ],
+        "bbox": {
+          "x": 1,
+          "y": 1,
+          "width": 2,
+          "height": 2
+        },
+        "area": 4,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      },
+      {
+        "id": "PART_0005",
+        "regionId": "REGION_0005",
+        "paletteIndex": 1,
+        "primitive": "dot",
+        "orientation": "vertical",
+        "role": "detail-mark",
+        "symmetryClass": "bilateral",
+        "areaRank": 4,
+        "adjacencyDegree": 3,
+        "attachments": [
+          "REGION_0002",
+          "REGION_0004",
+          "REGION_0008"
+        ],
+        "bbox": {
+          "x": 3,
+          "y": 1,
+          "width": 1,
+          "height": 2
+        },
+        "area": 2,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 2,
+        "graphEdgeCount": 1
+      },
+      {
+        "id": "PART_0006",
+        "regionId": "REGION_0006",
+        "paletteIndex": 0,
+        "primitive": "carrier",
+        "orientation": "background",
+        "role": "background-carrier",
+        "symmetryClass": "bilateral",
+        "areaRank": null,
+        "adjacencyDegree": 2,
+        "attachments": [
+          "REGION_0003",
+          "REGION_0007"
+        ],
+        "bbox": {
+          "x": 0,
+          "y": 3,
+          "width": 1,
+          "height": 1
+        },
+        "area": 1,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      },
+      {
+        "id": "PART_0007",
+        "regionId": "REGION_0007",
+        "paletteIndex": 1,
+        "primitive": "dot",
+        "orientation": "horizontal",
+        "role": "detail-mark",
+        "symmetryClass": "bilateral",
+        "areaRank": 5,
+        "adjacencyDegree": 3,
+        "attachments": [
+          "REGION_0004",
+          "REGION_0006",
+          "REGION_0008"
+        ],
+        "bbox": {
+          "x": 1,
+          "y": 3,
+          "width": 2,
+          "height": 1
+        },
+        "area": 2,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 2,
+        "graphEdgeCount": 1
+      },
+      {
+        "id": "PART_0008",
+        "regionId": "REGION_0008",
+        "paletteIndex": 0,
+        "primitive": "carrier",
+        "orientation": "background",
+        "role": "background-carrier",
+        "symmetryClass": "bilateral",
+        "areaRank": null,
+        "adjacencyDegree": 2,
+        "attachments": [
+          "REGION_0005",
+          "REGION_0007"
+        ],
+        "bbox": {
+          "x": 3,
+          "y": 3,
+          "width": 1,
+          "height": 1
+        },
+        "area": 1,
+        "holeCount": 0,
+        "fillRatio": 1,
+        "graphNodeCount": 0,
+        "graphEdgeCount": 0
+      }
+    ]
+  },
+  "stats": {
+    "pixelCount": 16,
+    "paletteSize": 3,
+    "runCount": 12,
+    "regionCount": 9,
+    "rawRgbaBytes": 64
+  }
+}

@@ -1,0 +1,67 @@
+[
+  {
+    "profile": "glyph-binding/1.0-candidate.1",
+    "binding_id": "bind-sem-candidate",
+    "glyph_ref": {
+      "persistent_id": "urn:uuid:0199a000-0000-7000-8000-000000000601",
+      "revision_id": "rev:sha256:glyph-v06"
+    },
+    "kind": "semantic-symbol",
+    "authority": "candidate",
+    "target": {
+      "registry": "eg-math-core",
+      "symbol": "derivative",
+      "version": "1"
+    },
+    "required_capabilities": [],
+    "provenance": {
+      "actor_class": "ai",
+      "tool": "recognizer-v1",
+      "evidence_class": "recognized"
+    }
+  },
+  {
+    "profile": "glyph-binding/1.0-candidate.1",
+    "binding_id": "bind-sem-explicit",
+    "glyph_ref": {
+      "persistent_id": "urn:uuid:0199a000-0000-7000-8000-000000000601",
+      "revision_id": "rev:sha256:glyph-v06"
+    },
+    "kind": "semantic-symbol",
+    "authority": "explicit",
+    "target": {
+      "registry": "eg-math-core",
+      "symbol": "derivative",
+      "version": "1"
+    },
+    "required_capabilities": [],
+    "provenance": {
+      "actor_class": "human",
+      "tool": "eveglyph",
+      "evidence_class": "declared"
+    }
+  },
+  {
+    "profile": "glyph-binding/1.0-candidate.1",
+    "binding_id": "bind-exec",
+    "glyph_ref": {
+      "persistent_id": "urn:uuid:0199a000-0000-7000-8000-000000000601",
+      "revision_id": "rev:sha256:glyph-v06"
+    },
+    "kind": "behavior",
+    "authority": "explicit",
+    "target": {
+      "operator_registry": "eg-math-runtime",
+      "operator": "derivative",
+      "version": "1"
+    },
+    "required_capabilities": [
+      "runtime.execute"
+    ],
+    "provenance": {
+      "actor_class": "human",
+      "tool": "eveglyph",
+      "evidence_class": "declared"
+    }
+  }
+]

@@ -1,0 +1,185 @@
+{
+  "profile": "glyph-conformance-vectors/0.6",
+  "vectors": [
+    {
+      "id": "GLY-001",
+      "category": "identity",
+      "expectation": "preserve-identity",
+      "description": "custom glyph without Unicode remains addressable"
+    },
+    {
+      "id": "GLY-002",
+      "category": "semantic",
+      "expectation": "typed-equality",
+      "description": "different glyphs may represent same semantic symbol"
+    },
+    {
+      "id": "GLY-003",
+      "category": "semantic",
+      "expectation": "candidate-only",
+      "description": "same glyph may have ambiguous semantic candidates"
+    },
+    {
+      "id": "GLY-004",
+      "category": "renderer",
+      "expectation": "preserve-identity",
+      "description": "renderer profile change does not alter glyph identity"
+    },
+    {
+      "id": "GLY-005",
+      "category": "spatial",
+      "expectation": "preserve-identity",
+      "description": "Canvas move does not alter glyph intrinsic revision"
+    },
+    {
+      "id": "GLY-006",
+      "category": "geometry",
+      "expectation": "new-revision",
+      "description": "geometry edit creates new glyph revision"
+    },
+    {
+      "id": "GLY-007",
+      "category": "topology",
+      "expectation": "new-revision",
+      "description": "topology edit creates new glyph revision"
+    },
+    {
+      "id": "GLY-008",
+      "category": "family",
+      "expectation": "accept",
+      "description": "variant binds immutable family revision and parameters"
+    },
+    {
+      "id": "GLY-009",
+      "category": "component",
+      "expectation": "accept",
+      "description": "component reference pins immutable glyph revision"
+    },
+    {
+      "id": "GLY-010",
+      "category": "component",
+      "expectation": "reject",
+      "description": "component cycle is rejected"
+    },
+    {
+      "id": "GLY-011",
+      "category": "geometry",
+      "expectation": "reject",
+      "description": "malformed path command sequence is rejected"
+    },
+    {
+      "id": "GLY-012",
+      "category": "binding",
+      "expectation": "candidate-only",
+      "description": "AI semantic recognition remains candidate"
+    },
+    {
+      "id": "GLY-013",
+      "category": "binding",
+      "expectation": "explicit-required",
+      "description": "promotion is required for authoritative semantic relation"
+    },
+    {
+      "id": "GLY-014",
+      "category": "security",
+      "expectation": "explicit-required",
+      "description": "imported behavior remains non-executable"
+    },
+    {
+      "id": "GLY-015",
+      "category": "security",
+      "expectation": "explicit-required",
+      "description": "behavior execution requires runtime.execute"
+    },
+    {
+      "id": "GLY-016",
+      "category": "opentype",
+      "expectation": "typed-equality",
+      "description": "OpenType glyph ID is not global glyph identity"
+    },
+    {
+      "id": "GLY-017",
+      "category": "unicode",
+      "expectation": "accept",
+      "description": "Unicode mapping is optional"
+    },
+    {
+      "id": "GLY-018",
+      "category": "unicode",
+      "expectation": "accept",
+      "description": "many-character sequence may map to one glyph"
+    },
+    {
+      "id": "GLY-019",
+      "category": "gsc",
+      "expectation": "accept",
+      "description": "GSC palette-runs v0.7 can bridge carry-lossless"
+    },
+    {
+      "id": "GLY-020",
+      "category": "gsc",
+      "expectation": "candidate-only",
+      "description": "GSC exact carry does not establish semantic binding"
+    },
+    {
+      "id": "GLY-021",
+      "category": "provenance",
+      "expectation": "accept",
+      "description": "source may be deleted after validated exact carry"
+    },
+    {
+      "id": "GLY-022",
+      "category": "topology",
+      "expectation": "candidate-only",
+      "description": "skeleton hint is not topology authority"
+    },
+    {
+      "id": "GLY-023",
+      "category": "parts",
+      "expectation": "candidate-only",
+      "description": "part role recognition is not semantic authority"
+    },
+    {
+      "id": "GLY-024",
+      "category": "adapter",
+      "expectation": "accept",
+      "description": "fidelity downgrade is preserved explicitly"
+    },
+    {
+      "id": "GLY-025",
+      "category": "equality",
+      "expectation": "typed-equality",
+      "description": "geometry topology semantic equality remain distinct"
+    },
+    {
+      "id": "GLY-026",
+      "category": "projection",
+      "expectation": "preserve-identity",
+      "description": "semantic zoom preserves glyph identity"
+    },
+    {
+      "id": "GLY-027",
+      "category": "merge",
+      "expectation": "reject",
+      "description": "concurrent edit of same path command yields conflict"
+    },
+    {
+      "id": "GLY-028",
+      "category": "merge",
+      "expectation": "explicit-required",
+      "description": "semantic binding conflict is handled outside geometry merge"
+    },
+    {
+      "id": "GLY-029",
+      "category": "compatibility",
+      "expectation": "accept",
+      "description": "legacy glyph/0.1 coexists with candidate profile"
+    },
+    {
+      "id": "GLY-030",
+      "category": "migration",
+      "expectation": "new-revision",
+      "description": "explicit enrichment migration creates new revision"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "archive": "EveGlyph_ASCS_v0.6_Glyph_Symbol_Round_Complete.zip",
+  "archive_sha256": "08ab324e5edf777a958f42ef18c70e24ccb0d0b680586cd14bbbf70a6e269dba",
+  "base_main_sha": "050c2fb2568034222c4e9c854c5c5b52c4ba8786",
+  "candidate_profiles": [
+    "glyph/1.0-candidate.1",
+    "glyph-family/1.0-candidate.1",
+    "glyph-binding/1.0-candidate.1",
+    "gsc-assetsymbol-bridge/1.0-candidate.1"
+  ],
+  "fixtures": [
+    {
+      "bytes": 1556,
+      "path": "custom_derivative_glyph_example.json",
+      "sha256": "07df55fb98af61eb914ac0e08424d918ccbb72a79efed1cd4216b222148807a8"
+    },
+    {
+      "bytes": 1923,
+      "path": "glyph-binding-evidence.schema.json",
+      "sha256": "b810e33908cd7252c05bb680e881c810893898ea7b0395eaec5ae64db9dc9a35"
+    },
+    {
+      "bytes": 1051,
+      "path": "glyph-conformance-vectors.schema.json",
+      "sha256": "6537249ddaa49e793a7b82a2259a9179090a16aaafc9a431abc44852baa7c05d"
+    },
+    {
+      "bytes": 2052,
+      "path": "glyph-family-v1-candidate.schema.json",
+      "sha256": "d20377701cf97c8b4ecc8fe153de79211c6fb3eea751aa54f12c3de02dfe7d0f"
+    },
+    {
+      "bytes": 14909,
+      "path": "glyph-object-v1-candidate.schema.json",
+      "sha256": "cc44dea137c9b5474af1013f2bef4bb5531838defc86d1b09267e3f26d9a41f6"
+    },
+    {
+      "bytes": 1348,
+      "path": "glyph-renderer-profile.schema.json",
+      "sha256": "286289b74eba89f761dc6adf3f768ea53278ab5d63e0c12d350d2a3a00d7c0b1"
+    },
+    {
+      "bytes": 1705,
+      "path": "glyph_binding_example.json",
+      "sha256": "b49df637f982a786c768bff34f6b8c4f107bef44ec1e17533aec4e4aed89536b"
+    },
+    {
+      "bytes": 5229,
+      "path": "glyph_conformance_vectors.json",
+      "sha256": "745dece08623e96e2c84e1da24f911a380cf72bd829493c05d9f1714bb473c77"
+    },
+    {
+      "bytes": 597,
+      "path": "glyph_family_example.json",
+      "sha256": "31d56db04d17845e1d6fd0850e3608362b9b5d5dfe65dc59b32a8d395c1fd81f"
+    },
+    {
+      "bytes": 1984,
+      "path": "gsc-assetsymbol-bridge.schema.json",
+      "sha256": "2aa5e28add9a2dc3ed1b3e73f75ab30b1ee68c572f644b22e57e9ae3680b2640"
+    },
+    {
+      "bytes": 54084,
+      "path": "gsc_asset_symbol_v07_bridge_example.json",
+      "sha256": "b722e0177847b5e30c0d8745081647dfec414e408947fb6691a376f3e25b5205"
+    },
+    {
+      "bytes": 45495,
+      "path": "gsc_generated_assetsymbol_v07.json",
+      "sha256": "8a8dd40d1aa01f2f42f1503c30b2205fa191966b958473147910280132835659"
+    },
+    {
+      "bytes": 286,
+      "path": "renderer_profile_example.json",
+      "sha256": "8d802222c1e6b641dffddaf478849398ea59d12f2657094bafa3e8818b7a1fe2"
+    }
+  ],
+  "schema": "eveglyph-ascs-milestone-d-glyph-lineage/1.0",
+  "vector_count": 30,
+  "vector_profile": "glyph-conformance-vectors/0.6"
+}

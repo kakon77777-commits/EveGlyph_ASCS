@@ -1,0 +1,13 @@
+{
+  "profile": "glyph-renderer/1.0-candidate.1",
+  "renderer_id": "eg-svg-reference",
+  "version": "0.1",
+  "input_representations": [
+    "path-graph",
+    "component-graph"
+  ],
+  "target": "svg",
+  "fidelity": "structural",
+  "deterministic": true,
+  "fallback": "use-exact-carry"
+}

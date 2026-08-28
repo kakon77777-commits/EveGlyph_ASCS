@@ -1,0 +1,91 @@
+{
+  "profile": "glyph/1.0-candidate.1",
+  "design_space": {
+    "dimension": "2d",
+    "units": "design-unit",
+    "origin": "y-up",
+    "view_box": [
+      "0",
+      "0",
+      "1000",
+      "1000"
+    ]
+  },
+  "geometry": {
+    "canonical_structure": "path-graph",
+    "paths": [
+      {
+        "path_id": "p0",
+        "fill_rule": "nonzero",
+        "commands": [
+          {
+            "op": "M",
+            "x": "180",
+            "y": "180"
+          },
+          {
+            "op": "L",
+            "x": "820",
+            "y": "180"
+          },
+          {
+            "op": "L",
+            "x": "500",
+            "y": "820"
+          },
+          {
+            "op": "Z"
+          }
+        ]
+      }
+    ],
+    "components": [],
+    "exact_carries": []
+  },
+  "topology": {
+    "components": [
+      {
+        "component_id": "c0",
+        "geometry_refs": [
+          "p0"
+        ],
+        "hole_ids": []
+      }
+    ],
+    "holes": [],
+    "adjacency": []
+  },
+  "parts": {
+    "nodes": [
+      {
+        "part_id": "part-main",
+        "geometry_refs": [
+          "p0"
+        ],
+        "structural_tags": [
+          "operator-mark"
+        ]
+      }
+    ],
+    "edges": [],
+    "ports": [
+      {
+        "port_id": "operand",
+        "kind": "math-operand",
+        "anchor": [
+          "500",
+          "120"
+        ],
+        "direction": "in",
+        "cardinality": "one"
+      }
+    ]
+  },
+  "family_binding": null,
+  "render_hints": {
+    "preferred_profiles": [
+      "mono-outline"
+    ]
+  },
+  "compatibility": []
+}

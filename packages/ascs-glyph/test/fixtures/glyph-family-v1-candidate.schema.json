@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evemisslab.example/schemas/glyph-family-v1-candidate.schema.json",
+  "type": "object",
+  "required": [
+    "profile",
+    "base_glyph_ref",
+    "topology_policy",
+    "axes",
+    "constraints"
+  ],
+  "properties": {
+    "profile": {
+      "const": "glyph-family/1.0-candidate.1"
+    },
+    "base_glyph_ref": {
+      "type": "object",
+      "required": [
+        "persistent_id",
+        "revision_id"
+      ],
+      "properties": {
+        "persistent_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "topology_policy": {
+      "enum": [
+        "invariant",
+        "variant-allowed"
+      ]
+    },
+    "axes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "axis_id",
+          "kind",
+          "default"
+        ],
+        "properties": {
+          "axis_id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "continuous",
+              "discrete",
+              "categorical"
+            ]
+          },
+          "min": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+          },
+          "max": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+          },
+          "default": {
+            "type": [
+              "string",
+              "boolean"
+            ]
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": [
+                "string",
+                "boolean"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}
