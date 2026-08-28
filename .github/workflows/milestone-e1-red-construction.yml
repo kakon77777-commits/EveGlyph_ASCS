@@ -20,8 +20,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Verify Task 2 exact source bytes and contracts
+      - name: Verify exact Task 2 source bytes
+        run: test "$(sha256sum packages/ascs-agent/src/model.mjs | cut -d' ' -f1)" = "ece5a870c9005d7330509c132c91af135683ea93d57ed972c5586ccaa57a096e"
+      - name: Verify completed Task 2 contracts
         run: |
-          test "$(sha256sum packages/ascs-agent/src/model.mjs | cut -d' ' -f1)" = "ece5a870c9005d7330509c132c91af135683ea93d57ed972c5586ccaa57a096e"
           node --test packages/ascs-agent/test/kernel.test.mjs packages/ascs-agent/test/model.test.mjs packages/ascs-agent/test/reference-lineage.test.mjs
           python -B -m unittest tests.test_e1_agent_reference -v
+      - name: Task 3 context/run contract
+        run: node --test packages/ascs-agent/test/context.test.mjs packages/ascs-agent/test/run.test.mjs
