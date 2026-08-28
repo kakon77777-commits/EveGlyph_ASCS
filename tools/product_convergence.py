@@ -6,6 +6,11 @@ import json
 import sys
 from pathlib import Path, PurePosixPath
 
+try:
+    from tools.security_upstream import load_security_manifest, validate_security_manifest
+except ModuleNotFoundError:
+    from security_upstream import load_security_manifest, validate_security_manifest
+
 UPSTREAM_REPOSITORY = "kakon77777-commits/eveglyph-editor"
 UPSTREAM_COMMIT = "c3258a2f461d5af5a69c879891b485ccf0f02635"
 HANDOFF_HISTORICAL_COMMIT = "55a2ad77f3131f717cf73992cc2550e4c3a864bb"
@@ -289,10 +294,23 @@ def collect_parity(repo: Path) -> dict:
             "evidence": checks,
             "verification_command": PRODUCT_VERIFICATION_COMMANDS.get(name),
         }
+
+    security_manifest = load_security_manifest(repo)
+    security_errors = validate_security_manifest(security_manifest)
+
     return {
         "schema": "eveglyph-ascs-product-parity/1.0",
         "upstream_repository": UPSTREAM_REPOSITORY,
         "upstream_commit": UPSTREAM_COMMIT,
+        "security_upstream_reference": {
+            "repository": security_manifest["repository"],
+            "commit": security_manifest["commit"],
+            "git_tree": security_manifest["git_tree"],
+            "authority": security_manifest["authority"],
+            "reported_upstream_full_test_count": security_manifest["reported_upstream_full_test_count"],
+            "manifest_valid": not security_errors,
+            "manifest_errors": security_errors,
+        },
         "required_capabilities": list(REQUIRED_CAPABILITIES),
         "capabilities": capabilities,
         "ascs_only_future_milestones": [
@@ -310,7 +328,7 @@ def collect_parity(repo: Path) -> dict:
             "native_glyph_candidate_runtime": (repo / "packages" / "ascs-glyph" / "src" / "index.mjs").exists(),
             "native_glyph_editor_bridge": (root / "test" / "ascs-native-glyph-bridge.test.mjs").exists(),
         },
-        "ok": all(item["present"] for item in capabilities.values()),
+        "ok": all(item["present"] for item in capabilities.values()) and not security_errors,
     }
 
 

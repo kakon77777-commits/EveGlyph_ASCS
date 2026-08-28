@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -100,6 +102,43 @@ class ProductConvergenceTests(unittest.TestCase):
         encoded = json.dumps(parity, ensure_ascii=False, sort_keys=True)
         self.assertIn("typst_pdf_publication", encoded)
         self.assertIn("real_corpus_publication_tests", encoded)
+
+    def test_product_convergence_cli_can_load_security_reference(self):
+        proc = subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                "tools/product_convergence.py",
+                "parity",
+                "--repo",
+                ".",
+                "--json",
+            ],
+            cwd=REPO,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        payload = json.loads(proc.stdout)
+        self.assertEqual(
+            payload["security_upstream_reference"]["commit"],
+            "061a57ebd3f86dd6df83e6ff8472f5e194c567e5",
+        )
+
+    def test_security_upstream_reference_is_additive_not_a_baseline_rewrite(self):
+        baseline = load_baseline_manifest(REPO)
+        overlay = load_overlay_manifest(REPO)
+        parity = collect_parity(REPO)
+        self.assertEqual(baseline["upstream_commit"], "c3258a2f461d5af5a69c879891b485ccf0f02635")
+        self.assertEqual(overlay["base_upstream_commit"], "c3258a2f461d5af5a69c879891b485ccf0f02635")
+        security = parity["security_upstream_reference"]
+        self.assertEqual(security["repository"], "kakon77777-commits/eveglyph-editor")
+        self.assertEqual(security["commit"], "061a57ebd3f86dd6df83e6ff8472f5e194c567e5")
+        self.assertEqual(security["git_tree"], "664934916c950303ad7e9d166f7aa36a07ac4c57")
+        self.assertEqual(security["authority"], "implementation-reference-only")
+        self.assertTrue(security["manifest_valid"])
 
 
 if __name__ == "__main__":
