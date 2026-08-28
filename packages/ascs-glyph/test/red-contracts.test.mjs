@@ -19,7 +19,7 @@ test('frozen v0.6 fixture set contains exactly 30 unique glyph vectors', () => {
 test('public Native Glyph APIs validate frozen examples through candidate semantics', () => {
   assert.equal(validateGlyphObject(fixture('custom_derivative_glyph_example.json')).ok, true)
   assert.equal(validateGlyphFamily(fixture('glyph_family_example.json')).ok, true)
-  assert.equal(validateGlyphBinding(fixture('glyph_binding_example.json').semantic_binding).ok, true)
+  assert.equal(validateGlyphBinding(fixture('glyph_binding_example.json')[0]).ok, true)
   assert.equal(validateRendererProfile(fixture('renderer_profile_example.json')).ok, true)
   const bridge = fixture('gsc_asset_symbol_v07_bridge_example.json')
   const source = fixture('gsc_generated_assetsymbol_v07.json')
