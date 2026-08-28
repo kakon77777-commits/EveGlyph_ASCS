@@ -31,12 +31,14 @@ class ProductConvergenceTests(unittest.TestCase):
         self.assertEqual(overlay["schema"], "eveglyph-ascs-product-overlay/1.0")
         self.assertEqual(overlay["base_upstream_commit"], "c3258a2f461d5af5a69c879891b485ccf0f02635")
         self.assertEqual(overlay["authority"], "implementation-overlay-only")
+        self.assertEqual(overlay["milestone"], "C-persistence-history-spatial")
         self.assertEqual(overlay["deleted_paths"], [])
         self.assertEqual(
             set(overlay["added_paths"]),
             {
                 "src/ascs/register.js",
                 "src/ascs/runtime-bridge.js",
+                "test/ascs-persistent-bridge.test.mjs",
                 "test/ascs-runtime-bridge.test.mjs",
             },
         )
@@ -49,12 +51,14 @@ class ProductConvergenceTests(unittest.TestCase):
         self.assertEqual(result["unexpected"], [])
         self.assertEqual(result["mismatched"], [])
         self.assertEqual(result["overlay_errors"], [])
+        self.assertEqual(result["overlay_milestone"], "C-persistence-history-spatial")
         self.assertEqual(result["approved_modified"], ["src/main.js"])
         self.assertEqual(
             set(result["approved_added"]),
             {
                 "src/ascs/register.js",
                 "src/ascs/runtime-bridge.js",
+                "test/ascs-persistent-bridge.test.mjs",
                 "test/ascs-runtime-bridge.test.mjs",
             },
         )

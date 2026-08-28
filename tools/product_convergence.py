@@ -296,14 +296,17 @@ def collect_parity(repo: Path) -> dict:
         "required_capabilities": list(REQUIRED_CAPABILITIES),
         "capabilities": capabilities,
         "ascs_only_future_milestones": [
-            "revision_graph",
             "native_math",
             "native_glyph",
-            "spatial_canonical_model",
+            "agent_mcp_authority_rebinding",
         ],
         "ascs_capabilities": {
             "canonical_persistent_identity": (repo / "packages" / "ascs-core" / "src" / "canonical.mjs").exists(),
             "authority_transactions": (repo / "packages" / "ascs-runtime" / "src" / "runtime.mjs").exists(),
+            "persistent_egstore": (repo / "packages" / "ascs-store" / "src" / "index.mjs").exists(),
+            "revision_history_graph": (repo / "packages" / "ascs-history" / "src" / "index.mjs").exists(),
+            "spatial_canonical_model": (repo / "packages" / "ascs-spatial" / "src" / "index.mjs").exists(),
+            "persistent_editor_bridge": (root / "test" / "ascs-persistent-bridge.test.mjs").exists(),
         },
         "ok": all(item["present"] for item in capabilities.values()),
     }

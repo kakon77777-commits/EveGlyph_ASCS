@@ -1,0 +1,9 @@
+{
+  "architecture_archive_sha256": "19a510cebcbe1d1b0e7c3134d99c88eebf98dd20385863ba71850aaf09ca7778",
+  "history_archive_sha256": "8c3aa6f55ac35ee94b8e8e6846d8ece0543b52f6fe1fc8c90a2c4efb16acacfb",
+  "history_vectors_sha256": "c0afe5c97be7b231764874a4c7466636f1cdcf146796f6af04019e336d777d00",
+  "schema": "eveglyph-ascs-milestone-c-reference-fixtures/1.0",
+  "spatial_archive_sha256": "29dd5cb0d17f75a2dbc727315a4f341551f8223ead6c5605edd4a36e685adce7",
+  "spatial_vectors_sha256": "c35cb6782227cb0010508211b3aab04675c97324202c2cfb2b8638e94af9b940",
+  "tw02_vectors_sha256": "8840e674d4e209357f9244826f669b4fade1095dbf2d184b96ba1e38e9098de3"
+}

@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evemisslab.example/schemas/spatial-region-profile-0.1.json",
+  "title": "EveGlyph Spatial Region Profile 0.1",
+  "type": "object",
+  "required": [
+    "profile",
+    "region_id",
+    "parent_region",
+    "local_to_parent",
+    "grammar",
+    "policy",
+    "semantic_zoom",
+    "ports"
+  ],
+  "properties": {
+    "profile": {
+      "const": "org.evemisslab.spatial-region/0.1"
+    },
+    "region_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parent_region": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "local_to_parent": {
+      "type": "object",
+      "required": [
+        "convention",
+        "matrix"
+      ],
+      "properties": {
+        "convention": {
+          "const": "column-vector-local-to-parent-affine-2d/0.1"
+        },
+        "matrix": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "string",
+            "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "boundary": {
+      "type": "object"
+    },
+    "grammar": {
+      "type": "object",
+      "required": [
+        "profile",
+        "mode"
+      ],
+      "properties": {
+        "profile": {
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "explicit",
+            "inherit"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "mode",
+          "value"
+        ],
+        "properties": {
+          "mode": {
+            "enum": [
+              "inherit",
+              "override-nearest",
+              "merge-set",
+              "intersect-capability",
+              "deny-dominates"
+            ]
+          },
+          "value": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    "semantic_zoom": {
+      "type": "object",
+      "required": [
+        "profile",
+        "authority"
+      ],
+      "properties": {
+        "profile": {
+          "type": "string"
+        },
+        "authority": {
+          "const": "projection-only"
+        }
+      },
+      "additionalProperties": true
+    },
+    "ports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "direction",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "in",
+              "out"
+            ]
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "extensions": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

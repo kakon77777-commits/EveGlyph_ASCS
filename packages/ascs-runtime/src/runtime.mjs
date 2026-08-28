@@ -7,6 +7,14 @@ import {
 } from '../../ascs-core/src/index.mjs'
 import { authorizeCanonicalMutation } from './authority.mjs'
 
+export class ExtensionValidationError extends Error {
+  constructor(errors = []) {
+    super(`extension validation failed: ${errors.map((item) => item.code ?? String(item)).join(', ')}`)
+    this.name = 'ExtensionValidationError'
+    this.errors = errors
+  }
+}
+
 export class ConflictError extends Error {
   constructor(base, current) {
     super(`stale base workspace revision: ${base} != ${current}`)
@@ -103,7 +111,7 @@ export class WorkspaceRuntime {
     return this._idFactory(label)
   }
 
-  async _transaction({ op, baseWorkspaceRevision, authority, mutate }) {
+  async _transaction({ op, baseWorkspaceRevision, authority, mutate, validateExtension = null }) {
     this._requireBase(baseWorkspaceRevision)
     const authorized = authorizeCanonicalMutation(authority)
     const draft = clone(this._bundle)
@@ -138,8 +146,21 @@ export class WorkspaceRuntime {
       throw error
     }
 
+    if (validateExtension) {
+      const extensionValidation = await validateExtension(draft)
+      if (extensionValidation === false || extensionValidation?.ok === false) {
+        throw new ExtensionValidationError(extensionValidation?.errors ?? [{ code: 'ExtensionRejected' }])
+      }
+    }
+
     this._bundle = draft
     return { status: 'Committed', workspace_revision: draft.workspace.workspace_revision, ...result }
+  }
+
+  async commitExtensionMutation({ op, baseWorkspaceRevision, authority, mutate, validateExtension = null }) {
+    if (typeof op !== 'string' || !op) throw new TypeError('extension mutation op is required')
+    if (typeof mutate !== 'function') throw new TypeError('extension mutation callback is required')
+    return this._transaction({ op, baseWorkspaceRevision, authority, mutate, validateExtension })
   }
 
   async moveObject(persistentId, { x, y, baseWorkspaceRevision, authority }) {

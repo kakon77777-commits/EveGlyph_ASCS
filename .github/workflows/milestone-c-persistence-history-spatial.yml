@@ -1,0 +1,122 @@
+name: Milestone C Persistence History Spatial
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - workbench/milestone-c-persistence-history-spatial
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-preservation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - run: python -m pip install 'jsonschema>=4,<5'
+      - name: Repository preservation
+        run: python -B tools/ascs_repo.py verify --repo . --json
+      - name: ASCS v1 regression
+        run: python -B canonical/v1.0/machine/tests/test_validate_v10.py
+      - name: ASCS v1 validator
+        run: python -B canonical/v1.0/machine/tools/validate_v10.py --json
+      - name: Product overlay lineage
+        run: |
+          python -B -m unittest tests.test_product_convergence -v
+          python -B tools/product_convergence.py verify --repo . --json
+          python -B tools/product_convergence.py parity --repo . --json
+
+  canonical-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - run: python -m pip install 'jsonschema>=4,<5' 'brotli>=1.1'
+      - name: Extract and verify pinned archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, pathlib, zipfile
+          root=pathlib.Path('canonical/v1.0/source_archives')
+          specs=[
+            ('EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1_Architecture_Complete.zip','19a510cebcbe1d1b0e7c3134d99c88eebf98dd20385863ba71850aaf09ca7778','/tmp/arch'),
+            ('EveGlyph_Computational_Canvas_MVP_v0.1.zip','f49a4f419f9b4539aac0721a1ad85f84151cec71bf3da68db22a197303b5cd3f','/tmp/mvp'),
+            ('EveGlyph_ASCS_v0.3_Persistent_Editing_Round_Complete.zip','8c3aa6f55ac35ee94b8e8e6846d8ece0543b52f6fe1fc8c90a2c4efb16acacfb','/tmp/v03'),
+            ('EveGlyph_ASCS_v0.4_Spatial_Region_Round_Complete.zip','29dd5cb0d17f75a2dbc727315a4f341551f8223ead6c5605edd4a36e685adce7','/tmp/v04'),
+          ]
+          for name,expected,out in specs:
+            p=root/name; actual=hashlib.sha256(p.read_bytes()).hexdigest(); assert actual==expected,(name,actual)
+            pathlib.Path(out).mkdir(parents=True,exist_ok=True)
+            with zipfile.ZipFile(p) as z: assert z.testzip() is None; z.extractall(out)
+          PY
+      - name: TW-01 TW-02 TW-03 reference validators
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARCH=/tmp/arch/EveGlyph_Addressable_Symbolic_Computational_Space_Series_v0.1
+          python -B "$ARCH/TW-01_Support/tools/validate_tw01.py"
+          python -B "$ARCH/TW-02_Support/tools/validate_tw02.py"
+          python -B "$ARCH/TW-03_Support/tools/validate_tw03.py"
+      - name: Computational Canvas MVP
+        shell: bash
+        run: |
+          set -euo pipefail
+          MVP=/tmp/mvp/EveGlyph_Computational_Canvas_MVP_v0.1
+          PYTHONPATH="$MVP/src" python -B -m unittest discover -s "$MVP/tests" -v
+      - name: v0.3 and v0.4 fixture/schema pins
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(sha256sum packages/ascs-store/test/fixtures/tw02_vectors.json | awk '{print $1}')" = '8840e674d4e209357f9244826f669b4fade1095dbf2d184b96ba1e38e9098de3'
+          test "$(sha256sum packages/ascs-history/test/fixtures/history_merge_vectors.json | awk '{print $1}')" = 'c0afe5c97be7b231764874a4c7466636f1cdcf146796f6af04019e336d777d00'
+          test "$(sha256sum packages/ascs-spatial/test/fixtures/spatial_conformance_vectors.json | awk '{print $1}')" = 'c35cb6782227cb0010508211b3aab04675c97324202c2cfb2b8638e94af9b940'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import jsonschema
+          spatial_schema=json.loads(Path('packages/ascs-spatial/test/fixtures/spatial-region-profile.schema.json').read_text())
+          spatial_example=json.loads(Path('packages/ascs-spatial/test/fixtures/spatial_region_example.json').read_text())
+          jsonschema.Draft202012Validator(spatial_schema).validate(spatial_example)
+          history=json.loads(Path('packages/ascs-history/test/fixtures/history_merge_vectors.json').read_text())
+          assert history['profile']=='org.evemisslab.history-conformance/0.1' and len(history['vectors'])==12
+          spatial=json.loads(Path('packages/ascs-spatial/test/fixtures/spatial_conformance_vectors.json').read_text())
+          assert spatial['profile']=='org.evemisslab.spatial-conformance/0.1' and len(spatial['vectors'])==18
+          print('v0.3/v0.4 pinned fixtures: PASS')
+          PY
+
+  javascript-milestone-c:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Milestone B + C JavaScript contracts
+        run: node --test packages/ascs-core/test/*.test.mjs packages/ascs-runtime/test/*.test.mjs packages/ascs-store/test/*.test.mjs packages/ascs-history/test/*.test.mjs packages/ascs-spatial/test/*.test.mjs
+
+  current-eveglyph-product:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/eveglyph-editor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+      - run: npm ci
+      - name: Milestone B bridge regression
+        run: node --test test/ascs-runtime-bridge.test.mjs
+      - name: Milestone C persistent bridge contract
+        run: node --test test/ascs-persistent-bridge.test.mjs
+      - run: npm run test:publication
+      - run: npm run build
+      - run: npm run verify:dynamic-logic
+      - run: npm run verify:dynamic-rendering

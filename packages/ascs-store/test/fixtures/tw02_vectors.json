@@ -1,0 +1,28 @@
+{
+  "profile": "tw02/0.1",
+  "manifest_id_preimage_rule": "Set manifest_id to empty string, then UTF-8 JSON with sorted keys and separators comma/colon; SHA-256; prefix store:sha256:",
+  "expected_manifest_id": "store:sha256:348a1d13072c3f70af112c9a0b6b8ab70c860386f9864d352c55dccb62904578",
+  "root_payload_sha256": "0d9cb28fc8c6f9d6e56c99729b14ce9cf873afe7e0f09940298e8ba459f9b78e",
+  "root_payload_length": 8014,
+  "fixed_chunk_size": 4096,
+  "chunks": [
+    {
+      "chunk_id": "chunk:sha256:814fc3cbb4e25d7412c41326622853a2f9a6646eef854f159ebfa84a8ef67445",
+      "offset": 0,
+      "length": 4096,
+      "encoded_sha256": "814fc3cbb4e25d7412c41326622853a2f9a6646eef854f159ebfa84a8ef67445"
+    },
+    {
+      "chunk_id": "chunk:sha256:485d624361975adc759b0f5982a280faf45454de348fb9eb1fa4cf51ec1a6d1e",
+      "offset": 4096,
+      "length": 3918,
+      "encoded_sha256": "485d624361975adc759b0f5982a280faf45454de348fb9eb1fa4cf51ec1a6d1e"
+    }
+  ],
+  "semantic_vectors": {
+    "compression_changes_physical_representation_not_egir_identity": true,
+    "chunk_boundary_changes_storage_manifest_not_tw01_object_identity": true,
+    "random_access_claim_requires_read_amplification_metric": true,
+    "ai_strategy_may_select_codec_but_decoder_must_not_invoke_ai": true
+  }
+}

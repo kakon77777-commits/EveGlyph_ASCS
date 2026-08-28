@@ -1,0 +1,136 @@
+{
+  "profile": "org.evemisslab.history-conformance/0.1",
+  "release": "ascs/0.3",
+  "vectors": [
+    {
+      "id": "HM-001-independent-content-placement",
+      "description": "Left edits object intrinsic content while right only moves the same object.",
+      "base": {"content": "c0", "placement": "p0"},
+      "left": {"content": "c1", "placement": "p0"},
+      "right": {"content": "c0", "placement": "p1"},
+      "expected": {
+        "result_class": "auto-merge",
+        "content": "c1",
+        "placement": "p1",
+        "conflicts": []
+      }
+    },
+    {
+      "id": "HM-002-concurrent-content-conflict",
+      "description": "Both sides change the same intrinsic object content and no kind-specific merge profile is declared.",
+      "base": {"content": "c0"},
+      "left": {"content": "c1"},
+      "right": {"content": "c2"},
+      "policy": {"kind_merge": null},
+      "expected": {
+        "result_class": "conflict",
+        "conflict_type": "object-content"
+      }
+    },
+    {
+      "id": "HM-003-concurrent-placement-conflict",
+      "description": "Both sides move the same placement to different values.",
+      "base": {"placement": "p0"},
+      "left": {"placement": "p1"},
+      "right": {"placement": "p2"},
+      "expected": {
+        "result_class": "conflict",
+        "conflict_type": "placement"
+      }
+    },
+    {
+      "id": "HM-004-delete-vs-edit",
+      "description": "Left tombstones an object while right edits the same object.",
+      "base": {"lifecycle": "active", "content": "c0"},
+      "left": {"lifecycle": "tombstoned", "content": "c0"},
+      "right": {"lifecycle": "active", "content": "c1"},
+      "expected": {
+        "result_class": "conflict",
+        "conflict_type": "lifecycle"
+      }
+    },
+    {
+      "id": "HM-005-delete-vs-move",
+      "description": "Left tombstones an object while right moves its placement.",
+      "base": {"lifecycle": "active", "placement": "p0"},
+      "left": {"lifecycle": "tombstoned", "placement": "p0"},
+      "right": {"lifecycle": "active", "placement": "p1"},
+      "expected": {
+        "result_class": "conflict",
+        "conflict_type": "lifecycle"
+      }
+    },
+    {
+      "id": "HM-006-stale-command",
+      "description": "A command is based on an old workspace revision.",
+      "current_head": "wrev:sha256:head2",
+      "command_base": "wrev:sha256:head1",
+      "expected": {
+        "result_class": "Conflict",
+        "canonical_state_changed": false
+      }
+    },
+    {
+      "id": "HM-007-canonical-revert",
+      "description": "Undoing an already committed change creates a new inverse commit rather than deleting history.",
+      "history": ["w0", "w1", "w2"],
+      "revert_target": "w1",
+      "expected": {
+        "result_class": "new-revert-commit",
+        "new_parent": "w2",
+        "target_still_reachable": true
+      }
+    },
+    {
+      "id": "HM-008-autosave-draft",
+      "description": "Autosave persists recovery data but does not create a canonical workspace revision.",
+      "workspace_head_before": "w1",
+      "pending_commands": 3,
+      "expected": {
+        "workspace_head_after": "w1",
+        "recovery_capsule_created": true,
+        "canonical_commit_created": false
+      }
+    },
+    {
+      "id": "HM-009-recovery-head-unchanged",
+      "description": "Recovery capsule base still equals current head.",
+      "recovery_base": "w1",
+      "current_head": "w1",
+      "expected": {
+        "result_class": "replay-through-normal-validation"
+      }
+    },
+    {
+      "id": "HM-010-recovery-head-advanced",
+      "description": "Current head advanced after recovery capsule was written.",
+      "recovery_base": "w1",
+      "current_head": "w2",
+      "expected": {
+        "result_class": "branch-rebase-or-merge-required",
+        "silent_replay": false
+      }
+    },
+    {
+      "id": "HM-011-conflict-resolution-merge",
+      "description": "After all critical conflicts are resolved, final merge commit preserves both branch heads as parents.",
+      "left_head": "wL",
+      "right_head": "wR",
+      "unresolved_conflicts": 0,
+      "expected": {
+        "result_class": "merge-commit",
+        "parents": ["wL", "wR"]
+      }
+    },
+    {
+      "id": "HM-012-agent-stale-proposal",
+      "description": "A long-running agent returns a proposal based on a stale workspace revision.",
+      "proposal_base": "w1",
+      "current_head": "w3",
+      "expected": {
+        "result_class": "candidate-or-branch",
+        "direct_overwrite": false
+      }
+    }
+  ]
+}

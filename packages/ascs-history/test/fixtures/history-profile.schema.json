@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evemisslab.example/schemas/ascs-history-profile-0.1.json",
+  "title": "EveGlyph ASCS History / Conflict / Recovery Profiles 0.1",
+  "type": "object",
+  "properties": {
+    "history_profile": {"$ref": "#/$defs/historyProfile"},
+    "conflict": {"$ref": "#/$defs/conflictRecord"},
+    "recovery": {"$ref": "#/$defs/recoveryCapsule"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "workspaceRevision": {
+      "type": "string",
+      "pattern": "^wrev:[A-Za-z0-9._-]+:.+$"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^rev:[A-Za-z0-9._-]+:.+$"
+    },
+    "identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "branchRecord": {
+      "type": "object",
+      "required": ["branch_id", "name", "head", "status"],
+      "properties": {
+        "branch_id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "head": {"$ref": "#/$defs/workspaceRevision"},
+        "created_from": {
+          "oneOf": [
+            {"$ref": "#/$defs/workspaceRevision"},
+            {"type": "null"}
+          ]
+        },
+        "status": {
+          "enum": ["active", "conflicted", "archived", "closed"]
+        },
+        "publication_class": {
+          "enum": ["unpublished-local", "shared", "anchored"]
+        },
+        "metadata": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "historyProfile": {
+      "type": "object",
+      "required": ["profile", "branches"],
+      "properties": {
+        "profile": {"const": "org.evemisslab.history/0.1"},
+        "branches": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/branchRecord"}
+        },
+        "retention": {"type": "object"},
+        "extensions": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "addressRef": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {"type": "string"},
+        "value": {}
+      },
+      "additionalProperties": true
+    },
+    "conflictRecord": {
+      "type": "object",
+      "required": [
+        "profile",
+        "conflict_type",
+        "base_workspace_revision",
+        "left_workspace_revision",
+        "right_workspace_revision",
+        "target",
+        "status"
+      ],
+      "properties": {
+        "profile": {"const": "org.evemisslab.history-conflict/0.1"},
+        "conflict_type": {
+          "enum": [
+            "object-content",
+            "placement",
+            "relation",
+            "lifecycle",
+            "alias",
+            "subobject",
+            "merge-base"
+          ]
+        },
+        "base_workspace_revision": {"$ref": "#/$defs/workspaceRevision"},
+        "left_workspace_revision": {"$ref": "#/$defs/workspaceRevision"},
+        "right_workspace_revision": {"$ref": "#/$defs/workspaceRevision"},
+        "target": {"$ref": "#/$defs/addressRef"},
+        "base": {},
+        "left": {},
+        "right": {},
+        "status": {"enum": ["unresolved", "resolved"]},
+        "resolution": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "required": ["policy", "event_id"],
+              "properties": {
+                "policy": {
+                  "enum": [
+                    "take-left",
+                    "take-right",
+                    "manual-merged-value",
+                    "kind-specific-merge",
+                    "keep-both",
+                    "custom-versioned-policy"
+                  ]
+                },
+                "event_id": {"type": "string", "minLength": 1},
+                "result": {}
+              },
+              "additionalProperties": true
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "pendingCommand": {
+      "type": "object",
+      "required": ["command_id", "base_workspace_revision", "command_type", "payload"],
+      "properties": {
+        "command_id": {"type": "string", "minLength": 1},
+        "base_workspace_revision": {"$ref": "#/$defs/workspaceRevision"},
+        "command_type": {"type": "string", "minLength": 1},
+        "payload": {}
+      },
+      "additionalProperties": true
+    },
+    "recoveryCapsule": {
+      "type": "object",
+      "required": [
+        "profile",
+        "session_id",
+        "workspace_id",
+        "base_workspace_revision",
+        "last_observed_head",
+        "pending_commands",
+        "draft_state_hash",
+        "created_at",
+        "tool"
+      ],
+      "properties": {
+        "profile": {"const": "org.evemisslab.recovery/0.1"},
+        "session_id": {"type": "string", "minLength": 1},
+        "workspace_id": {"$ref": "#/$defs/identity"},
+        "base_workspace_revision": {"$ref": "#/$defs/workspaceRevision"},
+        "last_observed_head": {"$ref": "#/$defs/workspaceRevision"},
+        "pending_commands": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/pendingCommand"}
+        },
+        "draft_state_hash": {"type": "string", "minLength": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "tool": {
+          "type": "object",
+          "required": ["name", "version"],
+          "properties": {
+            "name": {"type": "string", "minLength": 1},
+            "version": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
