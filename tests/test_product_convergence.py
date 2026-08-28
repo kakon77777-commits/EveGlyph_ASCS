@@ -107,11 +107,12 @@ class ProductConvergenceTests(unittest.TestCase):
         parity = collect_parity(REPO)
         self.assertEqual(baseline["upstream_commit"], "c3258a2f461d5af5a69c879891b485ccf0f02635")
         self.assertEqual(overlay["base_upstream_commit"], "c3258a2f461d5af5a69c879891b485ccf0f02635")
-        self.assertEqual(
-            parity["security_upstream_reference"]["commit"],
-            "061a57ebd3f86dd6df83e6ff8472f5e194c567e5",
-        )
-        self.assertEqual(parity["security_upstream_reference"]["authority"], "implementation-reference-only")
+        security = parity["security_upstream_reference"]
+        self.assertEqual(security["repository"], "kakon77777-commits/eveglyph-editor")
+        self.assertEqual(security["commit"], "061a57ebd3f86dd6df83e6ff8472f5e194c567e5")
+        self.assertEqual(security["git_tree"], "664934916c950303ad7e9d166f7aa36a07ac4c57")
+        self.assertEqual(security["authority"], "implementation-reference-only")
+        self.assertTrue(security["manifest_valid"])
 
 
 if __name__ == "__main__":
