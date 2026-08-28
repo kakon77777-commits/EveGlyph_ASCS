@@ -2,10 +2,11 @@
   "schema": "eveglyph-ascs-product-overlay/1.0",
   "base_upstream_commit": "c3258a2f461d5af5a69c879891b485ccf0f02635",
   "authority": "implementation-overlay-only",
-  "milestone": "B-canonical-spine",
+  "milestone": "C-persistence-history-spatial",
   "added_paths": [
     "src/ascs/register.js",
     "src/ascs/runtime-bridge.js",
+    "test/ascs-persistent-bridge.test.mjs",
     "test/ascs-runtime-bridge.test.mjs"
   ],
   "modified_paths": [
