@@ -1,0 +1,29 @@
+{
+  "profile": "glyph-family/1.0-candidate.1",
+  "base_glyph_ref": {
+    "persistent_id": "urn:uuid:0199a000-0000-7000-8000-000000000601",
+    "revision_id": "rev:sha256:base-glyph-v06"
+  },
+  "topology_policy": "invariant",
+  "axes": [
+    {
+      "axis_id": "orientation",
+      "kind": "categorical",
+      "default": "upright",
+      "values": [
+        "upright",
+        "slanted"
+      ]
+    },
+    {
+      "axis_id": "weight",
+      "kind": "continuous",
+      "min": "0",
+      "max": "1",
+      "default": "0.5"
+    }
+  ],
+  "constraints": [
+    "weight preserves component-count"
+  ]
+}

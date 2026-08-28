@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evemisslab.example/schemas/gsc-assetsymbol-bridge.schema.json",
+  "type": "object",
+  "required": [
+    "profile",
+    "source_profile",
+    "source_artifact",
+    "bridge_fidelity",
+    "mapped",
+    "evidence"
+  ],
+  "properties": {
+    "profile": {
+      "const": "gsc-assetsymbol-bridge/1.0-candidate.1"
+    },
+    "source_profile": {
+      "type": "object",
+      "required": [
+        "schema",
+        "version",
+        "mode",
+        "encoding"
+      ],
+      "properties": {
+        "schema": {
+          "const": "evemisslab.symbolic-image"
+        },
+        "version": {
+          "const": "0.7"
+        },
+        "mode": {
+          "const": "strict-source-blind"
+        },
+        "encoding": {
+          "const": "palette-runs"
+        }
+      },
+      "additionalProperties": false
+    },
+    "source_artifact": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "bridge_fidelity": {
+      "enum": [
+        "carry-lossless",
+        "structure-preserving",
+        "structure-partial",
+        "visual-only",
+        "unsupported"
+      ]
+    },
+    "mapped": {
+      "type": "object"
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "source_blind",
+        "semantic_claim",
+        "compiler",
+        "asset_version"
+      ],
+      "properties": {
+        "source_blind": {
+          "const": true
+        },
+        "semantic_claim": {
+          "const": false
+        },
+        "compiler": {
+          "type": "string"
+        },
+        "asset_version": {
+          "const": "0.7"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

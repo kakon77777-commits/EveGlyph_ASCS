@@ -1,0 +1,580 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://evemisslab.example/schemas/glyph-object-v1-candidate.schema.json",
+  "title": "EveGlyph Glyph Object v1 Candidate",
+  "type": "object",
+  "required": [
+    "profile",
+    "design_space",
+    "geometry",
+    "topology",
+    "parts",
+    "family_binding",
+    "render_hints",
+    "compatibility"
+  ],
+  "properties": {
+    "profile": {
+      "const": "glyph/1.0-candidate.1"
+    },
+    "design_space": {
+      "type": "object",
+      "required": [
+        "dimension",
+        "units",
+        "origin",
+        "view_box"
+      ],
+      "properties": {
+        "dimension": {
+          "const": "2d"
+        },
+        "units": {
+          "const": "design-unit"
+        },
+        "origin": {
+          "enum": [
+            "y-up",
+            "y-down"
+          ]
+        },
+        "view_box": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "geometry": {
+      "type": "object",
+      "required": [
+        "canonical_structure",
+        "paths",
+        "components",
+        "exact_carries"
+      ],
+      "properties": {
+        "canonical_structure": {
+          "enum": [
+            "path-graph",
+            "component-graph",
+            "palette-runs-v1",
+            "hybrid"
+          ]
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path_id",
+              "fill_rule",
+              "commands"
+            ],
+            "properties": {
+              "path_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:-]+$"
+              },
+              "fill_rule": {
+                "enum": [
+                  "nonzero",
+                  "evenodd",
+                  "none"
+                ]
+              },
+              "commands": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "op"
+                  ],
+                  "properties": {
+                    "op": {
+                      "enum": [
+                        "M",
+                        "L",
+                        "Q",
+                        "C",
+                        "Z"
+                      ]
+                    },
+                    "x": {
+                      "type": "string",
+                      "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+                    },
+                    "y": {
+                      "type": "string",
+                      "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+                    },
+                    "x1": {
+                      "type": "string",
+                      "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+                    },
+                    "y1": {
+                      "type": "string",
+                      "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+                    },
+                    "x2": {
+                      "type": "string",
+                      "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+                    },
+                    "y2": {
+                      "type": "string",
+                      "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "component_id",
+              "glyph_ref",
+              "transform"
+            ],
+            "properties": {
+              "component_id": {
+                "type": "string"
+              },
+              "glyph_ref": {
+                "type": "object",
+                "required": [
+                  "persistent_id",
+                  "revision_id"
+                ],
+                "properties": {
+                  "persistent_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "revision_id": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "additionalProperties": false
+              },
+              "transform": {
+                "type": "array",
+                "minItems": 6,
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "exact_carries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "carry_id",
+              "kind",
+              "canvas",
+              "palette",
+              "runs",
+              "fidelity"
+            ],
+            "properties": {
+              "carry_id": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "palette-runs-v1"
+              },
+              "canvas": {
+                "type": "object",
+                "required": [
+                  "width",
+                  "height"
+                ],
+                "properties": {
+                  "width": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "additionalProperties": false
+              },
+              "palette": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "array",
+                  "minItems": 4,
+                  "maxItems": 4,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  }
+                }
+              },
+              "runs": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "op",
+                    "y",
+                    "x",
+                    "length",
+                    "palette_index"
+                  ],
+                  "properties": {
+                    "op": {
+                      "const": "RUN"
+                    },
+                    "y": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "x": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "length": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "palette_index": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "fidelity": {
+                "const": "exact"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "topology": {
+      "type": "object",
+      "required": [
+        "components",
+        "holes",
+        "adjacency"
+      ],
+      "properties": {
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "component_id",
+              "geometry_refs"
+            ],
+            "properties": {
+              "component_id": {
+                "type": "string"
+              },
+              "geometry_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "hole_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "holes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "hole_id",
+              "owner_component"
+            ],
+            "properties": {
+              "hole_id": {
+                "type": "string"
+              },
+              "owner_component": {
+                "type": "string"
+              },
+              "boundary_ref": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "adjacency": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "source",
+              "target",
+              "kind"
+            ],
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "touches",
+                  "adjacent",
+                  "overlaps",
+                  "contains"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "parts": {
+      "type": "object",
+      "required": [
+        "nodes",
+        "edges",
+        "ports"
+      ],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "part_id",
+              "geometry_refs",
+              "structural_tags"
+            ],
+            "properties": {
+              "part_id": {
+                "type": "string"
+              },
+              "geometry_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "structural_tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "source",
+              "target",
+              "kind"
+            ],
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "contains",
+                  "adjacent",
+                  "attached",
+                  "aligned",
+                  "ordered-before",
+                  "mirrors"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "port_id",
+              "kind",
+              "anchor"
+            ],
+            "properties": {
+              "port_id": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "anchor": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "string",
+                  "pattern": "^(0|-?[1-9][0-9]*|-?(0|[1-9][0-9]*)\\.[0-9]*[1-9])$"
+                }
+              },
+              "direction": {
+                "enum": [
+                  "in",
+                  "out",
+                  "bidirectional",
+                  "none"
+                ]
+              },
+              "cardinality": {
+                "enum": [
+                  "one",
+                  "many"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "family_binding": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "family_ref",
+            "parameters"
+          ],
+          "properties": {
+            "family_ref": {
+              "type": "object",
+              "required": [
+                "persistent_id",
+                "revision_id"
+              ],
+              "properties": {
+                "persistent_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "revision_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "parameters": {
+              "type": "object",
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "boolean"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "render_hints": {
+      "type": "object",
+      "required": [
+        "preferred_profiles"
+      ],
+      "properties": {
+        "preferred_profiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "compatibility": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "profile",
+          "fidelity"
+        ],
+        "properties": {
+          "profile": {
+            "type": "string"
+          },
+          "fidelity": {
+            "enum": [
+              "carry-lossless",
+              "structure-preserving",
+              "structure-partial",
+              "visual-only",
+              "unsupported"
+            ]
+          },
+          "artifact_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -296,7 +296,6 @@ def collect_parity(repo: Path) -> dict:
         "required_capabilities": list(REQUIRED_CAPABILITIES),
         "capabilities": capabilities,
         "ascs_only_future_milestones": [
-            "native_glyph",
             "agent_mcp_authority_rebinding",
         ],
         "ascs_capabilities": {
@@ -308,6 +307,8 @@ def collect_parity(repo: Path) -> dict:
             "persistent_editor_bridge": (root / "test" / "ascs-persistent-bridge.test.mjs").exists(),
             "native_math_candidate_runtime": (repo / "packages" / "ascs-math" / "src" / "index.mjs").exists(),
             "native_math_editor_bridge": (root / "test" / "ascs-native-math-bridge.test.mjs").exists(),
+            "native_glyph_candidate_runtime": (repo / "packages" / "ascs-glyph" / "src" / "index.mjs").exists(),
+            "native_glyph_editor_bridge": (root / "test" / "ascs-native-glyph-bridge.test.mjs").exists(),
         },
         "ok": all(item["present"] for item in capabilities.values()),
     }

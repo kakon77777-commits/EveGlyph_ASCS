@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "profile",
+    "vectors"
+  ],
+  "properties": {
+    "profile": {
+      "const": "glyph-conformance-vectors/0.6"
+    },
+    "vectors": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "expectation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "expectation": {
+            "enum": [
+              "accept",
+              "reject",
+              "preserve-identity",
+              "new-revision",
+              "candidate-only",
+              "explicit-required",
+              "typed-equality"
+            ]
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
