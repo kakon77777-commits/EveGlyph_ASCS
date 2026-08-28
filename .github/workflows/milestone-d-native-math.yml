@@ -1,0 +1,101 @@
+name: Milestone D Native Math
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-preservation:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-d-native-math'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install 'jsonschema>=4,<5' 'brotli>=1.1'
+      - run: python -B tools/ascs_repo.py verify --repo . --json
+      - run: python -B canonical/v1.0/machine/tests/test_validate_v10.py
+      - run: python -B canonical/v1.0/machine/tools/validate_v10.py --json
+      - run: python -B -m unittest tests.test_product_convergence -v
+      - run: python -B tools/product_convergence.py verify --repo . --json
+
+  v05-reference:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-d-native-math'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install 'jsonschema>=4,<5'
+      - name: Verify pinned v0.5 archive, reference validator and committed fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, pathlib, zipfile
+          import jsonschema
+          archive = pathlib.Path('canonical/v1.0/source_archives/EveGlyph_ASCS_v0.5_Native_Math_Round_Complete.zip')
+          expected = '16f499d1721191ebf11c11baada3440332e5ddbcafa59cc26c7aecc7fe0edebe'
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected
+          out = pathlib.Path('/tmp/v05')
+          with zipfile.ZipFile(archive) as zf:
+              assert zf.testzip() is None
+              zf.extractall(out)
+          pins = json.loads(pathlib.Path('packages/MILESTONE_D_MATH_REFERENCE_LINEAGE.json').read_text(encoding='utf-8'))
+          root = pathlib.Path('packages/ascs-math/test/fixtures')
+          assert pins['archive_sha256'] == expected
+          assert pins['candidate_profile'] == 'ncm/1.0-candidate.1'
+          assert pins['vector_count'] == 30
+          for row in pins['fixtures']:
+              data = (root / row['path']).read_bytes()
+              assert len(data) == row['bytes']
+              assert hashlib.sha256(data).hexdigest() == row['sha256']
+          schema = json.loads((root / 'math-conformance-vectors.schema.json').read_text(encoding='utf-8'))
+          vectors = json.loads((root / 'native_math_conformance_vectors.json').read_text(encoding='utf-8'))
+          jsonschema.Draft202012Validator(schema).validate(vectors)
+          assert vectors['profile'] == 'org.evemisslab.math-conformance-vectors/0.1'
+          assert len(vectors['vectors']) == 30
+          assert len({v['id'] for v in vectors['vectors']}) == 30
+          PY
+          V05=/tmp/v05/EveGlyph_ASCS_v0.5_Native_Math_Round_Complete/EveGlyph_ASCS_v1.0_Roadmap/v0.5
+          python -B "$V05/V0.5_Support/tools/validate_v05.py" --json
+
+  javascript-native-math:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-d-native-math'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node --test packages/ascs-math/test/*.test.mjs
+
+  regression-product:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-d-native-math'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/eveglyph-editor/package-lock.json
+      - name: ASCS Milestone B/C regression
+        run: node --test packages/ascs-core/test/*.test.mjs packages/ascs-runtime/test/*.test.mjs packages/ascs-store/test/*.test.mjs packages/ascs-history/test/*.test.mjs packages/ascs-spatial/test/*.test.mjs
+      - name: Current EveGlyph product regression
+        working-directory: apps/eveglyph-editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          node --test test/ascs-runtime-bridge.test.mjs
+          node --test test/ascs-persistent-bridge.test.mjs
+          npm run test:publication
+          npm run build
+          npm run verify:dynamic-logic
+          npm run verify:dynamic-rendering
