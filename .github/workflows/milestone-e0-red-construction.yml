@@ -1,0 +1,24 @@
+name: Milestone E0 RED Construction
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  red-contract:
+    if: github.event.pull_request.head.ref == 'workbench/milestone-e0-security-upstream'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: E0 security-upstream contract should be RED before implementation
+        run: |
+          python -B -m unittest tests.test_security_upstream -v
+          python -B -m unittest tests.test_product_convergence.ProductConvergenceTests.test_security_upstream_reference_is_additive_not_a_baseline_rewrite -v
