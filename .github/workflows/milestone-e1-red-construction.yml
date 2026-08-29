@@ -47,12 +47,19 @@ jobs:
       - name: Verify Task 2 contracts
         run: |
           node --test packages/ascs-agent/test/model.test.mjs packages/ascs-agent/test/reference-lineage.test.mjs
-          python -B -m unittest tests.test_e1_agent_reference -v
+          python -B -m unittest tests.test_e1_agent_reference tests.test_e1_conformance_reference -v
       - name: Verify Task 3 context and run contracts
         run: node --test packages/ascs-agent/test/context.test.mjs packages/ascs-agent/test/run.test.mjs
       - name: Verify Task 4 proposal and review contracts
         run: node --test packages/ascs-agent/test/proposal.test.mjs packages/ascs-agent/test/review.test.mjs
       - name: Verify Task 5 AgentKernel and no-authority contracts
         run: node --test packages/ascs-agent/test/kernel.test.mjs packages/ascs-agent/test/no-runtime-authority.test.mjs
+      - name: Print Task 6 production conformance rows
+        run: |
+          node --input-type=module <<'NODE'
+          import { runE1AgentConformance } from './packages/ascs-agent/src/index.mjs'
+          const result = await runE1AgentConformance()
+          console.log(JSON.stringify(result, null, 2))
+          NODE
       - name: Diagnose Task 6 production conformance dispatcher
         run: node --test packages/ascs-agent/test/conformance.test.mjs
