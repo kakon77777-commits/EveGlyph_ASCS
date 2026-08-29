@@ -78,6 +78,7 @@ async function kernelScenario({ validatorOutcome, finishStatus } = {}) {
     clock: () => new Date('2026-08-25T06:35:00Z'),
   })
   kernel.registerPrincipal(p)
+  kernel.putContextPack(ctx)
   const run = runExample()
   const active = kernel.startRun({
     principalId: p.principal_id,
