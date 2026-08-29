@@ -30,9 +30,11 @@ jobs:
           test "$(sha256sum packages/ascs-agent/src/index.mjs | cut -d' ' -f1)" = "5711396b65a582f63aa35f5aa2f8c4714d7e1cb8eea28fc2b2ee593e5d73d187"
       - name: Verify Task 2 contracts
         run: |
-          node --test packages/ascs-agent/test/kernel.test.mjs packages/ascs-agent/test/model.test.mjs packages/ascs-agent/test/reference-lineage.test.mjs
+          node --test packages/ascs-agent/test/model.test.mjs packages/ascs-agent/test/reference-lineage.test.mjs
           python -B -m unittest tests.test_e1_agent_reference -v
       - name: Verify Task 3 context and run contracts
         run: node --test packages/ascs-agent/test/context.test.mjs packages/ascs-agent/test/run.test.mjs
       - name: Verify Task 4 proposal and review contracts
         run: node --test packages/ascs-agent/test/proposal.test.mjs packages/ascs-agent/test/review.test.mjs
+      - name: Task 5 AgentKernel contract should be RED before production implementation
+        run: node --test packages/ascs-agent/test/kernel.test.mjs packages/ascs-agent/test/no-runtime-authority.test.mjs
