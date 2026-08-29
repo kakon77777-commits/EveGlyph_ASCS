@@ -249,11 +249,21 @@ def verify_upstream_checkout(repo: Path, upstream_checkout: Path) -> dict:
         if blob != row.get("git_blob"):
             file_errors.append(f"{path}: blob expected {row.get('git_blob')}, got {blob}")
             continue
-        disk_path = upstream_checkout / PurePosixPath(path)
+        # Size is read from the Git object store (`cat-file -s <blob>`), not
+        # `Path.stat().st_size` on the working-tree file. A working-tree read
+        # reflects whatever the local checkout's line-ending settings did
+        # (Windows checkouts with core.autocrlf=true rewrite LF -> CRLF on
+        # checkout, adding one byte per line) even though the blob hash check
+        # above already proves the *content* is byte-identical to what was
+        # pinned. Reading size from the same blob object the hash came from
+        # keeps this check meaningful and platform-independent instead of
+        # false-failing every file on any checkout that normalizes line
+        # endings — reproduced empirically: every one of the 34 pinned files
+        # failed this check by an amount exactly equal to its own line count.
         try:
-            size = disk_path.stat().st_size
-        except OSError as exc:
-            file_errors.append(f"{path}: cannot stat file: {exc}")
+            size = int(_git(upstream_checkout, "cat-file", "-s", blob))
+        except (RuntimeError, ValueError) as exc:
+            file_errors.append(f"{path}: cannot read blob size: {exc}")
             continue
         if size != row.get("bytes"):
             file_errors.append(f"{path}: bytes expected {row.get('bytes')}, got {size}")
