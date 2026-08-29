@@ -17,6 +17,17 @@ export {
 
 export { createAgentRun } from './run.mjs'
 
-// Filled by later E1 RED/GREEN slices.
-export function createAgentProposal() { throw new Error('E1 proposal semantics not implemented yet') }
-export function evaluateReviewPolicy() { throw new Error('E1 review semantics not implemented yet') }
+export {
+  proposalMaterialDigest,
+  createAgentProposal,
+  transitionProposal,
+  checkProposalBase,
+} from './proposal.mjs'
+
+export {
+  evaluateReviewPolicy,
+  authorityPinDigest,
+  createReviewDecision,
+  validateReviewDecision,
+  reviewDecisionStillValid,
+} from './review.mjs'
