@@ -39,3 +39,5 @@ jobs:
         run: node --test packages/ascs-agent/test/proposal.test.mjs packages/ascs-agent/test/review.test.mjs
       - name: Verify Task 5 AgentKernel and no-authority contracts
         run: node --test packages/ascs-agent/test/kernel.test.mjs packages/ascs-agent/test/no-runtime-authority.test.mjs
+      - name: Task 6 conformance should be RED before production dispatcher
+        run: node --test packages/ascs-agent/test/conformance.test.mjs
