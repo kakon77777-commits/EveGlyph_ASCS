@@ -1,0 +1,16 @@
+{
+  "profile": "agent-principal/1.0-candidate.1",
+  "principal_id": "urn:uuid:0190a007-0000-7000-8000-000000000101",
+  "principal_class": "ai-agent",
+  "identity_scope": "workspace",
+  "label": "Workspace Research Agent",
+  "controller": {
+    "type": "human",
+    "ref": "workspace-owner"
+  },
+  "created_at": "2026-08-25T06:30:00Z",
+  "default_policy_ref": "eg-policy:default-agent",
+  "metadata": {
+    "note": "Logical agent principal; provider/model are run bindings, not identity."
+  }
+}

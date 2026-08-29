@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.eveglyph.local/v0.7/agent-proposal.schema.json",
+  "title": "Agent Proposal v1 Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "proposal_id",
+    "run_id",
+    "principal_id",
+    "mode",
+    "base_workspace_revision",
+    "commands",
+    "review",
+    "validation",
+    "status",
+    "created_at",
+    "metadata"
+  ],
+  "properties": {
+    "profile": {
+      "const": "agent-proposal/1.0-candidate.1"
+    },
+    "proposal_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "principal_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "mode": {
+      "enum": [
+        "suggest",
+        "patch",
+        "direct"
+      ]
+    },
+    "base_workspace_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^wrev:sha256:[0-9a-f]{64}$"
+    },
+    "commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "command_id",
+          "command_kind",
+          "effect_class",
+          "target",
+          "payload_digest",
+          "required_capabilities",
+          "validator_profile",
+          "replay_policy"
+        ],
+        "properties": {
+          "command_id": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+          },
+          "command_kind": {
+            "enum": [
+              "advisory",
+              "create-object",
+              "edit-object",
+              "move-object",
+              "clone-object",
+              "create-candidate",
+              "promote-relation",
+              "execute",
+              "external-effect"
+            ]
+          },
+          "effect_class": {
+            "enum": [
+              "pure-read",
+              "canonical-write",
+              "candidate-write",
+              "execution",
+              "external-read",
+              "external-write",
+              "external-process",
+              "external-network"
+            ]
+          },
+          "target": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "payload_digest": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "base_object_revision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "required_capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "validator_profile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "replay_policy": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "at-most-once",
+              "idempotent",
+              "safe-retry",
+              "manual",
+              null
+            ]
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "policy_id",
+        "approval_actor"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "policy_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval_actor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deterministic_required",
+        "model_self_validation_authoritative",
+        "evidence_refs"
+      ],
+      "properties": {
+        "deterministic_required": {
+          "const": true
+        },
+        "model_self_validation_authoritative": {
+          "const": false
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "validated",
+        "approved",
+        "rejected",
+        "committed",
+        "conflicted",
+        "superseded"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

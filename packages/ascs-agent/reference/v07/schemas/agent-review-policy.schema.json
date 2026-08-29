@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.eveglyph.local/v0.7/agent-review-policy.schema.json",
+  "title": "Agent Review Policy v1 Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "policy_id",
+    "revision",
+    "modes",
+    "external_effect_policy",
+    "validation_policy"
+  ],
+  "properties": {
+    "profile": {
+      "const": "agent-review-policy/1.0-candidate.1"
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suggest",
+        "patch",
+        "direct"
+      ],
+      "properties": {
+        "suggest": {
+          "$ref": "#/$defs/mode"
+        },
+        "patch": {
+          "$ref": "#/$defs/mode"
+        },
+        "direct": {
+          "$ref": "#/$defs/mode"
+        }
+      }
+    },
+    "external_effect_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "explicit_capability_required",
+        "mode_never_grants_effects",
+        "unknown_effect_auto_retry"
+      ],
+      "properties": {
+        "explicit_capability_required": {
+          "const": true
+        },
+        "mode_never_grants_effects": {
+          "const": true
+        },
+        "unknown_effect_auto_retry": {
+          "const": false
+        }
+      }
+    },
+    "validation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deterministic_validation_required",
+        "model_self_validation_is_authority"
+      ],
+      "properties": {
+        "deterministic_validation_required": {
+          "const": true
+        },
+        "model_self_validation_is_authority": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$defs": {
+    "mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_mutation",
+        "auto_commit",
+        "human_review"
+      ],
+      "properties": {
+        "canonical_mutation": {
+          "enum": [
+            "forbidden",
+            "proposal-only",
+            "allowed-if-capable"
+          ]
+        },
+        "auto_commit": {
+          "type": "boolean"
+        },
+        "human_review": {
+          "enum": [
+            "not-applicable",
+            "required",
+            "policy-dependent"
+          ]
+        }
+      }
+    }
+  }
+}
