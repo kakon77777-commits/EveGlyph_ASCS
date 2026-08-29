@@ -1,0 +1,85 @@
+name: Milestone E1 Agent Kernel
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  e1-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install validator dependencies
+        run: python -m pip install 'jsonschema>=4,<5' 'brotli>=1.1'
+      - name: Verify canonical, E0 lineage, and E1 frozen references
+        run: |
+          set -euo pipefail
+          python -B tools/ascs_repo.py verify --repo . --json
+          python -B canonical/v1.0/machine/tests/test_validate_v10.py
+          python -B canonical/v1.0/machine/tools/validate_v10.py --json
+          python -B -m unittest \
+            tests.test_e1_agent_reference \
+            tests.test_e1_conformance_reference \
+            tests.test_security_upstream \
+            tests.test_product_convergence -v
+          python -B tools/security_upstream.py verify-manifest --repo . --json
+          python -B tools/product_convergence.py verify --repo . --json
+          python -B tools/product_convergence.py parity --repo . --json
+
+  e1-agent-kernel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run all E1 logical-kernel tests
+        run: node --test packages/ascs-agent/test/*.test.mjs
+      - name: Verify exact E1 conformance accounting
+        run: |
+          node --input-type=module <<'NODE'
+          import { runE1AgentConformance } from './packages/ascs-agent/src/index.mjs'
+          const result = await runE1AgentConformance()
+          if (result.total !== 36 || result.passed !== 17 || result.deferred !== 19 || result.failed !== 0) {
+            console.error(JSON.stringify(result, null, 2))
+            process.exit(1)
+          }
+          console.log(JSON.stringify({ total: result.total, passed: result.passed, deferred: result.deferred, failed: result.failed }))
+          NODE
+
+  cross-milestone-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify ASCS A/B/C/D runtime surfaces
+        run: |
+          node --test \
+            packages/ascs-core/test/*.test.mjs \
+            packages/ascs-runtime/test/*.test.mjs \
+            packages/ascs-store/test/*.test.mjs \
+            packages/ascs-history/test/*.test.mjs \
+            packages/ascs-spatial/test/*.test.mjs \
+            packages/ascs-math/test/*.test.mjs \
+            packages/ascs-glyph/test/*.test.mjs
+      - name: Verify current EveGlyph ASCS product surface
+        working-directory: apps/eveglyph-editor
+        run: |
+          npm ci
+          node --test \
+            test/ascs-runtime-bridge.test.mjs \
+            test/ascs-persistent-bridge.test.mjs \
+            test/ascs-native-math-bridge.test.mjs \
+            test/ascs-native-glyph-bridge.test.mjs
+          npm run test:publication
+          npm run build
+          npm run verify:dynamic-logic
+          npm run verify:dynamic-rendering
