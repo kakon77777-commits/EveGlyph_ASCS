@@ -31,3 +31,5 @@ export {
   validateReviewDecision,
   reviewDecisionStillValid,
 } from './review.mjs'
+
+export { createAgentKernel } from './kernel.mjs'
