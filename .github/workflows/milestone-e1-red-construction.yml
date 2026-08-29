@@ -32,3 +32,5 @@ jobs:
           python -B -m unittest tests.test_e1_agent_reference -v
       - name: Verify Task 3 context and run contracts
         run: node --test packages/ascs-agent/test/context.test.mjs packages/ascs-agent/test/run.test.mjs
+      - name: Task 4 proposal/review contract should be RED before production implementation
+        run: node --test packages/ascs-agent/test/proposal.test.mjs packages/ascs-agent/test/review.test.mjs
