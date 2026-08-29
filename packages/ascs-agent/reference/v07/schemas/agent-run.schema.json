@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.eveglyph.local/v0.7/agent-run.schema.json",
+  "title": "Agent Run v1 Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "run_id",
+    "principal_id",
+    "context_pack_id",
+    "base_workspace_revision",
+    "mode",
+    "model_binding",
+    "adapter_binding",
+    "capability_grant_ids",
+    "status",
+    "started_at",
+    "finished_at",
+    "proposal_ids",
+    "external_effect_ids",
+    "diagnostics",
+    "metadata"
+  ],
+  "properties": {
+    "profile": {
+      "const": "agent-run/1.0-candidate.1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "principal_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "context_pack_id": {
+      "type": "string",
+      "pattern": "^context-pack:sha256:[0-9a-f]{64}$"
+    },
+    "base_workspace_revision": {
+      "type": "string",
+      "pattern": "^wrev:sha256:[0-9a-f]{64}$"
+    },
+    "mode": {
+      "enum": [
+        "suggest",
+        "patch",
+        "direct"
+      ]
+    },
+    "model_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "model",
+        "runtime",
+        "binding_is_identity_authority"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "binding_is_identity_authority": {
+          "const": false
+        }
+      }
+    },
+    "adapter_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adapter_id",
+        "profile",
+        "protocol_version"
+      ],
+      "properties": {
+        "adapter_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "protocol_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "capability_grant_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "failed",
+        "cancelled",
+        "timed-out",
+        "conflicted"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "proposal_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+      }
+    },
+    "external_effect_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

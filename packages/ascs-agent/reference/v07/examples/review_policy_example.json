@@ -1,0 +1,31 @@
+{
+  "profile": "agent-review-policy/1.0-candidate.1",
+  "policy_id": "eg-agent-review/default-v1",
+  "revision": "policy:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "modes": {
+    "suggest": {
+      "canonical_mutation": "forbidden",
+      "auto_commit": false,
+      "human_review": "not-applicable"
+    },
+    "patch": {
+      "canonical_mutation": "proposal-only",
+      "auto_commit": false,
+      "human_review": "required"
+    },
+    "direct": {
+      "canonical_mutation": "allowed-if-capable",
+      "auto_commit": true,
+      "human_review": "policy-dependent"
+    }
+  },
+  "external_effect_policy": {
+    "explicit_capability_required": true,
+    "mode_never_grants_effects": true,
+    "unknown_effect_auto_retry": false
+  },
+  "validation_policy": {
+    "deterministic_validation_required": true,
+    "model_self_validation_is_authority": false
+  }
+}

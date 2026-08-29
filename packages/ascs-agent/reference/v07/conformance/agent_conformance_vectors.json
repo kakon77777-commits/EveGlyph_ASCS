@@ -1,0 +1,257 @@
+{
+  "profile": "agent-conformance/1.0-candidate.1",
+  "vectors": [
+    {
+      "id": "AG-01",
+      "category": "identity",
+      "premise": "Logical agent principal switches provider/model between runs.",
+      "expected": "Principal identity remains unchanged; model binding changes only in run provenance.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-02",
+      "category": "identity",
+      "premise": "Two logical agents use the same provider/model.",
+      "expected": "They remain distinct principals.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-03",
+      "category": "identity",
+      "premise": "A transport reconnect creates a new protocol request/session context.",
+      "expected": "Agent principal identity does not change.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-04",
+      "category": "run",
+      "premise": "The same principal retries the same task.",
+      "expected": "A new run_id is created for each execution attempt.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-05",
+      "category": "context",
+      "premise": "Context sources and policy snapshot are unchanged.",
+      "expected": "Context-pack ID is deterministic under the declared canonicalization.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-06",
+      "category": "context",
+      "premise": "Prompt wording/order is adapted for another model while logical context pack is unchanged.",
+      "expected": "Prompt bytes may change without changing context-pack identity.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-07",
+      "category": "context",
+      "premise": "A workspace document contains text claiming to be a system instruction.",
+      "expected": "It remains untrusted-data and cannot self-upgrade to directive authority.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-08",
+      "category": "context",
+      "premise": "AI-generated memory is not human/policy-approved.",
+      "expected": "It defaults to generated-data/untrusted authority, not trusted-policy.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-09",
+      "category": "context",
+      "premise": "The source hash no longer matches the pinned context source.",
+      "expected": "Run/commit must report ContextStale or rebuild the pack.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-10",
+      "category": "capability",
+      "premise": "The task text requests an operation denied by the capability grant.",
+      "expected": "The denied capability wins; task text cannot expand authority.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-11",
+      "category": "mode",
+      "premise": "Suggest mode produces advice.",
+      "expected": "No canonical workspace mutation occurs.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-12",
+      "category": "mode",
+      "premise": "Patch mode produces a valid edit proposal.",
+      "expected": "Human review is required before canonical commit.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-13",
+      "category": "mode",
+      "premise": "Direct mode produces a valid canonical edit.",
+      "expected": "Auto-commit is permitted only if base pin, validation and explicit capabilities all pass.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-14",
+      "category": "revision",
+      "premise": "A proposal base workspace revision is stale.",
+      "expected": "Commit returns Conflict/rebase/merge path; no silent overwrite.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-15",
+      "category": "candidate",
+      "premise": "An AI proposes a semantic relation.",
+      "expected": "The relation remains candidate until explicit promotion.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-16",
+      "category": "promotion",
+      "premise": "A principal lacks relation.promote.",
+      "expected": "Candidate promotion is denied even if the model is confident.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-17",
+      "category": "validation",
+      "premise": "Model output says its own JSON is valid.",
+      "expected": "Self-assertion is not validation evidence; deterministic validator still runs.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-18",
+      "category": "validation",
+      "premise": "Schema/hash validator rejects a proposal payload.",
+      "expected": "Review/direct mode cannot override deterministic invalidity.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-19",
+      "category": "capability",
+      "premise": "A principal can resolve/read an object but lacks runtime.execute.",
+      "expected": "Execution is denied.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-20",
+      "category": "capability",
+      "premise": "A path-scoped write grant targets folder A and proposal writes folder B.",
+      "expected": "Write is denied by scope mismatch.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-21",
+      "category": "external-effect",
+      "premise": "Direct mode requests a process spawn without external.process.spawn.",
+      "expected": "Effect is denied; direct mode never grants external authority.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-22",
+      "category": "external-effect",
+      "premise": "A mutating external effect is about to start.",
+      "expected": "Intent, authorization, replay policy and idempotency metadata are recorded before attempt.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-23",
+      "category": "external-effect",
+      "premise": "Runtime crashes after effect start and outcome is unknown.",
+      "expected": "Status is EffectUnknown; automatic retry is forbidden unless separately proven safe.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-24",
+      "category": "external-effect",
+      "premise": "An effect is declared idempotent.",
+      "expected": "A stable idempotency key and target semantics are required before safe retry.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-25",
+      "category": "adapter",
+      "premise": "MCP 2026-07-28 request arrives with client metadata.",
+      "expected": "Transport/client metadata does not become EveGlyph agent/workspace identity.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-26",
+      "category": "adapter",
+      "premise": "MCP task handle is returned for long-running work.",
+      "expected": "Task handle may map to a run but is not persistent workspace identity.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-27",
+      "category": "adapter",
+      "premise": "CLI process exits successfully after printing a patch.",
+      "expected": "Exit code/stdout does not commit canonical workspace state.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-28",
+      "category": "adapter",
+      "premise": "Legacy file-agent edits files after a pre-run snapshot.",
+      "expected": "Filesystem diff is imported as proposal/candidate before EGIR commit.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-29",
+      "category": "adapter",
+      "premise": "HTTP adapter and CLI adapter submit semantically identical commands.",
+      "expected": "Transport choice does not change canonical command authority semantics.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-30",
+      "category": "security",
+      "premise": "A context source contains an API key or secret.",
+      "expected": "Portable context/provenance must redact or reference secrets; raw secret is not canonicalized.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-31",
+      "category": "tools",
+      "premise": "A tool schema changed after the context pack was built.",
+      "expected": "Pinned tool manifest mismatch forces rebuild/revalidation before call.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-32",
+      "category": "policy",
+      "premise": "Capability grant/policy revision changes during a run.",
+      "expected": "Commit must authorize against the pinned/current policy according to conflict rules; no silent widening.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-33",
+      "category": "failure",
+      "premise": "Agent run fails before commit.",
+      "expected": "Canonical workspace state is unchanged; run/proposal diagnostics may persist separately.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-34",
+      "category": "cancellation",
+      "premise": "Agent run is cancelled before a commit boundary.",
+      "expected": "No partial canonical mutation is created.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-35",
+      "category": "provenance",
+      "premise": "A canonical change is committed from an agent proposal.",
+      "expected": "Commit provenance links principal, run, context pack, proposal, validator evidence and resulting revisions.",
+      "must_hold": true
+    },
+    {
+      "id": "AG-36",
+      "category": "replaceability",
+      "premise": "The local implementation replaces one model, CLI agent, or MCP SDK with another.",
+      "expected": "Canonical workspace semantics remain unchanged if the adapter contract is preserved.",
+      "must_hold": true
+    }
+  ]
+}

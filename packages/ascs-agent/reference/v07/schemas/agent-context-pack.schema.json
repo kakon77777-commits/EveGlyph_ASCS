@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.eveglyph.local/v0.7/agent-context-pack.schema.json",
+  "title": "Agent Context Pack v1 Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile",
+    "context_pack_id",
+    "workspace_id",
+    "base_workspace_revision",
+    "task",
+    "mode",
+    "policy_snapshot",
+    "tool_manifest",
+    "sources",
+    "selection_refs",
+    "created_at",
+    "metadata"
+  ],
+  "properties": {
+    "profile": {
+      "const": "agent-context-pack/1.0-candidate.1"
+    },
+    "context_pack_id": {
+      "type": "string",
+      "pattern": "^context-pack:sha256:[0-9a-f]{64}$"
+    },
+    "workspace_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "base_workspace_revision": {
+      "type": "string",
+      "pattern": "^wrev:sha256:[0-9a-f]{64}$"
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "directive",
+        "authority_class"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        "directive": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_class": {
+          "const": "run-directive"
+        }
+      }
+    },
+    "mode": {
+      "enum": [
+        "suggest",
+        "patch",
+        "direct"
+      ]
+    },
+    "policy_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_policy_id",
+        "policy_revision",
+        "capability_grant_ids"
+      ],
+      "properties": {
+        "review_policy_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capability_grant_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "tool_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_id",
+        "tools"
+      ],
+      "properties": {
+        "manifest_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "effect_class",
+              "schema_hash"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "effect_class": {
+                "enum": [
+                  "canonical-read",
+                  "canonical-write",
+                  "candidate-write",
+                  "execution",
+                  "external-read",
+                  "external-write",
+                  "external-process",
+                  "external-network"
+                ]
+              },
+              "schema_hash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_id",
+          "role",
+          "trust_class",
+          "ref",
+          "content_sha256",
+          "authority_origin",
+          "inline_content"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "workspace-policy",
+              "protected-glossary",
+              "workspace-memory",
+              "workspace-document",
+              "selection",
+              "tool-catalog",
+              "external-resource",
+              "adapter-metadata",
+              "user-directive"
+            ]
+          },
+          "trust_class": {
+            "enum": [
+              "directive",
+              "trusted-policy",
+              "trusted-data",
+              "untrusted-data",
+              "generated-data"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "authority_origin": {
+            "enum": [
+              "explicit-user",
+              "committed-policy",
+              "committed-data",
+              "workspace-data",
+              "external-data",
+              "adapter",
+              "generated"
+            ]
+          },
+          "inline_content": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "snapshot_revision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "selection_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

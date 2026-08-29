@@ -1,0 +1,40 @@
+{
+  "profile": "agent-proposal/1.0-candidate.1",
+  "proposal_id": "urn:uuid:0190a007-0000-7000-8000-000000000502",
+  "run_id": "urn:uuid:0190a007-0000-7000-8000-000000000401",
+  "principal_id": "urn:uuid:0190a007-0000-7000-8000-000000000101",
+  "mode": "direct",
+  "base_workspace_revision": "wrev:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "commands": [
+    {
+      "command_id": "urn:uuid:0190a007-0000-7000-8000-000000000512",
+      "command_kind": "edit-object",
+      "effect_class": "canonical-write",
+      "target": "object:math-note-1",
+      "payload_digest": "d1fdd99385c258cc95a4caeffa88164732e6ad9e596185f02e7e4f8ff5169c42",
+      "base_object_revision": "rev:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "required_capabilities": [
+        "object.write",
+        "workspace.commit"
+      ],
+      "validator_profile": "egir+domain/0.1",
+      "replay_policy": null
+    }
+  ],
+  "review": {
+    "required": false,
+    "policy_id": "eg-agent-review/default-v1",
+    "approval_actor": null
+  },
+  "validation": {
+    "deterministic_required": true,
+    "model_self_validation_authoritative": false,
+    "evidence_refs": []
+  },
+  "status": "validated",
+  "created_at": "2026-08-25T06:33:09Z",
+  "metadata": {
+    "auto_commit_requested": true,
+    "validation_and_capability_still_required": true
+  }
+}
