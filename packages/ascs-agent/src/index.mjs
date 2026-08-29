@@ -33,3 +33,4 @@ export {
 } from './review.mjs'
 
 export { createAgentKernel } from './kernel.mjs'
+export { runE1AgentConformance } from './conformance.mjs'

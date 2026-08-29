@@ -28,7 +28,8 @@ jobs:
           test "$(sha256sum packages/ascs-agent/src/proposal.mjs | cut -d' ' -f1)" = "461fb6dbb9ab8ca74317427a421507df8ff694ba8b96364271054ca37015d59f"
           test "$(sha256sum packages/ascs-agent/src/review.mjs | cut -d' ' -f1)" = "b3d06d54c277874096865fa66f41ab70246b3fa1df9f4d8e2c2ef6d4a63e4000"
           test "$(sha256sum packages/ascs-agent/src/kernel.mjs | cut -d' ' -f1)" = "c32ade368fd5e78ed157526569ebc30b6e4b82097d28b85a7c0fbe4083c1a9ad"
-          test "$(sha256sum packages/ascs-agent/src/index.mjs | cut -d' ' -f1)" = "71282325eb580581bc4c50f369f055d84c0a5fab5381a680204fd374952faa6c"
+          test "$(sha256sum packages/ascs-agent/src/conformance.mjs | cut -d' ' -f1)" = "971ca8f2593a78783d49257838e31b66633fe2df8d7fad003e195241208e3003"
+          test "$(sha256sum packages/ascs-agent/src/index.mjs | cut -d' ' -f1)" = "c89151f54becbdc0e98da4ed5381640510b24603101bf0b39315ccc614ccea79"
       - name: Verify Task 2 contracts
         run: |
           node --test packages/ascs-agent/test/model.test.mjs packages/ascs-agent/test/reference-lineage.test.mjs
@@ -39,5 +40,5 @@ jobs:
         run: node --test packages/ascs-agent/test/proposal.test.mjs packages/ascs-agent/test/review.test.mjs
       - name: Verify Task 5 AgentKernel and no-authority contracts
         run: node --test packages/ascs-agent/test/kernel.test.mjs packages/ascs-agent/test/no-runtime-authority.test.mjs
-      - name: Task 6 conformance should be RED before production dispatcher
+      - name: Verify Task 6 production conformance dispatcher
         run: node --test packages/ascs-agent/test/conformance.test.mjs
